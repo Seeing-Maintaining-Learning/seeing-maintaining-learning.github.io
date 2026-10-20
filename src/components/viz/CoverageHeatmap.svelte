@@ -106,21 +106,21 @@
   .controls { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
   .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 0; align-items: center; }
   .legend span { display: inline-flex; gap: 6px; align-items: center; }
-  .legend i { font-style: normal; width: 18px; height: 18px; display: inline-grid; place-items: center; border-radius: 4px; font-size: 11px; }
+  .legend i { font-style: normal; width: 18px; height: 18px; display: inline-grid; place-items: center; border-radius: 4px; font-size: 12px; }
   .scroll { position: relative; overflow: auto; max-height: 72vh; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
   table { border-collapse: separate; border-spacing: 2px; width: 100%; font-size: 0.875rem; }
   thead th { position: sticky; top: 0; background: var(--surface); z-index: 2; padding: 6px 0; }
   thead button { font: inherit; border: 0; background: none; color: var(--ink); cursor: pointer; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 2px; border-radius: 6px; }
   thead button[aria-pressed='true'] { background: var(--surface-2); }
   .code { font-weight: 650; }
-  .cnt { font-size: 0.6875rem; color: var(--muted); }
+  .cnt { font-size: 0.75rem; color: var(--muted); }
   .bn { text-align: left; white-space: nowrap; padding: 0 12px 0 8px; position: sticky; left: 0; background: var(--surface); z-index: 1; font-weight: 500; }
   thead .bn { z-index: 3; }
   .bn .chip { padding: 0; border: 0; background: none; margin-right: 4px; }
   .bn a { color: var(--ink); text-decoration: none; }
   .bn a:hover { text-decoration: underline; }
   td.c, .legend i { text-align: center; }
-  td.c { width: 44px; min-width: 36px; height: 26px; border-radius: 4px; color: var(--surface); font-size: 11px; }
+  td.c { width: 44px; min-width: 36px; height: 26px; border-radius: 4px; color: var(--surface); font-size: 12px; }
   .c.direct { background: var(--cov-direct); color: var(--surface); }
   .c.partial { background: var(--cov-partial); color: var(--ink); }
   .c.none { background: var(--cov-none); }

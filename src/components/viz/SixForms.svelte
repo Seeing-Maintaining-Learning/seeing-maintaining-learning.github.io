@@ -68,8 +68,9 @@
           {#each f.traits as [name, v] (name)}
             <div>
               <dt>{name}</dt>
-              <dd aria-label="{v} of 4">
-                {#each [1, 2, 3, 4] as s (s)}<span class="pip" class:on={s <= v}></span>{/each}
+              <dd>
+                <span class="sr-only">{v} of 4</span>
+                {#each [1, 2, 3, 4] as s (s)}<span class="pip" class:on={s <= v} aria-hidden="true"></span>{/each}
               </dd>
             </div>
           {/each}

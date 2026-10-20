@@ -18,7 +18,7 @@
   const groups = $derived(grouped ? [...new Set(items.map((i) => i.group))] : ['all']);
 </script>
 
-<div class="board" aria-label={label}>
+<div class="board" role="group" aria-label={label}>
   <p class="board-label small muted">{label}</p>
   <div class="groups" class:grouped>
     {#each groups as g (g)}

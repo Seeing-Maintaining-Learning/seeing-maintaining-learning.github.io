@@ -120,9 +120,9 @@
     {/each}
   </aside>
 
-  <section class="results" aria-live="polite">
+  <section class="results" aria-label="Results">
     <div class="status">
-      <p><strong class="num">{filtered.length}</strong> of {rows.length} systems</p>
+      <p aria-live="polite"><strong class="num">{filtered.length}</strong> of {rows.length} systems</p>
       <div class="status-right">
         {#if active}
           <button class="link" type="button" onclick={clear}>Clear filters</button>

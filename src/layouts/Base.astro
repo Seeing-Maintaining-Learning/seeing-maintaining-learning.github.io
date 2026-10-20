@@ -39,7 +39,7 @@ const NAV: [string, string][] = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
     <meta name="robots" content={noindex ? 'noindex' : 'index, follow, max-image-preview:large'} />
     {verification && <meta name="google-site-verification" content={verification} />}
     <meta property="og:type" content={type} />
@@ -66,7 +66,7 @@ const NAV: [string, string][] = [
       } catch (e) {}
     </script>
     <slot name="head" />
-    {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
+    {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j).replace(/</g, '\\u003c')} />)}
   </head>
   <body>
     <a class="skip sr-only" href="#main">Skip to content</a>

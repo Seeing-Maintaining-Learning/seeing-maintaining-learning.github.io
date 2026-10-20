@@ -93,14 +93,25 @@ function timeline(points: Pt[], W: number, H: number) {
   const t1 = 2026.9;
   const m = { l: 40, r: 24, b: 44 };
   const x = (t: number) => m.l + ((Math.max(t0, Math.min(t1, t)) - t0) / (t1 - t0)) * (W - m.l - m.r);
-  const bins = new Map<number, number[]>();
-  points.forEach((p, i) => {
-    const b = Math.round(x(p.t) / 9);
-    bins.set(b, [...(bins.get(b) ?? []), i]);
-  });
+  // Bin width and vertical step adapt so the tallest stack fits inside the canvas.
+  const avail = H - m.b - 24;
+  let bw = 9;
+  let bins = new Map<number, number[]>();
+  for (;;) {
+    bins = new Map();
+    points.forEach((p, i) => {
+      const b = Math.round(x(p.t) / bw);
+      bins.set(b, [...(bins.get(b) ?? []), i]);
+    });
+    const tallest = Math.max(...[...bins.values()].map((l) => l.length));
+    if (tallest * Math.min(9, bw) <= avail || bw >= 24) break;
+    bw += 1;
+  }
+  const tallest = Math.max(...[...bins.values()].map((l) => l.length));
+  const step = Math.min(9, avail / tallest);
   for (const [b, list] of bins) {
     list.sort((a, c) => TIER_RANK[points[c].tier] - TIER_RANK[points[a].tier]);
-    list.forEach((i, j) => (pos[i] = [b * 9, H - m.b - j * 9]));
+    list.forEach((i, j) => (pos[i] = [b * bw, H - m.b - j * step]));
   }
   const groups: Group[] = [2023, 2024, 2025, 2026].map((y) => ({
     key: String(y),

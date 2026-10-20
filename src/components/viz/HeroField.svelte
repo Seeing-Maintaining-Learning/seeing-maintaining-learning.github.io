@@ -47,7 +47,7 @@
         fy = H / 2 + Math.sin(a) * r;
       }
       const [tx, ty] = pos[i];
-      return { x: rm ? tx : fx, y: rm ? ty : fy, fx, fy, tx, ty, t0: now, delay: rm ? 0 : (intro ? 300 : 0) + (i % 60) * 6, phase: Math.random() * 6.28 };
+      return { x: rm ? tx : fx, y: rm ? ty : fy, fx: rm ? tx : fx, fy: rm ? ty : fy, tx, ty, t0: now, delay: rm ? 0 : (intro ? 300 : 0) + (i % 60) * 6, phase: Math.random() * 6.28 };
     });
     kick();
   }
@@ -87,7 +87,8 @@
     if (!raf && canvas) raf = requestAnimationFrame(frame);
   }
 
-  function resize() {
+  function resize(force = false) {
+    if (!force && box.clientWidth === W) return;
     W = box.clientWidth;
     H = W < 640 ? 440 : 520;
     const dpr = window.devicePixelRatio || 1;
@@ -96,10 +97,14 @@
     canvas.style.height = `${H}px`;
     const { pos, groups: g } = layoutFor(lens, points, W, H);
     groups = g;
+    const now = performance.now();
     st.forEach((s, i) => {
+      const done = now - s.t0 - s.delay >= DUR;
       [s.tx, s.ty] = pos[i];
-      s.fx = s.tx;
-      s.fy = s.ty;
+      if (done) {
+        s.fx = s.tx;
+        s.fy = s.ty;
+      }
     });
     kick();
   }
@@ -124,9 +129,7 @@
 
   onMount(() => {
     readColors();
-    W = box.clientWidth;
-    H = W < 640 ? 440 : 520;
-    resize();
+    resize(true);
     const ro = new ResizeObserver(() => resize());
     ro.observe(box);
     const stop = whileVisible(box, (v) => {
@@ -176,7 +179,10 @@
       role="img"
       onpointermove={pick}
       onpointerleave={() => { hover = null; kick(); }}
-      onclick={() => hover && (location.href = `/systems/${hover.p.id}/`)}
+      onclick={(e) => {
+        pick(e as unknown as PointerEvent);
+        if (hover) location.href = `/systems/${hover.p.id}/`;
+      }}
     ></canvas>
     {#each groups as g (g.key)}
       <div class="glabel" style="left:{g.x}px; top:{g.y}px; text-align:{g.align ?? 'center'}">
@@ -206,5 +212,5 @@
   .glabel { position: absolute; transform: translate(-50%, 0); pointer-events: none; display: flex; flex-direction: column; align-items: center; max-width: 180px; line-height: 1.2; text-align: center; }
   .gl { font-size: 0.8125rem; font-weight: 600; color: var(--ink); text-wrap: balance; }
   .gn { font-size: 0.75rem; color: var(--muted); }
-  @media (max-width: 640px) { .gl { font-size: 0.6875rem; } .glabel { max-width: 120px; } .key { display: none; } }
+  @media (max-width: 640px) { .gl { font-size: 0.75rem; } .glabel { max-width: 120px; } .key { display: none; } }
 </style>

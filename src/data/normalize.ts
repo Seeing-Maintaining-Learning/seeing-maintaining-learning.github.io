@@ -60,6 +60,10 @@ export interface Benchmark {
 
 type Raw = Record<string, any>;
 
+/** Keep only http(s) URLs; anything else (e.g. javascript:) becomes null. */
+export const safeUrl = (u: unknown): string | null =>
+  typeof u === 'string' && /^https?:\/\//i.test(u) ? u : null;
+
 const evidence = (list: Raw[] | undefined): Evidence[] =>
   (list ?? []).map((e) => ({
     section: e.section ?? '',
@@ -82,8 +86,8 @@ export function normalizeSystem(input: unknown): System {
     authors: r.provenance?.authors ?? [],
     date,
     year: Number(date.slice(0, 4)),
-    url: v.source_url ?? '',
-    pdf: v.pdf_url ?? null,
+    url: safeUrl(v.source_url) ?? '',
+    pdf: safeUrl(v.pdf_url),
     modality: r.primary_modality,
     secondary: r.secondary_modalities ?? [],
     tier: r.derived?.highest_management_tier,
@@ -144,7 +148,7 @@ export function normalizeBenchmark(row: Raw, review: Raw | undefined, record: un
     groundTruth: row.ground_truth,
     coverage: row.coverage,
     role: row.evaluation_role,
-    url: v.source_url ?? review?.source ?? null,
+    url: safeUrl(v.source_url) ?? safeUrl(review?.source),
     rationale: review?.rationale ?? '',
     authors: rec.paper?.authors ?? [],
     date: v.published_date ?? null,

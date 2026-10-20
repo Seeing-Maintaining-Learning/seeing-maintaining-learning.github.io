@@ -70,7 +70,7 @@ const link = (name: string) => systemLink(name);
           {LEAVES.filter((l) => LEAF_FAMILY[l] === f).map((l) => (
             <article class="leaf panel" id={l}>
               <h3>{LEAF_LABEL[l]}</h3>
-              <div class="meter" aria-label={`${leafN[l]} systems`}>
+              <div class="meter">
                 <span style={`width:${(leafN[l] / maxLeaf) * 100}%`} />
                 <span class="num small">{leafN[l]} systems</span>
               </div>

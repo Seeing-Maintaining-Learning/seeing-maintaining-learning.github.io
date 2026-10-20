@@ -63,7 +63,7 @@ const description = `${list.length} ${label.toLowerCase()} agent memory systems 
 
   <section class="wrap block">
     <h2>Representation × management tier</h2>
-    <TierMatrix client:visible rows={REP_CATEGORIES} cols={[...TIERS]} cells={cells} rowLabels={REP_CATEGORY_LABEL} colLabels={TIER_LABEL} />
+    <TierMatrix client:visible query={`modality=${mod}`} rows={REP_CATEGORIES} cols={[...TIERS]} cells={cells} rowLabels={REP_CATEGORY_LABEL} colLabels={TIER_LABEL} />
   </section>
 
   {

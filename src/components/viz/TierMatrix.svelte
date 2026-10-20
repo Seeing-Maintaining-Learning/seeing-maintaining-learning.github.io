@@ -6,13 +6,16 @@
     cells,
     rowLabels,
     colLabels,
+    query = '',
   }: {
     rows: string[];
     cols: string[];
     cells: Cell[];
     rowLabels: Record<string, string>;
     colLabels: Record<string, string>;
+    query?: string;
   } = $props();
+  const div = (a: number, b: number) => (b ? a / b : 0);
 
   const N = cells.reduce((a, c) => a + c.n, 0);
   const rowTotal = (r: string) => cells.filter((c) => c.cat === r).reduce((a, c) => a + c.n, 0);
@@ -25,18 +28,18 @@
 
   const share = (r: string, t: string) => {
     const n = get(r, t);
-    if (mode === 'tier') return n / colTotal(t);
-    if (mode === 'rep') return n / rowTotal(r);
-    return n / max;
+    if (mode === 'tier') return div(n, colTotal(t));
+    if (mode === 'rep') return div(n, rowTotal(r));
+    return div(n, max);
   };
-  const ratio = (r: string, t: string) => get(r, t) / ((rowTotal(r) * colTotal(t)) / N);
+  const ratio = (r: string, t: string) => div(get(r, t), (rowTotal(r) * colTotal(t)) / N);
   const pct = (x: number) => `${(x * 100).toFixed(x < 0.1 && x > 0 ? 1 : 0)}%`;
 
   const describe = (r: string, t: string) => {
     const n = get(r, t);
     const ra = ratio(r, t);
     const rel = n === 0 ? 'none observed' : ra >= 1.2 ? `${ra.toFixed(1)}× more than expected` : ra <= 0.8 ? `${ra.toFixed(1)}× of expected` : 'about as expected';
-    return { n, ofTier: pct(n / colTotal(t)), ofRep: pct(n / rowTotal(r)), rel };
+    return { n, ofTier: pct(div(n, colTotal(t))), ofRep: pct(div(n, rowTotal(r))), rel };
   };
   const info = $derived(hover ? describe(hover.r, hover.t) : null);
 </script>
@@ -66,11 +69,10 @@
         <span role="rowheader" class="rh">{rowLabels[r]}</span>
         {#each cols as t (t)}
           {@const n = get(r, t)}
-          <a
-            role="cell"
+          <span role="cell" class="cw"><a
             class="cell tier-{t}"
             class:dim={hover && !(hover.r === r && hover.t === t)}
-            href="/systems/?category={r}&tier={t}"
+            href="/systems/?category={r}&tier={t}{query ? `&${query}` : ''}"
             onmouseenter={() => (hover = { r, t })}
             onmouseleave={() => (hover = null)}
             onfocus={() => (hover = { r, t })}
@@ -79,7 +81,7 @@
           >
             <span class="sq" style="--s:{Math.sqrt(share(r, t))}"></span>
             <span class="n num">{n}</span>
-          </a>
+          </a></span>
         {/each}
         <span role="cell" class="tot">
           <span class="bar" style="width:{(rowTotal(r) / N) * 100}%"></span>
@@ -90,7 +92,7 @@
     <div role="row" class="row foot">
       <span role="rowheader" class="rh small muted">Total</span>
       {#each cols as t (t)}
-        <span role="cell" class="ctot num small">{colTotal(t)} <span class="muted">({pct(colTotal(t) / N)})</span></span>
+        <span role="cell" class="ctot num small">{colTotal(t)} <span class="muted">({pct(div(colTotal(t), N))})</span></span>
       {/each}
       <span role="cell" class="ctot num small">{N}</span>
     </div>
@@ -114,8 +116,9 @@
   .row { transition: opacity var(--dur-2) var(--ease); }
   .ch { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
   .rh { font-weight: 600; font-size: 0.9375rem; line-height: 1.25; }
+  .cw { display: block; }
   .cell {
-    position: relative; aspect-ratio: 1.35; display: grid; place-items: center; text-decoration: none; color: var(--ink);
+    position: relative; aspect-ratio: 1.35; display: grid; width: 100%; place-items: center; text-decoration: none; color: var(--ink);
     background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
     transition: opacity var(--dur-2) var(--ease), border-color var(--dur-1);
   }

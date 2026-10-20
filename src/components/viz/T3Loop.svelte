@@ -118,7 +118,7 @@
           <p class="muted">Waiting for the next task…</p>
         {/if}
       </div>
-      <div class="eq" aria-label="Update equations">
+      <div class="eq" role="group" aria-label="Update equations">
         <span class:hl={step === 1}>M<sub>t+1</sub> = U<sub>π<sub>t</sub></sub>(M<sub>t</sub>, x<sub>t</sub>)</span>
         <span class:hl={step === 3}>π<sub>t+1</sub> = E(π<sub>t</sub>, f<sub>t</sub>)</span>
       </div>

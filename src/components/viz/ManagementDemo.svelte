@@ -15,7 +15,22 @@
     tierCounts: Record<string, number>;
   } = $props();
 
-  let tier = $state<'T1' | 'T2' | 'T3'>('T1');
+  type T = 'T1' | 'T2' | 'T3';
+  const TABS: T[] = ['T1', 'T2', 'T3'];
+  let tier = $state<T>('T1');
+
+  function tabKey(e: KeyboardEvent) {
+    const i = TABS.indexOf(tier);
+    let next = i;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % 3;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i + 2) % 3;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = 2;
+    else return;
+    e.preventDefault();
+    tier = TABS[next];
+    document.getElementById(`mtab-${tier}`)?.focus();
+  }
 
   // ---------- T1: fixed memory ----------
   const T1_START: Item[] = [
@@ -101,13 +116,17 @@
 
 <div class="demo">
   <div class="tabs" role="tablist" aria-label="Management tier">
-    {#each ['T1', 'T2', 'T3'] as t (t)}
+    {#each TABS as t (t)}
       <button
         role="tab"
         type="button"
+        id="mtab-{t}"
         class="tab tier-{t}"
         aria-selected={tier === t}
-        onclick={() => (tier = t as 'T1' | 'T2' | 'T3')}
+        aria-controls="mpanel-{t}"
+        tabindex={tier === t ? 0 : -1}
+        onclick={() => (tier = t)}
+        onkeydown={tabKey}
       >
         <span class="tname"><span class="dot"></span>{t} · {tierText[t].title}</span>
         <span class="tq">{tierText[t].question}</span>
@@ -116,8 +135,8 @@
     {/each}
   </div>
 
-  <div class="panelbody" role="tabpanel">
-    {#if tier === 'T1'}
+  <div class="panelbody">
+    <div role="tabpanel" id="mpanel-T1" aria-labelledby="mtab-T1" hidden={tier !== 'T1'}>
       <div class="stage two">
         <div class="side">
           <div class="card"><p class="k">Policy π</p><p>No write or maintenance policy after formation.</p></div>
@@ -130,7 +149,8 @@
         </div>
         <MemoryBoard items={t1} label="Memory M (fixed)" />
       </div>
-    {:else if tier === 'T2'}
+    </div>
+    <div role="tabpanel" id="mpanel-T2" aria-labelledby="mtab-T2" hidden={tier !== 'T2'}>
       <div class="stage two">
         <div class="side">
           <div class="card"><p class="k">Policy π (fixed)</p><p>The same rules decide every operation, before and after deployment.</p></div>
@@ -159,9 +179,10 @@
         </div>
         <MemoryBoard items={t2} {grouped} label="Memory M (changing)" />
       </div>
-    {:else}
+    </div>
+    <div role="tabpanel" id="mpanel-T3" aria-labelledby="mtab-T3" hidden={tier !== 'T3'}>
       <T3Loop />
-    {/if}
+    </div>
   </div>
 </div>
 
