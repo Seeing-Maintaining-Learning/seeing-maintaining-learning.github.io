@@ -1,0 +1,70 @@
+import { describe, expect, it } from 'vitest';
+import systemsJson from '../src/data/generated/systems.json';
+import benchmarksJson from '../src/data/generated/benchmarks.json';
+import lineCounts from '../vendor/paper/raw/line_graph_counts.json';
+import type { Benchmark, System } from '../src/data/normalize.ts';
+import { crossMatrix, formationFlows, growthByModality, growthByTier } from '../src/lib/aggregate.ts';
+import { stripTex } from '../src/data/normalize.ts';
+import { LEAVES, T2_LEAF } from '../src/data/vocab.ts';
+
+const systems = systemsJson as System[];
+const benchmarks = benchmarksJson as Benchmark[];
+
+describe('corpus matches the paper', () => {
+  it('has 297 architectures split T1 76 / T2 204 / T3 17', () => {
+    expect(systems).toHaveLength(297);
+    const tiers = { T1: 0, T2: 0, T3: 0 };
+    for (const s of systems) tiers[s.tier] += 1;
+    expect(tiers).toEqual({ T1: 76, T2: 204, T3: 17 });
+  });
+
+  it('reproduces the 4x3 representation x tier matrix (fig_cross_matrix.tex)', () => {
+    expect(crossMatrix(systems)).toEqual({
+      native: { T1: 23, T2: 26, T3: 0 },
+      cross: { T1: 18, T2: 49, T3: 13 },
+      latent: { T1: 7, T2: 22, T3: 0 },
+      hybrid: { T1: 28, T2: 107, T3: 4 },
+    });
+  });
+
+  it('reproduces the cumulative growth counts', () => {
+    expect(growthByModality(systems, lineCounts.years)).toEqual(lineCounts.primary_modality);
+    expect(growthByTier(systems, lineCounts.years)).toEqual(lineCounts.tier);
+  });
+
+  it('has 82 benchmarks with nine coverage cells each', () => {
+    expect(benchmarks).toHaveLength(82);
+    for (const b of benchmarks) expect(b.coverage).toHaveLength(9);
+  });
+});
+
+describe('record integrity', () => {
+  it('gives every system a unique id, source URL, and known leaves', () => {
+    expect(new Set(systems.map((s) => s.id)).size).toBe(systems.length);
+    for (const s of systems) {
+      expect(s.url).toMatch(/^https?:\/\//);
+      for (const p of s.paths) expect(LEAVES).toContain(p.leaf);
+      for (const o of s.t2) expect(Object.keys(T2_LEAF)).toContain(o.leaf);
+    }
+  });
+
+  it('gives every benchmark a unique id and URL', () => {
+    expect(new Set(benchmarks.map((b) => b.id)).size).toBe(benchmarks.length);
+    for (const b of benchmarks) expect(b.url).toMatch(/^https?:\/\//);
+  });
+
+  it('conserves flow through the formation Sankey', () => {
+    const links = formationFlows(systems);
+    const sum = (prefix: string, side: 'source' | 'target') =>
+      links.filter((l) => l[side].startsWith(prefix)).reduce((a, l) => a + l.value, 0);
+    expect(sum('m:', 'source')).toBeCloseTo(sum('l:', 'source'), 6);
+    expect(sum('s:', 'source')).toBeCloseTo(sum('r:', 'target'), 6);
+  });
+});
+
+describe('stripTex', () => {
+  it('removes citations and macros', () => {
+    expect(stripTex('LoCoMo~\\citep{maharana2024evaluating}')).toBe('LoCoMo');
+    expect(stripTex('\\textbf{ATM}-Bench')).toBe('ATM-Bench');
+  });
+});

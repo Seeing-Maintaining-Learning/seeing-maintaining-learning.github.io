@@ -1,0 +1,65 @@
+{
+  "source": "multimodal-agent-memory-survey public architecture inventory",
+  "revision": "5b7994971911be514cef7b048f06b609e0105776",
+  "year_rule": "latest_version.published_date year; cumulative through year",
+  "modality_rule": "primary_modality; quantitative_inclusion applied",
+  "years": [
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "architecture_count": 297,
+  "primary_modality": {
+    "embodied_3d": [
+      9,
+      19,
+      40,
+      100
+    ],
+    "video_streaming": [
+      1,
+      14,
+      39,
+      84
+    ],
+    "image": [
+      2,
+      4,
+      12,
+      64
+    ],
+    "gui": [
+      1,
+      6,
+      20,
+      41
+    ],
+    "audio_speech": [
+      0,
+      1,
+      1,
+      8
+    ]
+  },
+  "tier": {
+    "T1": [
+      5,
+      16,
+      34,
+      76
+    ],
+    "T2": [
+      8,
+      28,
+      77,
+      204
+    ],
+    "T3": [
+      0,
+      0,
+      1,
+      17
+    ]
+  }
+}

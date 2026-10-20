@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import BarList from '../components/BarList.astro';
+import ManagementDemo from '../components/viz/ManagementDemo.svelte';
+import TierMatrix from '../components/viz/TierMatrix.svelte';
+import GrowthLines from '../components/viz/GrowthLines.svelte';
+import { systems } from '../data/index.ts';
+import { OP_TEXT, T3_TEXT, TIER_BOTTLENECK, TIER_TEXT, systemLink } from '../data/taxonomy.ts';
+import { REP_CATEGORIES, REP_CATEGORY_LABEL, T2_LEAF, T2_OPS, T2_OP_LABEL, T3_TARGET_LABEL, TIERS, TIER_LABEL } from '../data/vocab.ts';
+import { countBy, crossMatrix, growthByTier, t2OpCounts } from '../lib/aggregate.ts';
+import { breadcrumbs } from '../lib/seo.ts';
+
+const matrix = crossMatrix(systems);
+const cells = REP_CATEGORIES.flatMap((cat) => TIERS.map((tier) => ({ cat, tier, n: matrix[cat][tier] })));
+const tierCounts = countBy(systems, (s) => s.tier);
+const opCounts = t2OpCounts(systems);
+const leafCounts = countBy(systems, (s) => s.t2.map((o) => o.leaf));
+const t3Counts = countBy(systems, (s) => s.t3.map((o) => o.leaf));
+const years = [2023, 2024, 2025, 2026];
+const growth = growthByTier(systems, years);
+const opText = Object.fromEntries(
+  T2_OPS.map((op) => [op, { definition: OP_TEXT[op].definition, examples: OP_TEXT[op].examples.map((name) => ({ name, href: systemLink(name) })) }]),
+);
+const adaptive = ((tierCounts.T2 + tierCounts.T3) / systems.length) * 100;
+const description =
+  'How multimodal agent memory changes over time: T1 static memory, T2 dynamic memory with five operations, and T3 self-evolving memory policies, with corpus counts.';
+---
+
+<Base
+  title="Memory management: T1 static, T2 dynamic, T3 self-evolving"
+  description={description}
+  og="/og/management.png"
+  jsonld={[breadcrumbs([['Home', '/'], ['Management', '/management/']])]}
+>
+  <section class="wrap block intro">
+    <p class="small muted">Axis II · Memory management</p>
+    <h1>What can change while the agent is running?</h1>
+    <p class="lede">
+      The survey separates systems by the scope of change they allow during deployment. In T1, memory is fixed after it
+      is built. In T2, memory changes but the rules that change it do not. In T3, feedback rewrites the rules themselves.
+    </p>
+    <ManagementDemo client:visible tierText={TIER_TEXT} opText={opText} opCounts={opCounts} tierCounts={tierCounts} />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Where the {systems.length} systems sit</h2>
+      <p>
+        {adaptive.toFixed(1)}% of systems let memory change during use (T2 or T3), yet only {tierCounts.T3} evolve their
+        own policy. Policy evolution concentrates in systems with explicit memory records, which are easier to inspect
+        and revise.
+      </p>
+    </div>
+    <TierMatrix client:visible rows={REP_CATEGORIES} cols={[...TIERS]} cells={cells} rowLabels={REP_CATEGORY_LABEL} colLabels={TIER_LABEL} />
+  </section>
+
+  <section class="wrap block split">
+    <div class="section-head">
+      <h2>T2 is growing fastest</h2>
+      <p>
+        Cumulative systems by highest tier and the year of the latest paper version. Dynamic memory dominates the recent
+        surge; self-evolving memory appears only from 2025.
+      </p>
+    </div>
+    <GrowthLines
+      client:visible
+      title="Cumulative systems by management tier, 2023–2026"
+      years={years}
+      series={TIERS.map((t) => ({ key: t, label: `${t} ${TIER_LABEL[t]}`, cls: `tier-${t}`, values: growth[t] }))}
+    />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>How T2 systems change memory</h2>
+      <p>Systems using each mechanism, grouped under the paper's five operations. A system can use several.</p>
+    </div>
+    <div class="ops-grid">
+      {
+        T2_OPS.map((op) => (
+          <div class="op tier-T2">
+            <h3>
+              {T2_OP_LABEL[op]} <span class="num muted">{opCounts[op] ?? 0}</span>
+            </h3>
+            <p class="small">{OP_TEXT[op].definition}</p>
+            <BarList
+              bars={Object.entries(T2_LEAF)
+                .filter(([, v]) => v.op === op)
+                .map(([leaf, v]) => ({ label: v.label, value: leafCounts[leaf] ?? 0, href: `/systems/?ops=${op}` }))
+                .sort((a, b) => b.value - a.value)}
+              max={Math.max(...Object.values(leafCounts))}
+            />
+          </div>
+        ))
+      }
+    </div>
+    <p class="small muted note">
+      Mechanism names come from the corpus records; their grouping under the five operations is this site's summary.
+    </p>
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>What T3 systems evolve</h2>
+      <p>The {tierCounts.T3} self-evolving systems target three kinds of policy.</p>
+    </div>
+    <div class="t3-grid">
+      {
+        Object.entries(T3_TEXT).map(([k, v]) => (
+          <div class="panel t3 tier-T3">
+            <h3>
+              {T3_TARGET_LABEL[k]} <span class="num muted">{t3Counts[k] ?? 0}</span>
+            </h3>
+            <p class="small">{v.definition}</p>
+            <p class="small muted">
+              e.g.{' '}
+              {v.examples.map((n, i) => {
+                const href = systemLink(n);
+                return (
+                  <>
+                    {href ? <a href={href}>{n}</a> : n}
+                    {i < v.examples.length - 1 ? ', ' : ''}
+                  </>
+                );
+              })}
+            </p>
+            <a class="small" href={`/systems/?t3=${k}`}>All {t3Counts[k] ?? 0} systems</a>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>What each tier asks of its memory</h2>
+      <p>Each step up adds a requirement, and with it a new way for memory to fail.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="bt">
+        <thead>
+          <tr><th scope="col">Tier</th><th scope="col">What persists and changes</th><th scope="col">Core requirement</th><th scope="col">Key bottlenecks</th></tr>
+        </thead>
+        <tbody>
+          {
+            TIERS.map((t) => (
+              <tr class={`tier-${t}`}>
+                <th scope="row"><span class="chip"><span class="dot" />{t}</span> {TIER_LABEL[t]}</th>
+                <td>{TIER_BOTTLENECK[t].scope}</td>
+                <td>{TIER_BOTTLENECK[t].requirement}</td>
+                <td>{TIER_BOTTLENECK[t].bottlenecks}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro h1 { max-width: 18ch; }
+  .intro .lede { margin-bottom: 32px; }
+  .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px 40px; }
+  .op h3, .t3 h3 { display: flex; justify-content: space-between; gap: 8px; border-top: 2px solid var(--c); padding-top: 10px; }
+  .note { margin-top: 24px; }
+  .t3-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .t3 { padding: 16px 18px; }
+  .table-wrap { overflow-x: auto; }
+  .bt { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.9375rem; }
+  .bt th, .bt td { text-align: left; vertical-align: top; padding: 14px 12px; border-bottom: 1px solid var(--rule); }
+  .bt thead th { font-size: var(--step--1); color: var(--muted); font-weight: 500; }
+  .bt tbody th { font-weight: 600; white-space: nowrap; }
+  .bt tbody tr { box-shadow: inset 3px 0 0 var(--c); }
+</style>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="52.2pt" height="65.2pt" viewBox="0 0 52.2 65.2">
+<defs>
+<filter id="filter-remove-color" x="0%" y="0%" width="100%" height="100%">
+<feColorMatrix color-interpolation-filters="sRGB" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+</filter>
+<filter id="filter-color-to-alpha" x="0%" y="0%" width="100%" height="100%">
+<feColorMatrix color-interpolation-filters="sRGB" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.2126 0.7152 0.0722 0 0"/>
+</filter>
+<clipPath id="clip-0">
+<path clip-rule="nonzero" d="M 0 0.0976562 L 51.410156 0.0976562 L 51.410156 64 L 0 64 Z M 0 0.0976562 "/>
+</clipPath>
+<image id="source-7" x="0" y="0" width="54" height="66" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAABCCAAAAAA5nXrWAAAAAmJLR0QA/4ePzL8AAANvSURBVEiJpZa/ciQ1EMZ/3trcckZRVFn3BFZCbDmnignJbkhJGD/BTXgZwxuIN9C9gZySWJdCgJyS0FtF3gSz8293x7drvkjq7k+fuqWeEbwJV3V9MSc3bO39W9Q2byG9mbYFuLqAoAdqlb+APKPVM3NUVVUtq7xWVbG1QwRX273V9rQTG1DVNKgV/6wi+uyH5cuvAE/pdTVI0bo0izIrYgs1KAYxs1RkVQfYHwCE90Tu7qhfjx7Rq5n8cGPtzUMxZ9J6NekgIvPkzlEDiJHWr4XZeEoNIIL/8FuYO90w8B8O19kfAABJ1zHELA/gQvyfxpnhaRjcA59lNllikVsai8Dictl0kNtCrU0reyreLw2L3NZYx64FrbLT+PHp82MeZ6Ze0rYAtvST5n6XAXcN7CLNL8BgCas0bz5layWnLBhfE1PBOJyRzvzs86KX2qliqu3cMU/Hz4LecksckGErwNRl1sg3/xqkCIDBUShj7vtQgW0G3NgWpi0v3/7tQrICvotVND6ltpUD2kYAOy6WjTz/0SQpFeBSEKSrmro53OQmL2h0yeCtbyogmEasqeuqqRa0ApDHS3lOJUsfvSEza2Pa4GMVYm+w4TH9EFs3LWBu+ybpaX5aN0UTizGdA5z5037lSjUV0vepsSEB095NlXMyxoYMGL6OQfxsMxX9rd6SX265N0OFg0n45Pu0U+J3GqRb0CKwhfQeqrC3ZyANbdJzZ5WpruETwKZnN5yFQYwroNzCuwLKLpaMwxlKdq5zDslk8aa65SFh/gFuhnxaVQ30n491+CmwV7N/Ae/KsvEXXy6AJptyDQ9TVBhXmfBd6H46+P+0fa+NsKqqbhkjoSt+YTFy+IMNB+tw8J1cCbKiqstDOKL5E3/zVlXlY0rdYK9Up4ZwbUpdmRdgeDflu/3gpcvgmlsAdiGKcfXg29nDl4B7/dB6VByh+TKrO2btn1ldEFVVleCt8V0/0dCqquZZ8PQmNOkOdr5UzpUU90nUzuUSbLo+lVgPK6oq7tjh1hxzdwXgQlGV4AG8HJ/Y4uHq0jXwlKjG44jivgf4MayJDXqnUL9CWvAkpTKOV/MaYLKqqpYKwPfE8kUWmKCqqtGA6VRVNZ337OvvizS1rN+NU3B5qoX4c1nj7vZ7vQA+T4W5CK1oe5lUD2Nfcf4H40Sy9Auh3ZUAAAAASUVORK5CYII="/>
+<mask id="mask-0">
+<g filter="url(#filter-remove-color)">
+<use xlink:href="#source-7" filter="url(#filter-color-to-alpha)" transform="matrix(0.984906, 0, 0, 0.984906, 0.000000000000001332, -0.689811)"/>
+</g>
+</mask>
+<image id="source-6" x="0" y="0" width="54" height="66" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAABCCAIAAACTlLJdAAAABmJLR0QA/wD/AP+gvaeTAAAEMUlEQVRogdVaW2KjMAwcObkXvUKaiywnIQdpwhWWg9XaD4Ej/DaQTTsfLSF+DLI0kk2AHw8ah86+m0QK134CcLYAEb2bTATMLBfmvTxq8AsonvWHzz9/30Tjicftw7uTs+I4dOPQvZBOHc6Z7yoj/T50YcAxs8TjfvgUndku/eTm1TfDIQzAsZtHwR/q0k8WYKLH7YMZzHjcPpjIJvhJFycQAmZONT6AIoBrPzEzMxuxEHNx1Uz24/EUN+BAm4WIUBT3JyILSO4hovv7QtunOA4dA8RMzEQgmq+hguY/w49ovWRiuc9XLmINcr5olq/vh2r4OHRNbpOTbm1RJroPXeaBtOp8p71CFK2psspR9EBEoURHYdItN5R9v6DS+QUUGxYaqhIOoR2sslklailKPswIkK7zTDrfyFapiWgVxcyUrZBxmiSsyhcPT8FNA1ZZUR46P65llsVj4LR7tCTFceiiPcV7HrdOhwER1jI3Bwkt5aZ33/XiRnEsW1EcPAxSZhiVU+xMGswgXt33ekl+qbdlmaLkq5q9iGTeYjMpppiI0tqk8bOkOxrpZ67Om64/E7wc7K1XOJPTmg3icD6pIqW4K3UNmEjcygBMq7mj51hSJdkWRXSsGhbakTAMKNf0POo7GFeuLWBKVtDfOuUyTZY3am6xRzjxKZjMLh3tJt8/A2Ceq8xi6qx5nmKbyrV240ROIzJziKyYtfHCDD67IwG8/F3aZyRpHDpebKRl2CCo6fOQ+ECwEQttM+dDxW8bDNYptShAdplVb5GipRDRc/AafrqNH236UMalpijE66/9dO0nuUi5vwFgrVG9TClWdCDoB26runVPuY467gZ9HofOlRdePWBW/wDscJo9SK0ytO/pk0xSp29LWcXO8RF7DJdIo5Hh9Zo1bplFx7I3O1ILHTPkzJ+9J3NfB1y9B4j2ctM9uzN7OyQTuVoHDddhRailyzh0OlDCkHpa8dJPeq2dISuPrF1NzkSnloixAKlACTeZJvUhrz4ZVBaqgqIJ/ZveqXVjaJNDfR8LQJkwddwffn7K+Ncrjz3H9duQlLBHnnj9HoWhKsLUnt9TjdRGJ6x2SdUNKaePL0r0bY8bS++UvwGKV3HM/DRMutncmDgZYXFdjL7tEYivVVTtRFRb3Gf4Jfte+sm2BOYeFN8j5aLPW24J9uAQAt6a4rntj7wYRHDMV9TdXKVj5KTGJW7ZmzIAtqoNEod6OjjEfWkph93tmq1MQcPGoeOVPXJ+/aKhyjJbHNpZa7H3vO5em/Ugfjmzi2J0Ap2EMvKUalPPr5ZilOVmNPFrm7LE8mm1bRKdQptVoofpclIfemex2Uso1kx/LL8tFAVfQ2f81WTLOM3K5/Pb81OO7e5f9wZlu4467IrQPMs9i6txgIiERI8iJziAouA+70LoWH4H40U/4PoHYligmFb+ny8AAAAASUVORK5CYII="/>
+</defs>
+<g clip-path="url(#clip-0)">
+<g mask="url(#mask-0)">
+<use xlink:href="#source-6" transform="matrix(0.984906, 0, 0, 0.984906, 0.000000000000001332, -0.689811)"/>
+</g>
+</g>
+</svg>

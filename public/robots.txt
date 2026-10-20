@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://seeing-maintaining-learning.github.io/sitemap-index.xml

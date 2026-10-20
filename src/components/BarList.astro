@@ -1,0 +1,36 @@
+---
+/** Accessible horizontal bar list: label, bar, value. Bars use `--c` for color. */
+interface Bar { label: string; value: number; href?: string; note?: string; cls?: string }
+interface Props { bars: Bar[]; max?: number; unit?: string; caption?: string }
+const { bars, max = Math.max(...bars.map((b) => b.value)), unit = 'systems', caption } = Astro.props;
+---
+
+<figure class="barlist">
+  {caption && <figcaption class="small muted">{caption}</figcaption>}
+  <ul>
+    {
+      bars.map((b) => (
+        <li class={b.cls}>
+          <span class="lab">
+            {b.href ? <a href={b.href}>{b.label}</a> : b.label}
+            {b.note && <span class="note small muted">{b.note}</span>}
+          </span>
+          <span class="track" aria-hidden="true"><span class="fill" style={`width:${(b.value / max) * 100}%`} /></span>
+          <span class="val num" aria-label={`${b.value} ${unit}`}>{b.value}</span>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .barlist { margin: 0; }
+  figcaption { margin-bottom: 10px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  li { display: grid; grid-template-columns: minmax(140px, 1.2fr) 2fr 3.5ch; gap: 12px; align-items: center; }
+  .lab { display: flex; flex-direction: column; font-size: 0.9375rem; line-height: 1.25; }
+  .track { height: 10px; background: var(--surface-2); border-radius: 0 5px 5px 0; }
+  .fill { display: block; height: 100%; background: var(--c, var(--accent)); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .val { text-align: right; font-size: 0.9375rem; color: var(--ink-2); }
+  @media (max-width: 560px) { li { grid-template-columns: 1fr 3.5ch; } .track { grid-column: 1 / -1; grid-row: 2; } }
+</style>

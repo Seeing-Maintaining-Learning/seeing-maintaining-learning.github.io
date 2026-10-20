@@ -1,0 +1,1737 @@
+{
+  "total": 82,
+  "evaluation_role_counts": {
+    "memory_specific": 55,
+    "broader_evaluation": 9,
+    "mixed_memory_tracks": 12,
+    "memory_dependent_task": 2,
+    "component_evaluation": 2,
+    "text_only_comparator": 1,
+    "semantic_state_comparator": 1
+  },
+  "family_counts": {
+    "Image": 19,
+    "Video": 23,
+    "Audio": 10,
+    "GUI": 7,
+    "Embodied": 23
+  },
+  "capabilities": [
+    "CE",
+    "LE",
+    "SC",
+    "CF",
+    "UQ",
+    "MA"
+  ],
+  "shared_counts": {
+    "direct": [
+      44,
+      78,
+      38,
+      7,
+      10,
+      33
+    ],
+    "partial": [
+      35,
+      4,
+      37,
+      1,
+      0,
+      2
+    ],
+    "none": [
+      3,
+      0,
+      7,
+      74,
+      72,
+      47
+    ]
+  },
+  "direct_percent_by_family": {
+    "Image": [
+      73.6842105263158,
+      89.47368421052632,
+      47.36842105263158,
+      21.05263157894737,
+      31.57894736842105,
+      5.2631578947368425
+    ],
+    "Video": [
+      56.52173913043478,
+      100.0,
+      21.73913043478261,
+      0.0,
+      0.0,
+      26.08695652173913
+    ],
+    "Audio": [
+      60.0,
+      80.0,
+      50.0,
+      30.0,
+      20.0,
+      0.0
+    ],
+    "GUI": [
+      28.571428571428573,
+      100.0,
+      71.42857142857143,
+      0.0,
+      14.285714285714286,
+      100.0
+    ],
+    "Embodied": [
+      39.130434782608695,
+      100.0,
+      60.869565217391305,
+      0.0,
+      4.3478260869565215,
+      82.6086956521739
+    ]
+  },
+  "rows": [
+    {
+      "name": "LoCoMo~\\citep{maharana2024evaluating}",
+      "citation": "maharana2024evaluating",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MMDU~\\citep{liu2024mmdu}",
+      "citation": "liu2024mmdu",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "partial",
+        "none"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "MMRC~\\citep{xue2025mmrc}",
+      "citation": "xue2025mmrc",
+      "family": "Image",
+      "source": "Real",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "partial",
+        "direct",
+        "none",
+        "direct",
+        "none",
+        "partial",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "Memory-QA~\\citep{memoryqa2025}",
+      "citation": "memoryqa2025",
+      "family": "Image",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "partial",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "none",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "LCMP~\\citep{hong2026tame}",
+      "citation": "hong2026tame",
+      "family": "Image",
+      "source": "Syn.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "DISBench~\\citep{deepimagesearch2026}",
+      "citation": "deepimagesearch2026",
+      "family": "Image",
+      "source": "Real",
+      "task": "Ret./Loc.",
+      "ground_truth": "Ev.",
+      "coverage": [
+        "partial",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MMA-Bench~\\citep{mma2026}",
+      "citation": "mma2026",
+      "family": "Image",
+      "source": "Syn.",
+      "task": "QA/Ref.",
+      "ground_truth": "Ans.+Rel.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "partial",
+        "none",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "Mem-Gallery~\\citep{memgallery2026}",
+      "citation": "memgallery2026",
+      "family": "Image",
+      "source": "Syn.",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "partial",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "ATM-Bench~\\citep{atmbench2026}",
+      "citation": "atmbench2026",
+      "family": "Image",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "Persona-MME~\\citep{personavlm2026}",
+      "citation": "personavlm2026",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "MemEye~\\citep{memeye2026}",
+      "citation": "memeye2026",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MemLens~\\citep{memlens2026}",
+      "citation": "memlens2026",
+      "family": "Image",
+      "source": "Syn.",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "direct",
+        "none",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "SMMBench~\\citep{smmbench2026}",
+      "citation": "smmbench2026",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus Ev.\\mmPlus Prov.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "direct",
+        "partial",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "VisualMem~\\citep{visualmem2026}",
+      "citation": "visualmem2026",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "none",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "CamRoll~\\citep{camrollagent2026}",
+      "citation": "camrollagent2026",
+      "family": "Image",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "RefMem-Bench~\\citep{refmembench2026}",
+      "citation": "refmembench2026",
+      "family": "Image",
+      "source": "Syn.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "partial",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "M$^3$Exam~\\citep{m3exam2026}",
+      "citation": "m3exam2026",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "M2CA-Bench~\\citep{wang2026cma}",
+      "citation": "wang2026cma",
+      "family": "Image",
+      "source": "Syn.",
+      "task": "Ret./Gen.",
+      "ground_truth": "Ev.+Ans.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MemLeak~\\citep{wang2026memleakdiagnosinginformationleaks}",
+      "citation": "wang2026memleakdiagnosinginformationleaks",
+      "family": "Image",
+      "source": "Hyb.",
+      "task": "QA",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "none",
+        "none"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "VStream-QA~\\citep{flashvstream2025}",
+      "citation": "flashvstream2025",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "StreamingBench~\\citep{streamingbench2024}",
+      "citation": "streamingbench2024",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "StreamBench~\\citep{xiong2025streamchat}",
+      "citation": "xiong2025streamchat",
+      "family": "Video",
+      "source": "Hyb.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "EgoLifeQA~\\citep{egolife2025}",
+      "citation": "egolife2025",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "HippoVlog~\\citep{hippomm2025}",
+      "citation": "hippomm2025",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "M3-Bench~\\citep{long2025m3agent}",
+      "citation": "long2025m3agent",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "TeleEgo~\\citep{teleego2025}",
+      "citation": "teleego2025",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "ELViM~\\citep{sun2026videosalmonnsmemoryenhancedstreaming}",
+      "citation": "sun2026videosalmonnsmemoryenhancedstreaming",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA\\mmSlash Learn",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "EgoMem (VideoLucy)~\\citep{videolucy2025}",
+      "citation": "videolucy2025",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "RIVER Bench~\\citep{riverbench2026}",
+      "citation": "riverbench2026",
+      "family": "Video",
+      "source": "Hyb.",
+      "task": "QA\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus Time\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "MA-EgoQA~\\citep{kim2026maegoqa}",
+      "citation": "kim2026maegoqa",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "LVOmniBench~\\citep{tao2026lvomnibench}",
+      "citation": "tao2026lvomnibench",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "MM-Lifelong~\\citep{chen2026mmlifelong}",
+      "citation": "chen2026mmlifelong",
+      "family": "Video",
+      "source": "Hyb.",
+      "task": "QA/Loc.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "EgoMemReason~\\citep{egomemreason2026}",
+      "citation": "egomemreason2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.\\mmPlus Ev.\\mmPlus Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "EgoExoMem~\\citep{egoexomem2026}",
+      "citation": "egoexomem2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "M$^3$Eval~\\citep{m3eval2026}",
+      "citation": "m3eval2026",
+      "family": "Video",
+      "source": "Hyb.",
+      "task": "QA",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "SuperMemory-VQA~\\citep{supermemoryvqa2026}",
+      "citation": "supermemoryvqa2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.\\mmPlus Ev.\\mmPlus Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "StreamMemBench~\\citep{streammembench2026}",
+      "citation": "streammembench2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA\\mmSlash Act.\\mmSlash Learn",
+      "ground_truth": "Ans.\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "S-EMBER~\\citep{sember2026}",
+      "citation": "sember2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.\\mmPlus Ev.\\mmPlus Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "SLVMBench~\\citep{slvmbench2026}",
+      "citation": "slvmbench2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA\\mmSlash Learn",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "StreamArena~\\citep{streamarena2026}",
+      "citation": "streamarena2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus Time\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "EgoMonth~\\citep{egomonth2026}",
+      "citation": "egomonth2026",
+      "family": "Video",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "VideoWebArena\\mmCrossDomain~\\citep{videowebarena2025}",
+      "citation": "videowebarena2025",
+      "family": "Video",
+      "source": "Hyb.",
+      "task": "QA/Act.",
+      "ground_truth": "Ans.\\mmPlus State",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_dependent_task"
+    },
+    {
+      "name": "H2HMem~\\citep{h2hmem2026}",
+      "citation": "h2hmem2026",
+      "family": "Audio",
+      "source": "Hyb.",
+      "task": "QA\\mmSlash Learn",
+      "ground_truth": "Ans.\\mmPlus Ev.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "partial",
+        "none",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "ChatMem-Bench~\\citep{voicemem2026}",
+      "citation": "voicemem2026",
+      "family": "Audio",
+      "source": "Syn.",
+      "task": "QA/Gen.",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "partial",
+        "direct",
+        "none",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "PlanRAG-Audio~\\citep{someki2026planragaudio}",
+      "citation": "someki2026planragaudio",
+      "family": "Audio",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "none"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "LongAudioQA~\\citep{tang2026longaudioqa}",
+      "citation": "tang2026longaudioqa",
+      "family": "Audio",
+      "source": "Real",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+Ev.+Time",
+      "coverage": [
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "none"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "ChronosAudio~\\citep{chronosaudio2026}",
+      "citation": "chronosaudio2026",
+      "family": "Audio",
+      "source": "Hyb.",
+      "task": "QA/Class.",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "partial",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "none"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "AudioMarathon~\\citep{audiomarathon2025}",
+      "citation": "audiomarathon2025",
+      "family": "Audio",
+      "source": "Hyb.",
+      "task": "QA/Reason.",
+      "ground_truth": "Ans.+Eff.",
+      "coverage": [
+        "partial",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "none"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "Agentic ASR evaluation~\\citep{agenticasr2026}",
+      "citation": "agenticasr2026",
+      "family": "Audio",
+      "source": "Hyb.",
+      "task": "Gen./Rev.",
+      "ground_truth": "Text+Sem.",
+      "coverage": [
+        "direct",
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "component_evaluation"
+    },
+    {
+      "name": "Stateful streaming ASR~\\citep{statefulasr2026}",
+      "citation": "statefulasr2026",
+      "family": "Audio",
+      "source": "Real",
+      "task": "Gen./State",
+      "ground_truth": "Text+WER",
+      "coverage": [
+        "none",
+        "partial",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "partial",
+        "partial",
+        "none"
+      ],
+      "evaluation_role": "component_evaluation"
+    },
+    {
+      "name": "EgoMem evaluation~\\citep{egomem2025}",
+      "citation": "egomem2025",
+      "family": "Audio",
+      "source": "Hyb.",
+      "task": "Ret.\\mmSlash Gen.\\mmSlash Learn",
+      "ground_truth": "ID+Fact+Resp.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "partial",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "CarMem (text-only)~\\citep{kirmayr2025carmem}",
+      "citation": "kirmayr2025carmem",
+      "family": "Audio",
+      "source": "Syn.",
+      "task": "Ret./Learn",
+      "ground_truth": "Pref.+Ret.",
+      "coverage": [
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "none",
+        "partial"
+      ],
+      "evaluation_role": "text_only_comparator"
+    },
+    {
+      "name": "EMemBench~\\citep{emembench2026}",
+      "citation": "emembench2026",
+      "family": "GUI",
+      "source": "Sim.",
+      "task": "QA/Act.",
+      "ground_truth": "Ans.+State",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "direct",
+        "direct",
+        "partial",
+        "direct",
+        "none"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MemGUI-Bench~\\citep{memguibench2026}",
+      "citation": "memguibench2026",
+      "family": "GUI",
+      "source": "Real",
+      "task": "Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "KnowU-Bench~\\citep{knowubench2026}",
+      "citation": "knowubench2026",
+      "family": "GUI",
+      "source": "Hyb.",
+      "task": "Act./Plan",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "MementoGUI-Bench~\\citep{mementogui2026}",
+      "citation": "mementogui2026",
+      "family": "GUI",
+      "source": "Real",
+      "task": "Act.\\mmSlash Learn",
+      "ground_truth": "Reg.+Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "Memory-World~\\citep{wang2026stamp}",
+      "citation": "wang2026stamp",
+      "family": "GUI",
+      "source": "Sim.",
+      "task": "Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "DMV-Bench~\\citep{dmvbench2026}",
+      "citation": "dmvbench2026",
+      "family": "GUI",
+      "source": "Sim.",
+      "task": "Ret.\\mmSlash Act.",
+      "ground_truth": "State\\mmPlus Act.\\mmPlus Prov.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "DataScope~\\citep{atmem2026}",
+      "citation": "atmem2026",
+      "family": "GUI",
+      "source": "Hyb.",
+      "task": "Act.",
+      "ground_truth": "State",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "none"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "LongSpace-Bench~\\citep{longspace2026}",
+      "citation": "longspace2026",
+      "family": "Embodied",
+      "source": "Real",
+      "task": "QA",
+      "ground_truth": "Ans.+Time",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "FindingDory~\\citep{findingdory2025}",
+      "citation": "findingdory2025",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA\\mmSlash Loc.\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "3DMem-Bench~\\citep{threedllmmem2025}",
+      "citation": "threedllmmem2025",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA\\mmSlash Plan\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "SEER-Bench~\\citep{seerbench2025}",
+      "citation": "seerbench2025",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA\\mmSlash Plan\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "LMEE-Bench~\\citep{lmeebench2026}",
+      "citation": "lmeebench2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "RMBench~\\citep{rmbench2026}",
+      "citation": "rmbench2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "RoboMME~\\citep{robomme2026}",
+      "citation": "robomme2026",
+      "family": "Embodied",
+      "source": "Hyb.",
+      "task": "Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "SpaMEM~\\citep{spamem2026}",
+      "citation": "spamem2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA\\mmSlash Act.",
+      "ground_truth": "Ans.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "partial"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "RoboMemArena~\\citep{robomemarena2026}",
+      "citation": "robomemarena2026",
+      "family": "Embodied",
+      "source": "Hyb.",
+      "task": "Act.\\mmSlash Learn",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "WorldMemArena\\mmCrossDomain~\\citep{worldmemarena2026}",
+      "citation": "worldmemarena2026",
+      "family": "Embodied",
+      "source": "Hyb.",
+      "task": "QA\\mmSlash Act.\\mmSlash Learn",
+      "ground_truth": "Ev.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "eMEM-Bench v1~\\citep{emembench_embodied2026}",
+      "citation": "emembench_embodied2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA/Ret.",
+      "ground_truth": "Ans.+State",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "ReMemBench~\\citep{remembench2026}",
+      "citation": "remembench2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "WorldLines (semantic states)~\\citep{worldlines2026}",
+      "citation": "worldlines2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "QA\\mmSlash Plan",
+      "ground_truth": "Ans.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "none",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "semantic_state_comparator"
+    },
+    {
+      "name": "RoboMME-Interference~\\citep{robommeinterference2026}",
+      "citation": "robommeinterference2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MEMORA-Bench~\\citep{memora2026}",
+      "citation": "memora2026",
+      "family": "Embodied",
+      "source": "Real",
+      "task": "QA\\mmSlash Plan",
+      "ground_truth": "Ans.\\mmPlus Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "direct",
+        "direct",
+        "partial",
+        "partial",
+        "partial"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "APRS~\\citep{panoseeker2026}",
+      "citation": "panoseeker2026",
+      "family": "Embodied",
+      "source": "Hyb.",
+      "task": "Loc.\\mmSlash Act.\\mmSlash Seg.",
+      "ground_truth": "Reg.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial",
+        "partial"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "SIS-Bench~\\citep{sisbench2026}",
+      "citation": "sisbench2026",
+      "family": "Embodied",
+      "source": "Real",
+      "task": "QA\\mmSlash Plan",
+      "ground_truth": "Ans.",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "partial",
+        "direct",
+        "partial",
+        "partial"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "EmbodiedWorldBench~\\citep{tian2026abot}",
+      "citation": "tian2026abot",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Act.\\mmSlash Learn",
+      "ground_truth": "Ev.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "broader_evaluation"
+    },
+    {
+      "name": "RoboGraph benchmark~\\citep{robograph2026}",
+      "citation": "robograph2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Plan/Act.",
+      "ground_truth": "State+Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "DunphyBench~\\citep{li2026memento}",
+      "citation": "li2026memento",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Plan/Act.",
+      "ground_truth": "Ev.+Act.",
+      "coverage": [
+        "direct",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "partial",
+        "direct"
+      ],
+      "evaluation_role": "memory_dependent_task"
+    },
+    {
+      "name": "HIOcc~\\citep{hiocc2026}",
+      "citation": "hiocc2026",
+      "family": "Embodied",
+      "source": "Real",
+      "task": "Map",
+      "ground_truth": "Reg.\\mmPlus State",
+      "coverage": [
+        "partial",
+        "direct",
+        "partial",
+        "none",
+        "none",
+        "none",
+        "direct",
+        "partial",
+        "none"
+      ],
+      "evaluation_role": "mixed_memory_tracks"
+    },
+    {
+      "name": "LIBERO-Mem~\\citep{slotssm2026}",
+      "citation": "slotssm2026",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Act.",
+      "ground_truth": "Reg.\\mmPlus State\\mmPlus Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    },
+    {
+      "name": "MIKASA-Robo (RGB+joints)~\\citep{cherepanov2025mikasa}",
+      "citation": "cherepanov2025mikasa",
+      "family": "Embodied",
+      "source": "Sim.",
+      "task": "Act.",
+      "ground_truth": "State\\mmPlus Act.",
+      "coverage": [
+        "partial",
+        "direct",
+        "direct",
+        "none",
+        "none",
+        "direct",
+        "direct",
+        "direct",
+        "direct"
+      ],
+      "evaluation_role": "memory_specific"
+    }
+  ]
+}

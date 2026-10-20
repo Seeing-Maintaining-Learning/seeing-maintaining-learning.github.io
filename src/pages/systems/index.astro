@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import Explorer from '../../components/viz/Explorer.svelte';
+import { systems } from '../../data/index.ts';
+import { FACETS, toRow } from '../../lib/facets.ts';
+import { breadcrumbs, dataset, website } from '../../lib/seo.ts';
+
+const rows = systems.map(toRow);
+const description = `Browse ${systems.length} multimodal agent memory systems by modality, representation, storage, retrieval and T1–T3 management tier.`;
+---
+
+<Base
+  title="Multimodal Agent Memory Systems: Explorer"
+  description={description}
+  og="/og/systems.png"
+  jsonld={[
+    website(),
+    dataset('Multimodal agent memory architectures', description, '/systems/', systems.length),
+    breadcrumbs([['Home', '/'], ['Systems', '/systems/']]),
+  ]}
+>
+  <section class="wrap head">
+    <h1>Systems</h1>
+    <p class="lede">
+      Every architecture the survey reviewed, with its memory representation, how memory is stored and retrieved, and
+      what can change during deployment. Combine filters to find systems that work like yours.
+    </p>
+  </section>
+  <section class="wrap body">
+    <Explorer client:load rows={rows} facets={FACETS} />
+  </section>
+</Base>
+
+<style>
+  .head { padding-top: clamp(40px, 6vw, 72px); padding-bottom: 24px; }
+  .body { padding-bottom: 48px; }
+</style>

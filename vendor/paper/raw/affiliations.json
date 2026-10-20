@@ -1,0 +1,947 @@
+{
+  "source": "Author-supplied complete affiliation table, 2026-09-29; author-requested affiliation corrections, 2026-10-09",
+  "institution_count": 37,
+  "author_count": 80,
+  "affiliations": [
+    {
+      "id": 1,
+      "key": "rutgers",
+      "name": "Rutgers University",
+      "display": "Rutgers",
+      "authors": [
+        "Minghao Guo",
+        "Liwei Che",
+        "Ziqi Wang",
+        "Xinying Cai",
+        "Danrui Li",
+        "Zeru Shi",
+        "Mingyu Jin",
+        "Xi Zhu",
+        "Hengyi Wang",
+        "Dimitris N. Metaxas"
+      ]
+    },
+    {
+      "id": 2,
+      "key": "nd",
+      "name": "University of Notre Dame",
+      "display": "Notre Dame",
+      "authors": [
+        "Qingyue Jiao",
+        "Naihao Xu",
+        "Tianyu Yang",
+        "Zhenwen Liang",
+        "Yiyu Shi"
+      ]
+    },
+    {
+      "id": 3,
+      "key": "michigan",
+      "name": "University of Michigan",
+      "display": "Michigan",
+      "authors": [
+        "Xiujin Liu"
+      ]
+    },
+    {
+      "id": 4,
+      "key": "fudan",
+      "name": "Fudan University",
+      "display": "Fudan",
+      "authors": [
+        "Jianhong Pang",
+        "Ruimeng Yang",
+        "Shichun Liu",
+        "Siyin Wang",
+        "Zhaoye Fei",
+        "Shihan Dou",
+        "Zuxuan Wu",
+        "Yu-Gang Jiang",
+        "Ziyi Ye"
+      ]
+    },
+    {
+      "id": 5,
+      "key": "mbzuai",
+      "name": "MBZUAI",
+      "display": "MBZUAI",
+      "authors": [
+        "Haochen Xue"
+      ]
+    },
+    {
+      "id": 6,
+      "key": "jhu",
+      "name": "JHU",
+      "display": "JHU",
+      "authors": [
+        "Jiaxuan Luo"
+      ]
+    },
+    {
+      "id": 7,
+      "key": "peer",
+      "name": "Peer AI",
+      "display": "Peer AI",
+      "authors": [
+        "Jiaxin Deng"
+      ]
+    },
+    {
+      "id": 8,
+      "key": "ucsd",
+      "name": "UCSD",
+      "display": "UC San Diego",
+      "authors": [
+        "Jingwen Gu",
+        "Sheldon Yu",
+        "Julian McAuley"
+      ]
+    },
+    {
+      "id": 9,
+      "key": "gatech",
+      "name": "Georgia Institute of Technology",
+      "display": "Georgia Tech",
+      "authors": [
+        "Xuesong Ye"
+      ]
+    },
+    {
+      "id": 10,
+      "key": "semianalysis",
+      "name": "SemiAnalysis",
+      "display": "SemiAnalysis",
+      "authors": [
+        "Wenyao Gao"
+      ]
+    },
+    {
+      "id": 11,
+      "key": "usc",
+      "name": "University of Southern California",
+      "display": "USC",
+      "authors": [
+        "Jintao Qu"
+      ]
+    },
+    {
+      "id": 12,
+      "key": "lmsys",
+      "name": "LMSYS Org",
+      "display": "LMSYS Org",
+      "authors": [
+        "Chenyang Zhao"
+      ]
+    },
+    {
+      "id": 13,
+      "key": "nus",
+      "name": "NUS",
+      "display": "NUS",
+      "authors": [
+        "Guibin Zhang"
+      ]
+    },
+    {
+      "id": 14,
+      "key": "capitalone",
+      "name": "Capital One",
+      "display": "Capital One",
+      "authors": [
+        "Zefang Liu"
+      ]
+    },
+    {
+      "id": 15,
+      "key": "independent",
+      "name": "Independent Researcher",
+      "display": "Independent Researcher",
+      "authors": [
+        "Wujiang Xu",
+        "Kai Mei",
+        "Zihao Zhang",
+        "Jiaojiao Han"
+      ]
+    },
+    {
+      "id": 16,
+      "key": "cmu",
+      "name": "CMU",
+      "display": "CMU",
+      "authors": [
+        "Shuang Liu"
+      ]
+    },
+    {
+      "id": 17,
+      "key": "uic",
+      "name": "UIC",
+      "display": "UIC",
+      "authors": [
+        "Wei-Chieh Jason Huang",
+        "Weizhi Zhang",
+        "Hanrong Zhang",
+        "Philip S. Yu"
+      ]
+    },
+    {
+      "id": 18,
+      "key": "kaist",
+      "name": "KAIST",
+      "display": "KAIST",
+      "authors": [
+        "Woongyeong Yeo",
+        "Kangsan Kim",
+        "Sung Ju Hwang"
+      ]
+    },
+    {
+      "id": 19,
+      "key": "zoom",
+      "name": "Zoom",
+      "display": "Zoom",
+      "authors": [
+        "Yebowen Hu",
+        "Linyong Nan",
+        "Shujian Liu",
+        "Silei Xu",
+        "Xi Yun"
+      ]
+    },
+    {
+      "id": 20,
+      "key": "nvidia",
+      "name": "NVIDIA",
+      "display": "NVIDIA",
+      "authors": [
+        "Bowen Wen"
+      ]
+    },
+    {
+      "id": 21,
+      "key": "upenn",
+      "name": "UPenn",
+      "display": "Penn",
+      "authors": [
+        "Bowen Jiang"
+      ]
+    },
+    {
+      "id": 22,
+      "key": "msu",
+      "name": "MSU",
+      "display": "MSU",
+      "authors": [
+        "Haohao Su"
+      ]
+    },
+    {
+      "id": 23,
+      "key": "duke",
+      "name": "Duke",
+      "display": "Duke",
+      "authors": [
+        "Ming Yin"
+      ]
+    },
+    {
+      "id": 24,
+      "key": "utd",
+      "name": "UTD",
+      "display": "UT Dallas",
+      "authors": [
+        "Mian Zhang"
+      ]
+    },
+    {
+      "id": 25,
+      "key": "cornell",
+      "name": "Cornell",
+      "display": "Cornell",
+      "authors": [
+        "Yuyan Chen"
+      ]
+    },
+    {
+      "id": 26,
+      "key": "modelslive",
+      "name": "Modelslive Inc.",
+      "display": "ModelsLive",
+      "authors": [
+        "Yuyan Chen"
+      ]
+    },
+    {
+      "id": 27,
+      "key": "princeton",
+      "name": "Princeton",
+      "display": "Princeton",
+      "authors": [
+        "Kaiqu Liang",
+        "Shilong Liu",
+        "Mengdi Wang"
+      ]
+    },
+    {
+      "id": 28,
+      "key": "ucf",
+      "name": "University of Central Florida",
+      "display": "UCF",
+      "authors": [
+        "Sixun Dong"
+      ]
+    },
+    {
+      "id": 29,
+      "key": "squirrel",
+      "name": "Squirrel AI",
+      "display": "Squirrel AI",
+      "authors": [
+        "Zhendong Chu",
+        "Qingsong Wen"
+      ]
+    },
+    {
+      "id": 30,
+      "key": "ntu",
+      "name": "NTU",
+      "display": "NTU",
+      "authors": [
+        "Ziqi Huang",
+        "Kun Wang"
+      ]
+    },
+    {
+      "id": 31,
+      "key": "purdue",
+      "name": "Purdue",
+      "display": "Purdue",
+      "authors": [
+        "Yongye Su"
+      ]
+    },
+    {
+      "id": 32,
+      "key": "tiktok",
+      "name": "TikTok",
+      "display": "TikTok",
+      "authors": [
+        "Zhichun Guo"
+      ]
+    },
+    {
+      "id": 33,
+      "key": "dartmouth",
+      "name": "Dartmouth College",
+      "display": "Dartmouth",
+      "authors": [
+        "Xingjian Diao"
+      ]
+    },
+    {
+      "id": 34,
+      "key": "uiuc",
+      "name": "UIUC",
+      "display": "UIUC",
+      "authors": [
+        "Tianxin Wei",
+        "Heng Wang",
+        "Tao Feng",
+        "Qian Cheng",
+        "Jiaxuan You",
+        "Jiawei Han"
+      ]
+    },
+    {
+      "id": 35,
+      "key": "uw",
+      "name": "University of Washington",
+      "display": "Washington",
+      "authors": [
+        "Hamid Palangi"
+      ]
+    },
+    {
+      "id": 36,
+      "key": "humani",
+      "name": "Humani Labs",
+      "display": "Humani Labs",
+      "authors": [
+        "Yi Zhu"
+      ]
+    },
+    {
+      "id": 37,
+      "key": "meta",
+      "name": "Meta",
+      "display": "Meta",
+      "authors": [
+        "Zeqi Gu"
+      ]
+    }
+  ],
+  "authors": [
+    {
+      "name": "Minghao Guo",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": "*"
+    },
+    {
+      "name": "Qingyue Jiao",
+      "affiliations": [
+        2
+      ],
+      "contribution_symbol": "*"
+    },
+    {
+      "name": "Xiujin Liu",
+      "affiliations": [
+        3
+      ],
+      "contribution_symbol": "*"
+    },
+    {
+      "name": "Jianhong Pang",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": "*"
+    },
+    {
+      "name": "Ruimeng Yang",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": "*"
+    },
+    {
+      "name": "Naihao Xu",
+      "affiliations": [
+        2
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Liwei Che",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Haochen Xue",
+      "affiliations": [
+        5
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Ziqi Wang",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Xinying Cai",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Jiaxuan Luo",
+      "affiliations": [
+        6
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Jiaxin Deng",
+      "affiliations": [
+        7
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Xuesong Ye",
+      "affiliations": [
+        9
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Jintao Qu",
+      "affiliations": [
+        11
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Wenyao Gao",
+      "affiliations": [
+        10
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Jingwen Gu",
+      "affiliations": [
+        8
+      ],
+      "contribution_symbol": "\\textdaggerdbl"
+    },
+    {
+      "name": "Chenyang Zhao",
+      "affiliations": [
+        12
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Shichun Liu",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Guibin Zhang",
+      "affiliations": [
+        13
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zefang Liu",
+      "affiliations": [
+        14
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Siyin Wang",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Wujiang Xu",
+      "affiliations": [
+        15
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Danrui Li",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zeru Shi",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Woongyeong Yeo",
+      "affiliations": [
+        18
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Shuang Liu",
+      "affiliations": [
+        16
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Wei-Chieh Jason Huang",
+      "affiliations": [
+        17
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Weizhi Zhang",
+      "affiliations": [
+        17
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Tianyu Yang",
+      "affiliations": [
+        2
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Kangsan Kim",
+      "affiliations": [
+        18
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Yebowen Hu",
+      "affiliations": [
+        19
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Bowen Wen",
+      "affiliations": [
+        20
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Bowen Jiang",
+      "affiliations": [
+        21
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Haohao Su",
+      "affiliations": [
+        22
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Ming Yin",
+      "affiliations": [
+        23
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Sheldon Yu",
+      "affiliations": [
+        8
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Mian Zhang",
+      "affiliations": [
+        24
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Yuyan Chen",
+      "affiliations": [
+        25,
+        26
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Hanrong Zhang",
+      "affiliations": [
+        17
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Kai Mei",
+      "affiliations": [
+        15
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zihao Zhang",
+      "affiliations": [
+        15
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Mingyu Jin",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Xi Zhu",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Hengyi Wang",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Tianxin Wei",
+      "affiliations": [
+        34
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Linyong Nan",
+      "affiliations": [
+        19
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zhenwen Liang",
+      "affiliations": [
+        2
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zhendong Chu",
+      "affiliations": [
+        29
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Ziqi Huang",
+      "affiliations": [
+        30
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Yongye Su",
+      "affiliations": [
+        31
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Sixun Dong",
+      "affiliations": [
+        28
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Shujian Liu",
+      "affiliations": [
+        19
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Kaiqu Liang",
+      "affiliations": [
+        27
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Jiaojiao Han",
+      "affiliations": [
+        15
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zhaoye Fei",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Kun Wang",
+      "affiliations": [
+        30
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Shihan Dou",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zhichun Guo",
+      "affiliations": [
+        32
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Xingjian Diao",
+      "affiliations": [
+        33
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zeqi Gu",
+      "affiliations": [
+        37
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Heng Wang",
+      "affiliations": [
+        34
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Tao Feng",
+      "affiliations": [
+        34
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Qian Cheng",
+      "affiliations": [
+        34
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Hamid Palangi",
+      "affiliations": [
+        35
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Silei Xu",
+      "affiliations": [
+        19
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Xi Yun",
+      "affiliations": [
+        19
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Yi Zhu",
+      "affiliations": [
+        36
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Shilong Liu",
+      "affiliations": [
+        27
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Qingsong Wen",
+      "affiliations": [
+        29
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Sung Ju Hwang",
+      "affiliations": [
+        18
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Zuxuan Wu",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Yu-Gang Jiang",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Yiyu Shi",
+      "affiliations": [
+        2
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Dimitris N. Metaxas",
+      "affiliations": [
+        1
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Jiaxuan You",
+      "affiliations": [
+        34
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Julian McAuley",
+      "affiliations": [
+        8
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Mengdi Wang",
+      "affiliations": [
+        27
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Jiawei Han",
+      "affiliations": [
+        34
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Philip S. Yu",
+      "affiliations": [
+        17
+      ],
+      "contribution_symbol": null
+    },
+    {
+      "name": "Ziyi Ye",
+      "affiliations": [
+        4
+      ],
+      "contribution_symbol": "\\textdagger"
+    }
+  ]
+}
