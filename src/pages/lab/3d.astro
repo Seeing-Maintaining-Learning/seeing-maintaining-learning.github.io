@@ -1,0 +1,21 @@
+---
+/** Design lab: compare 3D lens prototypes. Not linked from the nav; noindex. */
+import Base from '../../layouts/Base.astro';
+import Lens3DLab from '../../components/viz/Lens3DLab.svelte';
+import { systems } from '../../data/index.ts';
+import { MODALITY_LABEL } from '../../data/vocab.ts';
+
+const points = systems.map((s) => {
+  const d = new Date(s.date);
+  const doy = Number.isNaN(d.getTime()) ? 0.5 : (d.getTime() - Date.UTC(s.year, 0, 1)) / (365 * 864e5);
+  return { id: s.id, name: s.name, tier: s.tier, modality: s.modality, modalityLabel: MODALITY_LABEL[s.modality], category: s.category, families: s.families, year: s.year, t: s.year + doy };
+});
+---
+
+<Base title="3D lens lab" description="Design prototypes for the home-page lenses." noindex>
+  <section class="wrap block">
+    <h1>3D lens lab</h1>
+    <p class="lede">Prototype designs for the home-page views. Switch design and lens, drag to rotate, and try light and dark themes.</p>
+    <Lens3DLab client:load points={points} />
+  </section>
+</Base>
