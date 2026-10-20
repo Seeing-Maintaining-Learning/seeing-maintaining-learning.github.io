@@ -4,7 +4,6 @@ import BarList from '../components/BarList.astro';
 import FormationSankey from '../components/viz/FormationSankey.svelte';
 import SixForms from '../components/viz/SixForms.svelte';
 import ChartSwitch from '../components/viz/ChartSwitch.svelte';
-import HybridTriangle from '../components/viz/HybridTriangle.svelte';
 import RepExplainer from '../components/viz/rep/RepExplainer.svelte';
 import { leafByModality, leafByTier, retrievalByModality } from '../lib/charts.ts';
 import { systems } from '../data/index.ts';
@@ -34,19 +33,8 @@ const access = countBy(systems.flatMap((s) => s.paths), (p) => p.sourceAccess);
 // Representation families and hybrids
 const catN = countBy(systems, (s) => s.category);
 const famN = countBy(systems, (s) => s.families);
-const comboMap = new Map<string, typeof systems>();
-for (const s of systems.filter((x) => x.hybrid)) {
-  const key = FAMILIES.filter((f) => s.families.includes(f)).join('+');
-  comboMap.set(key, [...(comboMap.get(key) ?? []), s]);
-}
-const combos = [...comboMap].map(([key, list]) => ({
-  families: key.split('+'),
-  n: list.length,
-  examples: list
-    .sort((a, b) => b.paths.length - a.paths.length || a.name.localeCompare(b.name))
-    .slice(0, 10)
-    .map((s) => ({ name: s.name, href: `/systems/${s.id}/` })),
-}));
+const hybridN = catN.hybrid ?? 0;
+const topPair = systems.filter((x) => x.hybrid && x.families.length === 2 && x.families.includes('source_preserving_and_modality_native_memory') && x.families.includes('cross_represented_explicit_memory')).length;
 
 const UNITS = ['image or region', 'video frame or clip', 'audiovisual event', 'object track', 'interface state', 'action–observation transition', 'trajectory', 'episode'];
 const description =
@@ -84,6 +72,18 @@ const description =
 
   <section class="wrap block">
     <div class="section-head">
+      <h2>From modality to retrieval, across the corpus</h2>
+      <p>
+        {pathCount} memory paths from {systems.length} systems, traced from the input modality to the stored form, the
+        store that holds it, and how it is found again. Band width counts paths; a path using several stores or retrieval
+        methods is split evenly between them. Hover to trace a flow, or pick a modality.
+      </p>
+    </div>
+    <FormationSankey client:visible links={flows} nodes={nodes} modalities={modalities} stages={['Modality', 'Represented as', 'Stored in', 'Retrieved by']} />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
       <h2>One observation, six possible memories</h2>
       <p>The same moment can be kept as pixels, features, text, a graph, a hidden state, or a change to the weights. Pick a form to see how it works, what it keeps, and which systems use it.</p>
     </div>
@@ -108,12 +108,12 @@ const description =
     </ul>
   </section>
 
-  <section class="wrap block" id="hybrid">
-    <div class="section-head">
+  <section class="wrap block hybrid" id="hybrid">
+    <div class="htext">
       <h2>Hybrid memory</h2>
       <p>
-        Nearly half of all systems combine forms. The most common pattern links compact explicit records to source-level
-        evidence, so a summary can be traced back to what was seen. Select a link in the triangle to see who does it.
+        {hybridN} systems ({((hybridN / systems.length) * 100).toFixed(0)}%) combine forms. The most common pattern, used by {topPair}{' '}
+        systems, links compact explicit records to source-level evidence, so a summary can be traced back to what was seen.
       </p>
       <p class="small muted">
         Named in the paper:{' '}
@@ -124,11 +124,9 @@ const description =
           </>
         ))}
       </p>
+      <p><a class="btn" href="/systems/?category=hybrid">Browse the {hybridN} hybrid systems</a></p>
     </div>
-    <div class="hyb">
-      <RepExplainer client:visible kind="hybrid" />
-      <HybridTriangle client:visible combos={combos} labels={FAMILY_LABEL} order={[...FAMILIES]} />
-    </div>
+    <div class="hex"><RepExplainer client:visible kind="hybrid" /></div>
   </section>
 
   <section class="wrap block">
@@ -146,17 +144,6 @@ const description =
     />
   </section>
 
-  <section class="wrap block">
-    <div class="section-head">
-      <h2>From modality to retrieval, across the corpus</h2>
-      <p>
-        {pathCount} memory paths from {systems.length} systems, traced from the input modality to the stored form, the
-        store that holds it, and how it is found again. Band width counts paths; a path using several stores or retrieval
-        methods is split evenly between them. Hover to trace a flow, or pick a modality.
-      </p>
-    </div>
-    <FormationSankey client:visible links={flows} nodes={nodes} modalities={modalities} stages={['Modality', 'Represented as', 'Stored in', 'Retrieved by']} />
-  </section>
 
   <section class="wrap block">
     <div class="section-head">
@@ -197,11 +184,11 @@ const description =
   .fam-2 { --fc: var(--t1); }
   .fam h3 { margin: 4px 0 8px; }
   .trade { color: var(--ink-2); font-size: 0.9375rem; }
-  .hyb { display: grid; gap: 32px; }
-  .hyb > :global(:first-child) { max-width: 560px; }
+  .hybrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 40px; align-items: center; }
+  .htext p { color: var(--ink-2); max-width: 60ch; }
   .twocol { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
   @media (max-width: 860px) {
-    .twocol, .hyb, .fams { grid-template-columns: 1fr; }
+    .twocol, .hybrid, .fams { grid-template-columns: 1fr; }
     .share .lab { display: none; }
   }
 </style>
