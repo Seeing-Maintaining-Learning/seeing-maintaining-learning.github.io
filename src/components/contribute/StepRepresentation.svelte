@@ -9,7 +9,7 @@
 </script>
 
 <div class="step">
-  <h2>What form does the stored memory take?</h2>
+  <h2 tabindex="-1">What form does the stored memory take?</h2>
   <p class="muted">Choose every form the system hands back to its model. Hover or focus a card to see how that form works.</p>
   <div class="grid">
     <div class="cards">

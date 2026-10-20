@@ -10,24 +10,26 @@
 </script>
 
 <div class="step">
-  <h2>What can change while it runs?</h2>
+  <h2 tabindex="-1">What can change while it runs?</h2>
   <p class="muted">Answer two questions about the deployed system. We’ll suggest its management tier.</p>
 
   <div class="q">
     <p class="qt"><span class="n">1</span> After deployment, can the stored memory change — new entries added, merged, corrected, regrouped, or forgotten?</p>
-    <div class="yn" role="radiogroup" aria-label="Memory changes after deployment">
-      <button type="button" role="radio" aria-checked={draft.memoryChanges === false} onclick={() => { draft.memoryChanges = false; draft.policyEvolves = null; }}>No, it is built once and reused</button>
-      <button type="button" role="radio" aria-checked={draft.memoryChanges === true} onclick={() => (draft.memoryChanges = true)}>Yes, it changes</button>
-    </div>
+    <fieldset class="yn">
+      <legend class="sr-only">Memory changes after deployment</legend>
+      <label class:on={draft.memoryChanges === false}><input class="sr-only" type="radio" name="q1" checked={draft.memoryChanges === false} onchange={() => { draft.memoryChanges = false; draft.policyEvolves = null; }} />No, it is built once and reused</label>
+      <label class:on={draft.memoryChanges === true}><input class="sr-only" type="radio" name="q1" checked={draft.memoryChanges === true} onchange={() => (draft.memoryChanges = true)} />Yes, it changes</label>
+    </fieldset>
   </div>
 
   {#if draft.memoryChanges}
     <div class="q" in:scale={{ duration: dur(220), start: 0.96 }}>
       <p class="qt"><span class="n">2</span> Does feedback (task outcomes, a verifier, user corrections) persistently change the <em>rules</em> that decide how memory is written, maintained, or retrieved?</p>
-      <div class="yn" role="radiogroup" aria-label="Policy evolves from feedback">
-        <button type="button" role="radio" aria-checked={draft.policyEvolves === false} onclick={() => (draft.policyEvolves = false)}>No, the rules are fixed</button>
-        <button type="button" role="radio" aria-checked={draft.policyEvolves === true} onclick={() => (draft.policyEvolves = true)}>Yes, the rules evolve</button>
-      </div>
+      <fieldset class="yn">
+        <legend class="sr-only">Policy evolves from feedback</legend>
+        <label class:on={draft.policyEvolves === false}><input class="sr-only" type="radio" name="q2" checked={draft.policyEvolves === false} onchange={() => (draft.policyEvolves = false)} />No, the rules are fixed</label>
+        <label class:on={draft.policyEvolves === true}><input class="sr-only" type="radio" name="q2" checked={draft.policyEvolves === true} onchange={() => (draft.policyEvolves = true)} />Yes, the rules evolve</label>
+      </fieldset>
     </div>
   {/if}
 
@@ -68,9 +70,10 @@
   .q { margin: 16px 0; padding: 16px; border-radius: 14px; border: 1px solid var(--rule); background: var(--surface); }
   .qt { margin: 0 0 12px; }
   .n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 0.75rem; margin-right: 6px; }
-  .yn { display: flex; flex-wrap: wrap; gap: 8px; }
-  .yn button { font: inherit; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; }
-  .yn button[aria-checked='true'] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); font-weight: 600; }
+  .yn { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .yn label { padding: 10px 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .yn label:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .yn label.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); font-weight: 600; }
   .badge {
     display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; font-size: 1.0625rem;
     border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 12%, var(--surface));

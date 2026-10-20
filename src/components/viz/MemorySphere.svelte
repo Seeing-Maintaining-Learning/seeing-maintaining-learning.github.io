@@ -14,7 +14,9 @@
   let view = $state<View>('sphere');
   let colorBy = $state<'modality' | 'tier'>('modality');
   let paused = $state(false);
-  let focusMod = $state<string | null>(null);
+  let pinnedMod = $state<string | null>(null);
+  let hoverMod = $state<string | null>(null);
+  const focusMod = $derived(hoverMod ?? pinnedMod);
   let groups = $state<Group[]>([]);
   let hover = $state<{ i: number; x: number; y: number } | null>(null);
   let box: HTMLDivElement;
@@ -348,10 +350,10 @@
           <button
             type="button"
             class="chip mod-{m.key}"
-            aria-pressed={focusMod === m.key}
-            onclick={() => { focusMod = focusMod === m.key ? null : m.key; kick(); }}
-            onpointerenter={() => { focusMod = m.key; kick(); }}
-            onpointerleave={() => { focusMod = null; kick(); }}
+            aria-pressed={pinnedMod === m.key}
+            onclick={() => { pinnedMod = pinnedMod === m.key ? null : m.key; hoverMod = null; kick(); }}
+            onpointerenter={(e) => { if (e.pointerType === 'mouse') { hoverMod = m.key; kick(); } }}
+            onpointerleave={() => { hoverMod = null; kick(); }}
           ><span class="dot"></span>{m.label} <span class="num muted">{m.n}</span></button>
         </li>
       {/each}

@@ -73,9 +73,9 @@
     </span>
   </div>
   {#if !compact}
-    <p class="cap" aria-live="polite"><span class="n num">{step + 1}/{steps.length}</span> {steps[step]}</p>
+    <p class="cap" aria-live={playing ? 'off' : 'polite'}><span class="n num">{step + 1}/{steps.length}</span> {steps[step]}</p>
   {:else}
-    <p class="sr-only" aria-live="polite">{steps[step]}</p>
+    <p class="sr-only" aria-live={playing ? 'off' : 'polite'}>{steps[step]}</p>
   {/if}
 </div>
 

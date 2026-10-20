@@ -19,18 +19,19 @@
       const res = await fetch(`https://huggingface.co/api/papers/${id}`);
       if (!res.ok) throw new Error(String(res.status));
       const j = (await res.json()) as { title?: string; authors?: { name: string }[] };
+      if (draft.arxiv !== id) return; // a newer lookup superseded this one
       draft.title = (j.title ?? '').replace(/\s+/g, ' ').trim();
       draft.authors = (j.authors ?? []).map((a) => a.name).join(', ');
       if (!draft.name) draft.name = draft.title.split(':')[0].slice(0, 60);
       status = draft.title ? 'found' : 'manual';
     } catch {
-      status = 'manual';
+      if (draft.arxiv === id) status = 'manual';
     }
   }
 </script>
 
 <div class="step">
-  <h2>Which paper?</h2>
+  <h2 tabindex="-1">Which paper?</h2>
   <p class="muted">Paste an arXiv ID or link. We’ll fetch the title and check whether the survey already covers it.</p>
   <form class="lookup" onsubmit={(e) => { e.preventDefault(); lookup(); }}>
     <label class="sr-only" for="arxiv-in">arXiv ID or URL</label>

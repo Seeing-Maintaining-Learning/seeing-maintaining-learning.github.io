@@ -6,7 +6,8 @@
   let { papers, lanes }: { papers: Paper[]; lanes: { key: string; label: string }[] } = $props();
 
   const T0 = 2023;
-  const T1 = 2026.95;
+  const T1 = Math.max(2026.95, ...papers.map((p) => p.t)) + 0.05;
+  const YEARS = Array.from({ length: Math.floor(T1) - T0 + 1 }, (_, i) => T0 + i);
   const M = { l: 132, r: 20, t: 18, b: 34 };
   const LANE_H = 54;
   const H = M.t + M.b + LANE_H * lanes.length;
@@ -174,11 +175,13 @@
       kick();
     };
     window.addEventListener('themechange', onTheme);
-    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', onTheme);
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    mq.addEventListener('change', onTheme);
     return () => {
       ro.disconnect();
       stop();
       window.removeEventListener('themechange', onTheme);
+      mq.removeEventListener('change', onTheme);
       cancelAnimationFrame(raf);
     };
   });
@@ -221,7 +224,7 @@
         <span class="dot"></span>{l.label} <span class="num c">{counts[i]}</span>
       </div>
     {/each}
-    {#each [2023, 2024, 2025, 2026] as y (y)}
+    {#each YEARS as y (y)}
       <span class="yr num small" style="left:{x(y)}px; top:{H - M.b + 8}px">{y}</span>
     {/each}
     {#if hover}

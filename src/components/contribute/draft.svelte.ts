@@ -6,7 +6,17 @@ const KEY = 'contribute-draft-v1';
 function load(): Draft {
   try {
     const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(KEY) : null;
-    return raw ? { ...emptyDraft(), ...JSON.parse(raw) } : emptyDraft();
+    const base = emptyDraft();
+    if (!raw) return base;
+    const saved = JSON.parse(raw) as Record<string, unknown>;
+    // Keep only fields whose type matches the current schema.
+    for (const k of Object.keys(base) as (keyof Draft)[]) {
+      const v = saved[k];
+      const ref = base[k];
+      const ok = Array.isArray(ref) ? Array.isArray(v) && v.every((x) => typeof x === 'string') : ref === null ? v === null || typeof v === 'boolean' : typeof v === typeof ref;
+      if (ok) (base as Record<string, unknown>)[k] = v;
+    }
+    return base;
   } catch {
     return emptyDraft();
   }

@@ -71,6 +71,8 @@ export function classification(d: Draft, L: Labels): string {
   const list = (keys: string[], map: Record<string, string>) => (keys.length ? keys.map((k) => map[k] ?? k).join(', ') : '—');
   const tier = tierOf(d);
   const lines = [
+    `- Authors: ${d.authors ? (d.authors.length > 300 ? `${d.authors.slice(0, 297)}…` : d.authors) : '—'}`,
+    `- Submitted by: ${d.github ? `@${d.github.replace(/^@/, '')}` : '—'}`,
     `- Record type: ${d.kind === 'architecture' ? 'Architecture (memory system)' : 'Benchmark / evaluation resource'}`,
     `- Primary modality: ${L.modality[d.modality] ?? '—'}`,
     `- Secondary modalities: ${list(d.secondary, L.modality)}`,
@@ -97,7 +99,7 @@ export function issueUrl(d: Draft, L: Labels): string {
       template: ISSUE_TEMPLATE,
       title: issueTitle(d),
       arxiv: d.arxiv ? `https://arxiv.org/abs/${d.arxiv}` : '',
-      paper_title: d.title,
+      paper_title: d.title.length > 300 ? `${d.title.slice(0, 297)}…` : d.title,
       system_name: d.name,
       kind: d.kind === 'architecture' ? 'Architecture (memory system)' : 'Benchmark / evaluation resource',
       modality: L.modality[d.modality] ?? '',

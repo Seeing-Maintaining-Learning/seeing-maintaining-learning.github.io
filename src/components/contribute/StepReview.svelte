@@ -18,7 +18,7 @@
 </script>
 
 <div class="step">
-  <h2>Where does the paper describe its memory?</h2>
+  <h2 tabindex="-1">Where does the paper describe its memory?</h2>
   <p class="muted">Point maintainers to the section, page, or figure. Short notes are enough; they will verify against the paper.</p>
   <label class="ev">
     <span class="sr-only">Evidence</span>
