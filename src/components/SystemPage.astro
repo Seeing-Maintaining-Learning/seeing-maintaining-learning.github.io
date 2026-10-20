@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { systems } from '../data/index.ts';
 import type { System } from '../data/normalize.ts';
 import { related } from '../lib/aggregate.ts';
-import { breadcrumbs, citedWork, clip } from '../lib/seo.ts';
+import { breadcrumbs, citedWork, clip, systemTitle } from '../lib/seo.ts';
 import {
   FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, MODALITY_LABEL, MODALITY_SLUG, REP_CATEGORY_LABEL, RETRIEVAL_LABEL,
   SOURCE_ACCESS_LABEL, STORAGE_LABEL, T2_LEAF, T2_OP_LABEL, T3_TARGET_LABEL, TIER_LABEL, label,
@@ -27,7 +27,7 @@ const tierExplain: Record<string, string> = {
 ---
 
 <Base
-  title={`${s.name}: multimodal agent memory`}
+  title={systemTitle(s.name)}
   description={description}
   type="article"
   jsonld={[

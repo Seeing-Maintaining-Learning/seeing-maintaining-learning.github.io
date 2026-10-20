@@ -3,7 +3,7 @@
 import Base from '../layouts/Base.astro';
 import type { PendingSystem } from '../data/normalize.ts';
 import { LEAF_LABEL, MODALITY_LABEL, MODALITY_SLUG, label } from '../data/vocab.ts';
-import { breadcrumbs, citedWork, clip } from '../lib/seo.ts';
+import { breadcrumbs, citedWork, clip, systemTitle } from '../lib/seo.ts';
 
 interface Props { p: PendingSystem }
 const { p } = Astro.props;
@@ -11,7 +11,7 @@ const authorLine = p.authors.length > 6 ? `${p.authors.slice(0, 6).join(', ')}, 
 ---
 
 <Base
-  title={`${p.name}: multimodal agent memory`}
+  title={systemTitle(p.name)}
   description={clip(`${p.name}: ${p.title}. A ${MODALITY_LABEL[p.modality].toLowerCase()} memory paper recently added to the survey corpus; classification pending.`)}
   type="article"
   jsonld={[

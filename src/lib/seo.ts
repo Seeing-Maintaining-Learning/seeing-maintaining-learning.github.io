@@ -94,6 +94,14 @@ export function citedWork(name: string, title: string, url: string, authors: str
   };
 }
 
+/** Page title for a system: drops the parenthetical, then the suffix, to stay within ~65 characters. */
+export function systemTitle(name: string, max = 65): string {
+  const suffix = ': multimodal agent memory';
+  const short = name.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+  for (const t of [name + suffix, short + suffix, short]) if (t.length <= max) return t;
+  return clip(short, max);
+}
+
 /** Trim to a length suitable for meta descriptions without cutting mid-word. */
 export function clip(text: string, max = 155): string {
   if (text.length <= max) return text;
