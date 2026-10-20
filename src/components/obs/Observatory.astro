@@ -1,0 +1,102 @@
+---
+/** Home-page "memory observatory": one dense panel of linked live views around the sphere. */
+import MemorySphere from '../viz/MemorySphere.svelte';
+import PaperRiver from '../viz/PaperRiver.svelte';
+import RollingCounter from '../viz/RollingCounter.svelte';
+import SystemScan from './SystemScan.svelte';
+import RepSpectrum from './RepSpectrum.svelte';
+import TierLadder from './TierLadder.svelte';
+import Spotlight from './Spotlight.svelte';
+import { benchmarks, systems } from '../../data/index.ts';
+import { AUTHORS, INSTITUTIONS } from '../../data/paper.ts';
+import { MODALITIES, MODALITY_LABEL } from '../../data/vocab.ts';
+import { callouts, latest, ladder, ringDots, scanItems, spectrum, spotlight } from '../../lib/observatory.ts';
+import { riverPapers } from '../../lib/river.ts';
+
+interface Props { points: unknown[] }
+const { points } = Astro.props;
+const mods = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m] }));
+const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: systems.filter((s) => s.modality === m).length }));
+---
+
+<section class="obs" aria-label="Memory observatory">
+  <header class="oh">
+    <div>
+      <p class="eyebrow small">Memory observatory</p>
+      <RollingCounter
+        client:visible
+        items={[
+          { value: systems.length, label: 'memory systems' },
+          { value: benchmarks.length, label: 'benchmarks' },
+          { value: 5, label: 'modalities' },
+          { value: AUTHORS.length, label: 'authors' },
+          { value: INSTITUTIONS.length, label: 'institutions' },
+        ]}
+      />
+    </div>
+    <a class="small" href="/systems/">Browse all systems</a>
+  </header>
+
+  <div class="grid">
+    <div class="cell c-scan">
+      <p class="ch"><span class="no">01</span> System scan</p>
+      <SystemScan client:visible items={scanItems(systems)} latest={latest(systems)} />
+    </div>
+    <div class="cell c-sphere">
+      <p class="ch"><span class="no">02</span> Memory sphere <span class="muted">· one arm per modality, time along the arm</span></p>
+      <MemorySphere client:load points={points as never} modalities={modCounts} compact height={470} callouts={callouts(systems)} />
+    </div>
+    <div class="cell c-spec">
+      <p class="ch"><span class="no">03</span> Representation spectrum <span class="muted">· systems per stored form</span></p>
+      <RepSpectrum client:visible groups={spectrum(systems)} modalities={mods} />
+    </div>
+    <div class="cell c-ladder">
+      <p class="ch"><span class="no">04</span> Management ladder <span class="muted">· what can change</span></p>
+      <TierLadder client:visible rows={ladder(systems)} modalities={mods} />
+    </div>
+    <div class="cell c-river">
+      <p class="ch"><span class="no">05</span> Paper river <span class="muted">· every system by publication date</span></p>
+      <PaperRiver client:visible papers={riverPapers(systems)} lanes={mods} />
+    </div>
+    <div class="cell c-spot">
+      <p class="ch"><span class="no">06</span> Frontier spotlight <span class="muted">· the newest self-evolving systems</span></p>
+      <Spotlight client:visible items={spotlight(systems)} dots={ringDots(systems)} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .obs { border: 1px solid var(--rule); border-radius: 16px; background: var(--surface); overflow: hidden; }
+  .oh { display: flex; justify-content: space-between; align-items: end; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+  .eyebrow { margin: 0 0 6px; color: var(--muted); font-weight: 600; }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(250px, 300px) 1fr 1fr;
+    grid-template-areas:
+      'scan sphere sphere'
+      'scan spec ladder'
+      'river river river'
+      'spot spot spot';
+  }
+  .cell { padding: 14px 18px 16px; min-width: 0; }
+  .c-scan { grid-area: scan; border-right: 1px solid var(--rule); }
+  .c-sphere { grid-area: sphere; padding: 14px 0 0; border-bottom: 1px solid var(--rule); }
+  .c-sphere .ch { padding: 0 18px; }
+  .c-spec { grid-area: spec; border-right: 1px solid var(--rule); }
+  .c-ladder { grid-area: ladder; }
+  .c-river { grid-area: river; border-top: 1px solid var(--rule); }
+  .c-spot { grid-area: spot; border-top: 1px solid var(--rule); }
+  .ch { margin: 0 0 10px; font-size: 0.8125rem; font-weight: 650; color: var(--ink); }
+  .ch .no { color: var(--accent-ink); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  .ch .muted { font-weight: 400; }
+  .obs :global(.wrapc) { border: 0; border-radius: 0; background: transparent; }
+  .obs :global(.ms .legend) { padding: 0 18px 12px; }
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-template-areas: 'sphere sphere' 'scan scan' 'spec ladder' 'river river' 'spot spot'; }
+    .c-scan { border-right: 0; border-bottom: 1px solid var(--rule); }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; grid-template-areas: 'sphere' 'scan' 'spec' 'ladder' 'river' 'spot'; }
+    .c-spec { border-right: 0; border-bottom: 1px solid var(--rule); }
+  }
+</style>

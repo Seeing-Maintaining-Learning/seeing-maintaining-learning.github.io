@@ -6,11 +6,31 @@
   import { orbitPos, type Decor, type Orbit } from './heroShapes.ts';
 
   type View = 'sphere' | Lens;
-  let { points, lenses, modalities }: {
+  interface Callout { id: string; kicker: string; title: string; sub: string }
+  let {
+    points,
+    lenses = [],
+    modalities,
+    compact = false,
+    callouts = [],
+    height = 0,
+  }: {
     points: Pt[];
-    lenses: { key: Lens; label: string }[];
+    lenses?: { key: Lens; label: string }[];
     modalities: { key: string; label: string; n: number }[];
+    /** Observatory mode: no lens / colour controls, call-out cards linked to points. */
+    compact?: boolean;
+    callouts?: Callout[];
+    height?: number;
   } = $props();
+
+  // Call-outs rotate in groups of three; their leader lines follow the points as the sphere turns.
+  let calloutPage = $state(0);
+  const shown = $derived(callouts.length ? [0, 1, 2].map((k) => callouts[(calloutPage * 3 + k) % callouts.length]) : []);
+  const idIndex = new Map(points.map((p, i) => [p.id, i]));
+  let cardEls: HTMLAnchorElement[] = [];
+  let leaderEls: SVGPathElement[] = [];
+  let dotEls: SVGCircleElement[] = [];
 
   let view = $state<View>('sphere');
   let colorBy = $state<'modality' | 'tier'>('modality');
@@ -249,9 +269,35 @@
       drawn[it.i] = { x: it.x, y: it.y, r };
     }
     ctx.globalAlpha = 1;
+    updateCallouts(ctx);
     const orbiting = !!orbit && view === 'management' && !paused && !rm && !hover;
     const moving = spin || orbiting || Math.abs(vyaw) + Math.abs(vpitch) > 1e-4 || now - blend.t0 < DUR || now - flatT0 < DUR || intro < 1 || !!drag;
     if (moving && visible) raf = requestAnimationFrame(frame);
+  }
+
+  function updateCallouts(ctx: CanvasRenderingContext2D) {
+    shown.forEach((c, k) => {
+      const i = idIndex.get(c.id);
+      const d = i !== undefined ? drawn[i] : undefined;
+      const card = cardEls[k];
+      const path = leaderEls[k];
+      const dot = dotEls[k];
+      if (!d || !card || !path || !dot) return;
+      // Ring the highlighted point on the canvas.
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r + 5, 0, Math.PI * 2);
+      ctx.strokeStyle = colors.ink;
+      ctx.globalAlpha = 0.9;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      const x0 = card.offsetLeft + card.offsetWidth;
+      const y0 = card.offsetTop + card.offsetHeight / 2;
+      const mx = x0 + Math.max(20, (d.x - x0) * 0.35);
+      path.setAttribute('d', `M${x0},${y0} L${mx},${y0} L${d.x},${d.y}`);
+      dot.setAttribute('cx', String(d.x));
+      dot.setAttribute('cy', String(d.y));
+    });
   }
 
   function kick() {
@@ -261,7 +307,7 @@
   function resize(force = false) {
     if (!force && box.clientWidth === W) return;
     W = box.clientWidth;
-    H = W < 640 ? 420 : 540;
+    H = height || (W < 640 ? 420 : 540);
     const dpr = window.devicePixelRatio || 1;
     canvas.width = W * dpr;
     canvas.height = H * dpr;
@@ -340,6 +386,9 @@
     };
     introFrom = points.map((p) => edge(p.modality));
     introT0 = performance.now() + 200;
+    const rot = setInterval(() => {
+      if (!paused && visible && callouts.length > 3) calloutPage += 1;
+    }, 9000);
     const ro = new ResizeObserver(() => resize());
     ro.observe(box);
     const stop = whileVisible(box, (v) => {
@@ -355,6 +404,7 @@
     mq.addEventListener('change', onTheme);
     kick();
     return () => {
+      clearInterval(rot);
       ro.disconnect();
       stop();
       window.removeEventListener('themechange', onTheme);
@@ -366,7 +416,8 @@
   const tierN = (t: string) => points.filter((p) => p.tier === t).length;
 </script>
 
-<div class="ms">
+<div class="ms" class:compact>
+  {#if !compact}
   <div class="bar">
     <div class="seg" role="group" aria-label="Arrange systems">
       <button type="button" aria-pressed={view === 'sphere'} onclick={() => setView('sphere')}>Sphere</button>
@@ -384,6 +435,7 @@
       </button>
     </div>
   </div>
+  {/if}
 
   <div class="stage" bind:this={box}>
     <canvas
@@ -401,6 +453,26 @@
       </div>
     {/each}
     {#if view === 'sphere'}<p class="hint small">Drag to rotate · click a point to open it</p>{/if}
+    {#if compact}
+      <button class="pause mini" type="button" aria-pressed={paused} onclick={() => { paused = !paused; kick(); }}>{paused ? 'Resume' : 'Pause'}</button>
+    {/if}
+    {#if shown.length}
+      <svg class="leaders" aria-hidden="true">
+        {#each shown as c, k (c.id + k)}
+          <path bind:this={leaderEls[k]} class="lead" />
+          <circle bind:this={dotEls[k]} r="3" class="leaddot" />
+        {/each}
+      </svg>
+      <div class="cards">
+        {#each shown as c, k (c.id + k)}
+          <a class="callout" bind:this={cardEls[k]} href="/systems/{c.id}/">
+            <span class="ck">{c.kicker}</span>
+            <span class="ct">{c.title}</span>
+            <span class="cs">{c.sub}</span>
+          </a>
+        {/each}
+      </div>
+    {/if}
     {#if hover}
       {@const p = points[hover.i]}
       <div class="viz-tip" style="left:{Math.min(hover.x + 12, W - 240)}px; top:{hover.y + 12}px">
@@ -434,6 +506,23 @@
 
 <style>
   .ms { display: grid; gap: 12px; }
+  .ms.compact .stage { border: 0; border-radius: 0; background: transparent; }
+  .pause.mini { position: absolute; right: 12px; bottom: 10px; font-size: 0.75rem; padding: 2px 10px; background: var(--surface); }
+  .leaders { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .lead { fill: none; stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.7; }
+  .leaddot { fill: var(--ink); }
+  .cards { position: absolute; left: 14px; top: 16px; display: grid; gap: 10px; width: min(240px, 42%); }
+  .callout {
+    display: grid; gap: 1px; padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--ink);
+    background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: cin 400ms var(--ease);
+  }
+  .callout:hover { border-color: var(--accent); }
+  .ck { font-size: 0.75rem; color: var(--accent-ink); font-weight: 600; }
+  .ct { font-weight: 650; font-size: 0.875rem; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cs { font-size: 0.75rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  @keyframes cin { from { opacity: 0; transform: translateX(-6px); } }
+  @media (max-width: 640px) { .cards { display: none; } .leaders { display: none; } }
   .bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; }
   .right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .pause { font: inherit; font-size: var(--step--1); background: none; border: 1px solid var(--rule); color: var(--ink-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; }

@@ -1,9 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import MemorySphere from '../components/viz/MemorySphere.svelte';
-import RollingCounter from '../components/viz/RollingCounter.svelte';
-import PaperRiver from '../components/viz/PaperRiver.svelte';
-import { riverPapers } from '../lib/river.ts';
+import Observatory from '../components/obs/Observatory.astro';
 import { benchmarks, pending, scoredBenchmarks, systems } from '../data/index.ts';
 import { AUTHORS, BIBTEX, DESCRIPTION, INSTITUTIONS, LINKS, SUBTITLE, TITLE } from '../data/paper.ts';
 import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
@@ -25,12 +22,6 @@ const points = systems.map((s) => {
     t: s.year + doy,
   };
 });
-const lenses: { key: 'representation' | 'management' | 'modality' | 'timeline'; label: string }[] = [
-  { key: 'representation', label: 'Representation' },
-  { key: 'management', label: 'Management tier' },
-  { key: 'modality', label: 'Modality' },
-  { key: 'timeline', label: 'Timeline' },
-];
 const tiers = countBy(systems, (s) => s.tier);
 const cm = crossMatrix(systems);
 const hybridPct = ((cm.hybrid.T1 + cm.hybrid.T2 + cm.hybrid.T3) / systems.length) * 100;
@@ -77,31 +68,9 @@ const DOORS = [
       </p>
       </div>
     </div>
-    <MemorySphere
-      client:load
-      points={points}
-      lenses={lenses}
-      modalities={MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: systems.filter((s) => s.modality === m).length }))}
-    />
-    <RollingCounter
-      client:visible
-      items={[
-        { value: systems.length, label: 'memory systems reviewed' },
-        { value: benchmarks.length, label: 'benchmarks' },
-        { value: 5, label: 'modalities' },
-        { value: AUTHORS.length, label: 'authors' },
-        { value: INSTITUTIONS.length, label: 'institutions' },
-      ]}
-    />
+    <Observatory points={points} />
   </section>
 
-  <section class="wrap block">
-    <div class="section-head">
-      <h2>Watch the field grow</h2>
-      <p>Every system, placed by the date of its latest paper version. Press play to replay how multimodal agent memory took off, or drag the slider.</p>
-    </div>
-    <PaperRiver client:visible papers={riverPapers(systems)} lanes={MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m] }))} />
-  </section>
 
   {
     recent.length > 0 && (

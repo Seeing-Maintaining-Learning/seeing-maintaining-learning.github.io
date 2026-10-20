@@ -1,5 +1,6 @@
 @import '@fontsource-variable/schibsted-grotesk';
 @import '@fontsource-variable/source-serif-4';
+@import './icons.css';
 
 /* ---------- Tokens ---------- */
 :root {
@@ -66,14 +67,14 @@
     --accent: #6da7ec;
     --accent-ink: #9ec5f4;
     --focus: #6da7ec;
-    --t1: #a86ff0;
-    --t2: #14a0c8;
-    --t3: #e45d4b;
-    --m-image: #3987e5;
-    --m-video: #d95926;
-    --m-audio: #199e70;
-    --m-gui: #c98500;
-    --m-embodied: #d55181;
+    --t1: #b48cff;
+    --t2: #3fd5ff;
+    --t3: #ff5c6c;
+    --m-image: #4da3ff;
+    --m-video: #ff8a4c;
+    --m-audio: #2ee6a6;
+    --m-gui: #ffd23f;
+    --m-embodied: #ff6fb5;
     --cov-direct: #6da7ec;
     --cov-partial: #1c5cab;
     --cov-none: #1d262f;
@@ -91,14 +92,14 @@
   --accent: #6da7ec;
   --accent-ink: #9ec5f4;
   --focus: #6da7ec;
-  --t1: #a86ff0;
-  --t2: #14a0c8;
-  --t3: #e45d4b;
-  --m-image: #3987e5;
-  --m-video: #d95926;
-  --m-audio: #199e70;
-  --m-gui: #c98500;
-  --m-embodied: #d55181;
+  --t1: #b48cff;
+  --t2: #3fd5ff;
+  --t3: #ff5c6c;
+  --m-image: #4da3ff;
+  --m-video: #ff8a4c;
+  --m-audio: #2ee6a6;
+  --m-gui: #ffd23f;
+  --m-embodied: #ff6fb5;
   --cov-direct: #6da7ec;
   --cov-partial: #1c5cab;
   --cov-none: #1d262f;
@@ -143,6 +144,7 @@ a:hover { text-decoration-thickness: 2px; }
 img, svg { max-width: 100%; }
 code, pre { font-family: var(--font-mono); font-size: 0.875em; }
 pre code { font-size: inherit; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .wrap { max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
 .prose { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.65; max-width: 68ch; color: var(--ink-2); }

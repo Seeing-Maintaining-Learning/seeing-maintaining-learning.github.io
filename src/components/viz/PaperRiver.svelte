@@ -7,7 +7,7 @@
 
   const T0 = 2023;
   const T1 = Math.max(2026.95, ...papers.map((p) => p.t)) + 0.05;
-  const YEARS = Array.from({ length: Math.floor(T1) - T0 + 1 }, (_, i) => T0 + i);
+  const YEARS = Array.from({ length: Math.floor(T1 - 0.001) - T0 + 1 }, (_, i) => T0 + i);
   const M = { l: 132, r: 20, t: 18, b: 34 };
   const LANE_H = 54;
   const H = M.t + M.b + LANE_H * lanes.length;
