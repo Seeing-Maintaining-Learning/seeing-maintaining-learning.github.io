@@ -111,7 +111,6 @@
     {/key}
   </div>
 </div>
-<p class="small muted foot">Trade-off levels are a qualitative reading of the survey’s discussion, not measurements.</p>
 
 <style>
   .six { position: relative; display: grid; grid-template-columns: minmax(240px, 300px) 1fr; gap: 20px; align-items: start; scroll-margin-top: 84px; }
@@ -143,7 +142,6 @@
   .pip { width: 18px; height: 8px; border-radius: 2px; background: var(--surface-2); border: 1px solid var(--rule); }
   .pip.on { background: var(--accent); border-color: var(--accent); }
   .small-btn { font-size: 0.875rem; padding: 6px 14px; margin-top: 4px; }
-  .foot { margin-top: 12px; }
   @media (max-width: 960px) {
     .six { grid-template-columns: 1fr; }
     .left { position: static; }
