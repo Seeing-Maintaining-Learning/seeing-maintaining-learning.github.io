@@ -6,13 +6,16 @@
 :root {
   color-scheme: light;
   /* Light: soft neutral paper (no pure white glare, softened black text). */
-  --bg: #f2f2ef;
-  --surface: #fafaf8;
-  --surface-2: #eaeae6;
+  --bg: #ecebe6;
+  --surface: #f6f5f1;
+  --surface-2: #e4e2dc;
   --ink: #1d2125;
   --ink-2: #3e444b;
-  --muted: #5d636b;
-  --rule: #dddcd6;
+  --muted: #5a6068;
+  --rule: #d7d5ce;
+  /* Display title: deep indigo to deep teal. */
+  --title-a: #2a2d6e;
+  --title-b: #1d5a6e;
   --accent: #2a5bd7;
   --accent-ink: #1f4fbf;
   --focus: #2a78d6;
@@ -32,7 +35,7 @@
   /* Coverage */
   --cov-direct: #256abf;
   --cov-partial: #9ec5f4;
-  --cov-none: #eaeae6;
+  --cov-none: #e4e2dc;
 
   --font-ui: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
   --font-read: 'Source Serif 4 Variable', ui-serif, Georgia, serif;
@@ -66,6 +69,10 @@
     --muted: #93a0ad;
     --rule: #2a343e;
     --accent: #6da7ec;
+  --title-a: #d9d5ff;
+  --title-b: #9fe1ee;
+    --title-a: #d9d5ff;
+    --title-b: #9fe1ee;
     --accent-ink: #9ec5f4;
     --focus: #6da7ec;
     --t1: #b48cff;
@@ -91,6 +98,8 @@
   --muted: #93a0ad;
   --rule: #2a343e;
   --accent: #6da7ec;
+  --title-a: #d9d5ff;
+  --title-b: #9fe1ee;
   --accent-ink: #9ec5f4;
   --focus: #6da7ec;
   --t1: #b48cff;
@@ -135,7 +144,7 @@ h4 {
   font-weight: 650;
   text-wrap: balance;
 }
-h1 { font-size: var(--step-4); }
+h1 { font-size: var(--step-4); color: var(--title-a); }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-1); }
 p { margin: 0 0 1em; }
