@@ -1,163 +1,20 @@
 ---
-import Base from '../layouts/Base.astro';
-import HybridTriangle from '../components/viz/HybridTriangle.svelte';
-import ChartSwitch from '../components/viz/ChartSwitch.svelte';
-import RepExplainer from '../components/viz/rep/RepExplainer.svelte';
-import { leafByModality, leafByTier } from '../lib/charts.ts';
-import { systems } from '../data/index.ts';
-import { FAMILY_TEXT, HYBRID_EXAMPLES, LEAF_TEXT, systemLink } from '../data/taxonomy.ts';
-import { FAMILIES, FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, LEAVES, REP_CATEGORIES, REP_CATEGORY_LABEL } from '../data/vocab.ts';
-import { countBy, leafCounts } from '../lib/aggregate.ts';
-import { breadcrumbs } from '../lib/seo.ts';
-
-const leafN = leafCounts(systems);
-const maxLeaf = Math.max(...Object.values(leafN));
-const catN = countBy(systems, (s) => s.category);
-const famN = countBy(systems, (s) => s.families);
-
-const hybrids = systems.filter((s) => s.hybrid);
-const comboMap = new Map<string, typeof hybrids>();
-for (const s of hybrids) {
-  const key = FAMILIES.filter((f) => s.families.includes(f)).join('+');
-  comboMap.set(key, [...(comboMap.get(key) ?? []), s]);
-}
-const combos = [...comboMap].map(([key, list]) => ({
-  families: key.split('+'),
-  n: list.length,
-  examples: list
-    .sort((a, b) => b.paths.length - a.paths.length || a.name.localeCompare(b.name))
-    .slice(0, 10)
-    .map((s) => ({ name: s.name, href: `/systems/${s.id}/` })),
-}));
-const description =
-  'The representation forms of multimodal agent memory: raw source evidence, encodings, text records, structured graphs, latent state, parametric memory, and hybrids.';
-const link = (name: string) => systemLink(name);
+/** The representation content now lives on /formation/. Keep old links working. */
 ---
 
-<Base
-  title="Memory representation: six forms of multimodal agent memory"
-  description={description}
-  og="/og/representation.png"
-  jsonld={[breadcrumbs([['Home', '/'], ['Representation', '/representation/']])]}
->
-  <section class="wrap block intro">
-    <p class="small muted">Axis I · Representation</p>
-    <h1>What does stored memory look like?</h1>
-    <p class="lede">
-      Three families, six forms. Memory can stay close to the senses, be translated into explicit records, or be absorbed
-      into the model’s own state. Nearly half of all systems combine several.
-    </p>
-    <ol class="share" aria-label="Share of systems by representation">
-      {
-        REP_CATEGORIES.map((c) => (
-          <li style={`flex:${catN[c]}`} class={`cat-${c}`}>
-            <span class="lab">{REP_CATEGORY_LABEL[c]}</span>
-            <span class="num">{catN[c]}</span>
-          </li>
-        ))
-      }
-    </ol>
-    <p class="small muted">Systems by exclusive representation category, as in the paper. Hybrid systems link more than one representation.</p>
-  </section>
-
-  <section class="wrap block">
-    <div class="section-head">
-      <h2>Which forms each modality uses</h2>
-      <p>Systems using each representation form. A system with several forms counts once in each. Click a bar to list those systems.</p>
-    </div>
-    <ChartSwitch
-      client:visible
-      title="Systems by representation form and modality"
-      variants={[
-        { label: 'Modality', props: leafByModality(systems) },
-        { label: 'Tier', props: leafByTier(systems) },
-      ]}
-    />
-  </section>
-
-  {
-    FAMILIES.map((f, fi) => (
-      <section class="wrap block family" id={f}>
-        <div class="fhead">
-          <p class="small muted">Family {fi + 1} of 3 · {famN[f]} systems use it</p>
-          <h2>{FAMILY_LABEL[f]}</h2>
-          <p class="lede">{FAMILY_TEXT[f].short}</p>
-          <p class="trade"><strong>Trade-off.</strong> {FAMILY_TEXT[f].tradeoff}</p>
-        </div>
-        <div class="leaves">
-          {LEAVES.filter((l) => LEAF_FAMILY[l] === f).map((l) => (
-            <article class="leaf panel" id={l}>
-              <h3>{LEAF_LABEL[l]}</h3>
-              <RepExplainer client:visible kind={l} />
-              <div class="meter">
-                <span style={`width:${(leafN[l] / maxLeaf) * 100}%`} />
-                <span class="num small">{leafN[l]} systems</span>
-              </div>
-              <p class="def">{LEAF_TEXT[l].definition}</p>
-              <p class="small"><span class="muted">Typical units:</span> {LEAF_TEXT[l].units}</p>
-              <p class="small">
-                <span class="muted">In the paper:</span>{' '}
-                {LEAF_TEXT[l].examples.map((n, i) => (
-                  <>
-                    {link(n) ? <a href={link(n)}>{n}</a> : n}
-                    {i < LEAF_TEXT[l].examples.length - 1 ? ', ' : ''}
-                  </>
-                ))}
-              </p>
-              <a class="small" href={`/systems/?leaves=${l}`}>Browse all {leafN[l]}</a>
-            </article>
-          ))}
-        </div>
-      </section>
-    ))
-  }
-
-  <section class="wrap block" id="hybrid">
-    <div class="section-head">
-      <h2>Hybrid memory</h2>
-      <p>
-        Hybrids are system-level compositions, not a fourth form. The most common pattern links compact explicit records
-        to recoverable source evidence, so a summary can always be traced back to what was seen. Select a link to see
-        which systems use it.
-      </p>
-      <p class="small muted">
-        Named in the paper:{' '}
-        {HYBRID_EXAMPLES.map((n, i) => (
-          <>
-            {link(n) ? <a href={link(n)}>{n}</a> : n}
-            {i < HYBRID_EXAMPLES.length - 1 ? ', ' : ''}
-          </>
-        ))}
-      </p>
-    </div>
-    <div class="hyb">
-      <RepExplainer client:visible kind="hybrid" />
-      <HybridTriangle client:visible combos={combos} labels={FAMILY_LABEL} order={[...FAMILIES]} />
-    </div>
-  </section>
-</Base>
-
-<style>
-  .intro h1 { max-width: 16ch; }
-  .share { list-style: none; display: flex; gap: 3px; padding: 0; margin: 32px 0 8px; height: 64px; }
-  .share li { display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px; border-radius: 6px; min-width: 0; background: var(--surface); border: 1px solid var(--rule); overflow: hidden; }
-  .share .lab { font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .share .num { font-weight: 650; }
-  .share .cat-hybrid { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border-color: var(--accent); }
-  .family { display: grid; grid-template-columns: minmax(260px, 0.8fr) 1.6fr; gap: 40px; align-items: start; }
-  .fhead { position: sticky; top: 84px; }
-  .fhead .lede { font-size: var(--step-0); }
-  .trade { color: var(--ink-2); font-size: 0.9375rem; }
-  .leaves { display: grid; gap: 16px; }
-  .leaf { padding: 20px; scroll-margin-top: 84px; display: grid; gap: 4px; }
-  .leaf h3 { margin-bottom: 8px; }
-  .leaf :global(.rx) { margin-bottom: 14px; }
-  .hyb { display: grid; gap: 32px; }
-  .hyb > :global(*:first-child) { max-width: 560px; }
-  .leaf:target { border-color: var(--accent); }
-  .meter { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .meter .num { white-space: nowrap; }
-  .meter span:first-child { height: 6px; background: var(--accent); border-radius: 0 3px 3px 0; }
-  .def { font-family: var(--font-read); color: var(--ink-2); line-height: 1.6; }
-  @media (max-width: 860px) { .family { grid-template-columns: 1fr; } .fhead { position: static; } .share .lab { display: none; } }
-</style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Moved: Formation & Representation</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="https://seeing-maintaining-learning.github.io/formation/" />
+    <meta http-equiv="refresh" content="0; url=/formation/" />
+    <script is:inline>
+      location.replace('/formation/' + location.hash);
+    </script>
+  </head>
+  <body>
+    <p>This page moved to <a href="/formation/">Formation &amp; Representation</a>.</p>
+  </body>
+</html>

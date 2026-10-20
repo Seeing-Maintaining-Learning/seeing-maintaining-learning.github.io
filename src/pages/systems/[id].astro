@@ -77,7 +77,7 @@ const tierExplain: Record<string, string> = {
             <li class="path panel">
               <p class="component">{p.component}</p>
               <ol class="flow" aria-label="Formation path">
-                <li><span class="k">Represented as</span><a href={`/representation/#${p.leaf}`}>{LEAF_LABEL[p.leaf]}</a><span class="small muted">{FAMILY_LABEL[LEAF_FAMILY[p.leaf]]}</span></li>
+                <li><span class="k">Represented as</span><a href={`/formation/#${p.leaf}`}>{LEAF_LABEL[p.leaf]}</a><span class="small muted">{FAMILY_LABEL[LEAF_FAMILY[p.leaf]]}</span></li>
                 <li><span class="k">Stored in</span>{p.storage.map((x) => label(STORAGE_LABEL, x)).join(', ')}</li>
                 <li><span class="k">Retrieved by</span>{p.retrieval.map((x) => label(RETRIEVAL_LABEL, x)).join(', ')}</li>
                 <li><span class="k">Source evidence</span>{label(SOURCE_ACCESS_LABEL, p.sourceAccess)}</li>

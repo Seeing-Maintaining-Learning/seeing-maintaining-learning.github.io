@@ -37,7 +37,7 @@ const cfDirect = benchmarks.filter((b) => b.coverage[3] === 'direct').length;
 const explicitT3 = cm.cross.T3 + cm.hybrid.T3;
 
 const DOORS = [
-  { q: 'What does stored memory look like?', a: 'Six representation forms in three families, and the hybrids that combine them.', href: '/representation/', tag: 'Representation' },
+  { q: 'What does stored memory look like?', a: 'Six representation forms in three families, and the hybrids that combine them.', href: '/formation/#families', tag: 'Representation' },
   { q: 'How does experience become memory?', a: 'From pixels and speech to records, graphs, states, and weights, traced across the corpus.', href: '/formation/', tag: 'Formation' },
   { q: 'What can change while the agent runs?', a: 'Static, dynamic, and self-evolving memory, with interactive walk-throughs.', href: '/management/', tag: 'Management T1–T3' },
   { q: 'I work on one modality.', a: 'Systems and benchmarks for image, video, audio, GUI, or embodied agents.', href: '/modalities/', tag: 'Modalities' },
@@ -131,7 +131,7 @@ const DOORS = [
       <li>
         <p class="f"><span class="num">{hybridPct.toFixed(1)}%</span> of systems are hybrids.</p>
         <p class="muted">Most pair explicit records with source-level evidence or modality-specific encodings.</p>
-        <a href="/representation/#hybrid">See hybrid patterns</a>
+        <a href="/formation/#hybrid">See hybrid patterns</a>
       </li>
       <li>
         <p class="f"><span class="num">{explicitT3} of {tiers.T3}</span> self-evolving systems keep explicit memory.</p>

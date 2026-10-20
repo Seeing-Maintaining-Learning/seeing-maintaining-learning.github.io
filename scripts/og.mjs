@@ -10,8 +10,7 @@ mkdirSync(OUT, { recursive: true });
 
 const PAGES = [
   ['default', 'Seeing, Maintaining, and Learning', 'The Evolution of Multimodal Agent Memory'],
-  ['representation', 'What does stored memory look like?', 'Six representation forms of multimodal agent memory'],
-  ['formation', 'How raw experience becomes memory', 'From pixels and speech to records, graphs, states, and weights'],
+  ['formation', 'How raw experience becomes memory', 'Six representation forms, hybrids, storage, and retrieval'],
   ['management', 'What can change while the agent runs?', 'T1 static · T2 dynamic · T3 self-evolving memory'],
   ['modalities', 'Agent memory by modality', 'Image · Video · Audio · GUI · Embodied'],
   ['systems', `${systems.length} multimodal memory systems`, 'Filter by modality, representation, storage, retrieval, and tier'],
