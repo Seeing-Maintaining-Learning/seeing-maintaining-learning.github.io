@@ -23,31 +23,27 @@
     cloud: { x: number; y: number; m: string }[];
   } = $props();
 
-  const STEPS = ['Paper', 'Modality', 'Representation', 'Management', 'Evidence & submit'];
+  const STEPS = ['Paper', 'Modality', 'Representation', 'Management', 'Submit'];
+  const OPTIONAL = [false, false, true, true, false];
   let step = $state(0);
-  let reached = $state(0);
   let dir = $state(1);
   let ready = $state(false);
   let main: HTMLDivElement;
 
-  const valid = $derived([
-    Boolean(draft.arxiv || draft.title) && Boolean(draft.name || draft.title),
-    Boolean(draft.modality),
-    draft.leaves.length > 0,
-    tierOf(draft) !== null,
-    true,
-  ]);
+  // Only the arXiv link and a modality are required; later steps are optional.
+  const valid = $derived([Boolean(draft.arxiv), Boolean(draft.modality), true, true, true]);
   const canNext = $derived(valid[step]);
-  /** Furthest step the user may jump to: every step before it must be valid. */
-  const maxStep = $derived(Math.min(reached, valid.findIndex((v) => !v) === -1 ? STEPS.length - 1 : valid.findIndex((v) => !v)));
+  const firstInvalid = $derived(valid.findIndex((v) => !v));
+  /** Furthest step reachable: every step before it must be valid. */
+  const maxStep = $derived(firstInvalid === -1 ? STEPS.length - 1 : firstInvalid);
+  const canSubmit = $derived(valid[0] && valid[1]);
   const tier = $derived(tierOf(draft));
 
   async function go(i: number) {
     const next = Math.max(0, Math.min(STEPS.length - 1, i));
-    if (next > step && !canNext) return;
+    if (next > maxStep) return;
     dir = next > step ? 1 : -1;
     step = next;
-    reached = Math.max(reached, step);
     await tick();
     main?.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
     document.getElementById('wizard-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -55,8 +51,6 @@
 
   onMount(() => {
     restore();
-    // A restored draft may already be valid for several steps.
-    reached = valid.findIndex((v) => !v) === -1 ? STEPS.length - 1 : valid.findIndex((v) => !v);
     ready = true;
   });
   $effect(() => {
@@ -70,7 +64,7 @@
     {#each STEPS as s, i (s)}
       <li class:done={i < step} class:cur={i === step}>
         <button type="button" onclick={() => go(i)} disabled={i > maxStep} aria-current={i === step ? 'step' : undefined}>
-          <span class="b num">{i < step ? '✓' : i + 1}</span><span class="sl">{s}</span>
+          <span class="b num">{i < step ? '✓' : i + 1}</span><span class="sl">{s}{#if OPTIONAL[i]}<span class="opt"> (optional)</span>{/if}</span>
         </button>
       </li>
     {/each}
@@ -93,7 +87,12 @@
       <div class="nav">
         <button type="button" class="btn" onclick={() => go(step - 1)} disabled={step === 0}>Back</button>
         {#if step < STEPS.length - 1}
-          <button type="button" class="btn primary" onclick={() => go(step + 1)} disabled={!canNext}>Continue</button>
+          <button type="button" class="btn" class:primary={step < 1 || !canSubmit} onclick={() => go(step + 1)} disabled={!canNext}>
+            {OPTIONAL[step + 1] ? 'Add details' : 'Continue'}
+          </button>
+          {#if step >= 1 && canSubmit}
+            <button type="button" class="btn primary" onclick={() => go(STEPS.length - 1)}>Submit now</button>
+          {/if}
         {/if}
         <button type="button" class="btn ghost" onclick={async () => { reset(); reached = 0; ready = false; await tick(); ready = true; go(0); }}>Start over</button>
       </div>
@@ -136,6 +135,7 @@
   .cur .b { border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent); }
   .done .b { background: var(--accent); border-color: var(--accent); color: var(--surface); }
   .sl { font-size: 0.875rem; }
+  .opt { color: var(--muted); font-weight: 400; font-size: 0.75rem; }
   .bar { height: 3px; background: var(--rule); border-radius: 2px; overflow: hidden; }
   .bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--m-image), var(--m-audio), var(--m-gui), var(--m-video), var(--m-embodied)); transition: width 500ms var(--ease); }
   .layout { display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; margin-top: 12px; }

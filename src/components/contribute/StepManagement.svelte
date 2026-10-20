@@ -11,7 +11,7 @@
 
 <div class="step">
   <h2 tabindex="-1">What can change while it runs?</h2>
-  <p class="muted">Answer two questions about the deployed system. We’ll suggest its management tier.</p>
+  <p class="muted">Optional — helps maintainers. Answer two questions and we’ll suggest the management tier.</p>
 
   <div class="q">
     <p class="qt"><span class="n">1</span> After deployment, can the stored memory change — new entries added, merged, corrected, regrouped, or forgotten?</p>

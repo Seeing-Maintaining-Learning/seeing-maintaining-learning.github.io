@@ -10,7 +10,7 @@
 
 <div class="step">
   <h2 tabindex="-1">What form does the stored memory take?</h2>
-  <p class="muted">Choose every form the system hands back to its model. Hover or focus a card to see how that form works.</p>
+  <p class="muted">Optional — helps maintainers. Choose the forms the system hands back to its model; hover a card to see how it works.</p>
   <div class="grid">
     <div class="cards">
       {#each leaves as l (l.key)}

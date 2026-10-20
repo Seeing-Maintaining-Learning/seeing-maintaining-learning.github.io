@@ -32,10 +32,10 @@
 
 <div class="step">
   <h2 tabindex="-1">Which paper?</h2>
-  <p class="muted">Paste an arXiv ID or link. We’ll fetch the title and check whether the survey already covers it.</p>
+  <p class="muted">Paste an arXiv ID or link — that and a modality are all we need. We’ll fetch the title and check whether the survey already covers it.</p>
   <form class="lookup" onsubmit={(e) => { e.preventDefault(); lookup(); }}>
     <label class="sr-only" for="arxiv-in">arXiv ID or URL</label>
-    <input id="arxiv-in" type="text" placeholder="e.g. 2610.19366 or https://arxiv.org/abs/…" bind:value={input} autocomplete="off" />
+    <input id="arxiv-in" type="text" placeholder="e.g. 2610.19366 or https://arxiv.org/abs/…" bind:value={input} autocomplete="off" oninput={() => { const id = parseArxivId(input); if (id) draft.arxiv = id; }} />
     <button class="btn primary" type="submit" disabled={status === 'loading'}>{status === 'loading' ? 'Looking up…' : 'Look up'}</button>
   </form>
 

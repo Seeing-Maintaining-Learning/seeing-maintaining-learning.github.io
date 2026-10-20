@@ -68,18 +68,19 @@ type Labels = Record<string, Record<string, string>>;
 
 /** Structured summary placed in the issue's classification field and the Markdown fallback. */
 export function classification(d: Draft, L: Labels): string {
-  const list = (keys: string[], map: Record<string, string>) => (keys.length ? keys.map((k) => map[k] ?? k).join(', ') : '—');
+  const NS = 'not specified';
+  const list = (keys: string[], map: Record<string, string>) => (keys.length ? keys.map((k) => map[k] ?? k).join(', ') : NS);
   const tier = tierOf(d);
   const lines = [
-    `- Authors: ${d.authors ? (d.authors.length > 300 ? `${d.authors.slice(0, 297)}…` : d.authors) : '—'}`,
-    `- Submitted by: ${d.github ? `@${d.github.replace(/^@/, '')}` : '—'}`,
+    `- Authors: ${d.authors ? (d.authors.length > 300 ? `${d.authors.slice(0, 297)}…` : d.authors) : NS}`,
+    `- Submitted by: ${d.github ? `@${d.github.replace(/^@/, '')}` : NS}`,
     `- Record type: ${d.kind === 'architecture' ? 'Architecture (memory system)' : 'Benchmark / evaluation resource'}`,
-    `- Primary modality: ${L.modality[d.modality] ?? '—'}`,
+    `- Primary modality: ${L.modality[d.modality] ?? NS}`,
     `- Secondary modalities: ${list(d.secondary, L.modality)}`,
     `- Representation: ${list(d.leaves, L.leaf)}`,
     `- Storage / indexing: ${list(d.storage, L.storage)}`,
     `- Retrieval / activation: ${list(d.retrieval, L.retrieval)}`,
-    `- Suggested tier: ${tier ? `${tier} ${L.tier[tier]}` : '—'}`,
+    `- Suggested tier: ${tier ? `${tier} ${L.tier[tier]}` : NS}`,
   ];
   if (tier === 'T2' || tier === 'T3') lines.push(`- T2 operations: ${list(d.ops, L.op)}`);
   if (tier === 'T3') lines.push(`- T3 policy targets: ${list(d.t3, L.t3)}`);
@@ -88,7 +89,8 @@ export function classification(d: Draft, L: Labels): string {
 
 export function issueTitle(d: Draft): string {
   const t = d.title.length > 90 ? `${d.title.slice(0, 87)}…` : d.title;
-  return `[Paper] ${d.name || 'New system'}${t ? `: ${t}` : ''}`;
+  if (d.name && t) return `[Paper] ${d.name}: ${t}`;
+  return `[Paper] ${d.name || t || (d.arxiv ? `arXiv:${d.arxiv}` : 'New submission')}`;
 }
 
 /** Build the pre-filled issue form URL. Long free text is trimmed so the URL stays under MAX_URL. */

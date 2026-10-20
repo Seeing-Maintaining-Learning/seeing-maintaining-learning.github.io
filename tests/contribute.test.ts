@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_URL, arxivIndex, emptyDraft, issueUrl, parseArxivId, tierOf } from '../src/lib/contribute.ts';
+import { MAX_URL, arxivIndex, emptyDraft, issueTitle, issueUrl, parseArxivId, tierOf } from '../src/lib/contribute.ts';
 
 const L = {
   modality: { image: 'Image' },
@@ -65,5 +65,22 @@ describe('issueUrl', () => {
     const url = issueUrl(d, L);
     expect(url.length).toBeLessThanOrEqual(MAX_URL);
     expect(new URL(url).searchParams.get('evidence')).toMatch(/…$/);
+  });
+});
+
+describe('minimal submission', () => {
+  it('works with only an arXiv ID and a modality', () => {
+    const d = { ...emptyDraft(), arxiv: '2610.19366', modality: 'image' };
+    const u = new URL(issueUrl(d, L));
+    expect(u.searchParams.get('arxiv')).toBe('https://arxiv.org/abs/2610.19366');
+    expect(u.searchParams.get('modality')).toBe('Image');
+    expect(u.searchParams.get('classification')).toContain('Representation: not specified');
+    expect(u.searchParams.get('classification')).toContain('Suggested tier: not specified');
+  });
+
+  it('falls back to the paper title or arXiv ID in the issue title', () => {
+    expect(issueTitle({ ...emptyDraft(), arxiv: '2610.19366' })).toBe('[Paper] arXiv:2610.19366');
+    expect(issueTitle({ ...emptyDraft(), arxiv: '2610.19366', title: 'A paper' })).toBe('[Paper] A paper');
+    expect(issueTitle({ ...emptyDraft(), name: 'Mem', title: 'A paper' })).toBe('[Paper] Mem: A paper');
   });
 });

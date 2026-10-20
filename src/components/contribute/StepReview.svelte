@@ -18,8 +18,9 @@
 </script>
 
 <div class="step">
-  <h2 tabindex="-1">Where does the paper describe its memory?</h2>
-  <p class="muted">Point maintainers to the section, page, or figure. Short notes are enough; they will verify against the paper.</p>
+  <h2 tabindex="-1">Ready to submit</h2>
+  <h3 class="sub">Where does the paper describe its memory?</h3>
+  <p class="muted">Optional. Point maintainers to the section, page, or figure; they verify everything against the paper.</p>
   <label class="ev">
     <span class="sr-only">Evidence</span>
     <textarea rows="5" bind:value={draft.evidence} placeholder="e.g. Sec. 3.2 and Fig. 2: event memory stored as captions in a vector index; Sec. 3.4: memories merged every 100 frames."></textarea>
@@ -54,6 +55,7 @@
 </div>
 
 <style>
+  .sub { font-size: 1rem; margin: 16px 0 4px; }
   .ev textarea { width: 100%; font: inherit; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); resize: vertical; margin: 12px 0; }
   .who { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: end; margin-bottom: 24px; }
   fieldset { border: 0; padding: 0; margin: 0; display: flex; gap: 14px; flex-wrap: wrap; }
