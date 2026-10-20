@@ -4,7 +4,8 @@
 set -euo pipefail
 REPO="QingyueJ-nd/Multimodal-Agent-Memory-Survey-Arxiv"
 OUT="$(cd "$(dirname "$0")/.." && pwd)/vendor/paper"
-mkdir -p "$OUT/raw" "$OUT/logos"
+mkdir -p "$OUT/raw" "$OUT/private" "$OUT/logos"
+# raw/ is committed (public data the build reads); private/ is gitignored (reference sources only).
 
 fetch() { gh api "repos/$REPO/contents/$1" -H "Accept: application/vnd.github.raw" > "$2"; }
 
@@ -14,12 +15,13 @@ for f in main.tex content/frontmatter/affiliations.json content/frontmatter/auth
          data/benchmark_coverage.json data/benchmark_scope_review.json data/line_graph_counts.json \
          content/sections/03_formation_and_representation.tex content/sections/04_memory_management.tex \
          content/sections/05_cross_axis_analysis.tex content/sections/07_evaluation.tex; do
-  fetch "$f" "$OUT/raw/$(basename "$f")"
+  case "$f" in *.json) dest=raw ;; *) dest=private ;; esac
+  fetch "$f" "$OUT/$dest/$(basename "$f")"
 done
 
 for f in multimodal-memory-lifecycle-illustrated.svg embodied-memory-lifecycle-taxonomy.svg \
          memory-management-progression-editable.svg; do
-  fetch "content/figures/$f" "$OUT/raw/$f"
+  fetch "content/figures/$f" "$OUT/private/$f"
 done
 
 for name in $(gh api "repos/$REPO/contents/content/figures/logos" --jq '.[].name | select(endswith(".pdf"))'); do
