@@ -19,7 +19,8 @@ const suffixed = `${title} | ${SITE_NAME}`;
 const fullTitle = noSuffix || suffixed.length > 65 ? title : suffixed;
 const canonical = abs(Astro.url.pathname);
 const path = Astro.url.pathname;
-const verification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+// Google Search Console ownership token (public by design; it is served in every page head).
+const verification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION ?? 'hO7eAu7QRYgl9wemtxeEwkdTl3fSaWHbdLxPaDjm5S4';
 
 const NAV: [string, string][] = [
   ['Formation & Representation', '/formation/'],
