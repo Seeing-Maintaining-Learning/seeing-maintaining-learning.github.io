@@ -20,7 +20,7 @@ const years = [2023, 2024, 2025, 2026];
 const growth = growthByTier(systems, years);
 const opText = Object.fromEntries(
   T2_OPS.map((op) => [op, { definition: OP_TEXT[op].definition, examples: OP_TEXT[op].examples.map((name) => ({ name, href: systemLink(name) })) }]),
-);
+) as Record<(typeof T2_OPS)[number], { definition: string; examples: { name: string; href: string | null }[] }>;
 const adaptive = ((tierCounts.T2 + tierCounts.T3) / systems.length) * 100;
 const description =
   'How multimodal agent memory changes over time: T1 static memory, T2 dynamic memory with five operations, and T3 self-evolving memory policies, with corpus counts.';

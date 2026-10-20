@@ -11,6 +11,7 @@ export default defineConfig({
   integrations: [
     svelte(),
     sitemap({
+      filter: (page) => !page.includes('/404'),
       lastmod: new Date(),
       changefreq: 'weekly',
       priority: 0.7,

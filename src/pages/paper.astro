@@ -1,0 +1,128 @@
+---
+import { existsSync } from 'node:fs';
+import Base from '../layouts/Base.astro';
+import {
+  ABSTRACT, AUTHORS, BIBTEX, CONTACTS, DEFINITION, FULL_TITLE, INSTITUTIONS, LINKS, MARK_LEGEND, SUBTITLE, TITLE,
+} from '../data/paper.ts';
+import { breadcrumbs, scholarlyArticle } from '../lib/seo.ts';
+
+const logo = (key: string) => (existsSync(`public/logos/${key}.png`) ? `/logos/${key}.png` : null);
+const description = `${FULL_TITLE}. Abstract, ${AUTHORS.length} authors from ${INSTITUTIONS.length} institutions, links, and BibTeX citation.`;
+---
+
+<Base
+  title={`${FULL_TITLE} (paper)`}
+  description={description}
+  type="article"
+  noSuffix
+  jsonld={[scholarlyArticle(), breadcrumbs([['Home', '/'], ['Paper', '/paper/']])]}
+>
+  <Fragment slot="head">
+    <meta name="citation_title" content={FULL_TITLE} />
+    {AUTHORS.map((a) => <meta name="citation_author" content={a.name} />)}
+    <meta name="citation_publication_date" content="2026" />
+    <meta name="citation_abstract_html_url" content={LINKS.openreview} />
+    {LINKS.arxiv && <meta name="citation_arxiv_id" content={LINKS.arxiv} />}
+  </Fragment>
+
+  <article class="wrap paper">
+    <header>
+      <h1><span>{TITLE}:</span> {SUBTITLE}</h1>
+      <p class="links">
+        <a class="btn primary" href={LINKS.openreview}>Read on OpenReview</a>
+        <a class="btn" href={LINKS.corpus}>Corpus on GitHub</a>
+        <a class="btn" href="#cite">Cite</a>
+      </p>
+    </header>
+
+    <section aria-labelledby="authors-h">
+      <h2 id="authors-h" class="sr-only">Authors</h2>
+      <ol class="authors">
+        {
+          AUTHORS.map((a) => (
+            <li>
+              {a.name}
+              <sup>{[a.affiliations.join(','), ...a.marks].filter(Boolean).join(',')}</sup>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="legend small muted">
+        {MARK_LEGEND.map(([m, t]) => <span><sup>{m}</sup> {t}</span>)}
+        <span>Contact: {CONTACTS.map((c, i) => <><a href={`mailto:${c}`}>{c}</a>{i < CONTACTS.length - 1 ? ', ' : ''}</>)}</span>
+      </p>
+      <details class="affils">
+        <summary>{INSTITUTIONS.length} institutions</summary>
+        <ol>
+          {INSTITUTIONS.map((i) => <li value={i.id}>{i.name}</li>)}
+        </ol>
+      </details>
+      <ul class="logos" aria-label="Institutions">
+        {
+          INSTITUTIONS.map((i) => {
+            const src = logo(i.key);
+            return src ? (
+              <li><img src={src} alt={i.name} title={i.name} loading="lazy" decoding="async" height="36" /></li>
+            ) : null;
+          })
+        }
+      </ul>
+    </section>
+
+    <section class="abstract">
+      <h2>Abstract</h2>
+      <div class="prose">{ABSTRACT.map((p) => <p>{p}</p>)}</div>
+      <aside class="def">
+        <p class="small muted">Working definition</p>
+        <p>{DEFINITION}</p>
+      </aside>
+    </section>
+
+    <section id="cite">
+      <h2>Cite</h2>
+      <div class="bib">
+        <pre><code>{BIBTEX}</code></pre>
+        <button type="button" class="btn copy">Copy BibTeX</button>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.copy');
+  btn?.addEventListener('click', async () => {
+    const text = document.querySelector('.bib code')?.textContent ?? '';
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = 'Copied';
+    } catch {
+      btn.textContent = 'Select the text to copy';
+    }
+    setTimeout(() => (btn.textContent = 'Copy BibTeX'), 2000);
+  });
+</script>
+
+<style>
+  .paper { padding-block: clamp(40px, 6vw, 80px); max-width: 980px; }
+  h1 { font-size: var(--step-4); max-width: 20ch; }
+  h1 span { display: block; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 40px; }
+  .btn { font: inherit; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer; }
+  .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .authors { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.9375rem; }
+  .authors li:nth-child(-n + 5) { font-weight: 600; }
+  sup { font-size: 0.72em; color: var(--muted); margin-left: 1px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .affils { margin: 16px 0; }
+  .affils summary { cursor: pointer; font-weight: 600; }
+  .affils ol { columns: 2; font-size: 0.875rem; color: var(--ink-2); }
+  .logos { list-style: none; padding: 20px; margin: 24px 0 56px; display: flex; flex-wrap: wrap; gap: 20px 28px; align-items: center; background: #fff; border-radius: 12px; border: 1px solid var(--rule); }
+  .logos img { height: 32px; width: auto; display: block; }
+  .abstract { display: grid; grid-template-columns: 1fr 260px; gap: 40px; margin-bottom: 56px; }
+  .abstract h2 { grid-column: 1 / -1; margin-bottom: 0; }
+  .def { border-left: 3px solid var(--accent); padding-left: 16px; font-family: var(--font-read); }
+  .bib { position: relative; }
+  pre { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; overflow-x: auto; font-size: 0.8125rem; line-height: 1.5; max-height: 280px; }
+  .copy { position: absolute; top: 10px; right: 10px; }
+  @media (max-width: 760px) { .abstract { grid-template-columns: 1fr; } .affils ol { columns: 1; } }
+</style>

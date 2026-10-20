@@ -54,8 +54,7 @@
   {/if}
   <svg
     viewBox="0 0 {width} {height}"
-    width={width}
-    height={height}
+    width="100%"
     role="img"
     aria-label={title}
     onpointermove={move}
@@ -103,11 +102,11 @@
       {/each}
     </div>
   {/if}
-  <table class="sr-only">
+  <div class="sr-only"><table>
     <caption>{title}</caption>
     <thead><tr><th>Series</th>{#each years as yr (yr)}<th>{yr}</th>{/each}</tr></thead>
     <tbody>{#each series as s (s.key)}<tr><th>{s.label}</th>{#each s.values as v, i (i)}<td>{v}</td>{/each}</tr>{/each}</tbody>
-  </table>
+  </table></div>
 </figure>
 
 <style>

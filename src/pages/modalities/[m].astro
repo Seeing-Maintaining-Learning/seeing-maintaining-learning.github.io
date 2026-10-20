@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import BarList from '../../components/BarList.astro';
+import TierMatrix from '../../components/viz/TierMatrix.svelte';
+import { FAMILY_CAPS, SHARED_CAPS, benchmarks, systems } from '../../data/index.ts';
+import type { Modality } from '../../data/vocab.ts';
+import {
+  LEAF_LABEL, LEAVES, MODALITIES, MODALITY_LABEL, MODALITY_SLUG, REP_CATEGORIES, REP_CATEGORY_LABEL, T2_OPS, T2_OP_LABEL,
+  TIERS, TIER_LABEL,
+} from '../../data/vocab.ts';
+import { countBy, crossMatrix, t2OpCounts } from '../../lib/aggregate.ts';
+import { breadcrumbs } from '../../lib/seo.ts';
+
+export function getStaticPaths() {
+  return MODALITIES.map((m) => ({ params: { m: MODALITY_SLUG[m] }, props: { mod: m } }));
+}
+
+const { mod } = Astro.props as { mod: Modality };
+const list = systems.filter((s) => s.modality === mod).sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+const benches = benchmarks.filter((b) => b.modality === mod);
+const matrix = crossMatrix(list);
+const cells = REP_CATEGORIES.flatMap((cat) => TIERS.map((tier) => ({ cat, tier, n: matrix[cat][tier] })));
+const leafN = countBy(list, (s) => s.paths.map((p) => p.leaf));
+const ops = t2OpCounts(list);
+const caps = [...SHARED_CAPS, ...(FAMILY_CAPS[mod] ?? [])];
+const capDirect = caps.map(([code, name], i) => ({
+  label: name,
+  note: code,
+  value: benches.filter((b) => b.coverage[i] === 'direct').length,
+}));
+const label = MODALITY_LABEL[mod];
+const description = `${list.length} ${label.toLowerCase()} agent memory systems and ${benches.length} benchmarks: how they represent, store, update and evaluate memory.`;
+---
+
+<Base
+  title={`${label} agent memory: systems and benchmarks`}
+  description={description}
+  jsonld={[breadcrumbs([['Home', '/'], ['Modalities', '/modalities/'], [label, `/modalities/${MODALITY_SLUG[mod]}/`]])]}
+>
+  <section class={`wrap block intro mod-${mod}`}>
+    <nav class="crumbs small" aria-label="Breadcrumb"><a href="/modalities/">Modalities</a> / <span>{label}</span></nav>
+    <h1>{label} memory</h1>
+    <p class="lede">
+      {list.length} systems and {benches.length} benchmarks whose primary modality is {label.toLowerCase()}.
+    </p>
+    <div class="pick">
+      {MODALITIES.filter((m) => m !== mod).map((m) => <a class={`chip mod-${m}`} href={`/modalities/${MODALITY_SLUG[m]}/`}><span class="dot" />{MODALITY_LABEL[m]}</a>)}
+    </div>
+  </section>
+
+  <section class="wrap block grid2">
+    <div>
+      <h2>How they represent memory</h2>
+      <BarList
+        bars={LEAVES.map((l) => ({ label: LEAF_LABEL[l], value: leafN[l] ?? 0, href: `/systems/?modality=${mod}&leaves=${l}` }))}
+      />
+    </div>
+    <div>
+      <h2>How T2 systems change it</h2>
+      <BarList bars={T2_OPS.map((o) => ({ label: T2_OP_LABEL[o], value: ops[o] ?? 0, href: `/systems/?modality=${mod}&ops=${o}`, cls: 'tier-T2' }))} />
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <h2>Representation × management tier</h2>
+    <TierMatrix client:visible rows={REP_CATEGORIES} cols={[...TIERS]} cells={cells} rowLabels={REP_CATEGORY_LABEL} colLabels={TIER_LABEL} />
+  </section>
+
+  {
+    benches.length > 0 && (
+      <section class="wrap block grid2">
+        <div>
+          <h2>What its benchmarks test</h2>
+          <BarList bars={capDirect} max={benches.length} unit="benchmarks" caption={`Directly evaluated, of ${benches.length} benchmarks`} />
+        </div>
+        <div>
+          <h2>Benchmarks</h2>
+          <ul class="names">
+            {benches.map((b) => <li><a href={`/benchmarks/${b.id}/`}>{b.name}</a></li>)}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="wrap block">
+    <h2>All {list.length} systems</h2>
+    <ul class="sys">
+      {
+        list.map((s) => (
+          <li class={`tier-${s.tier}`}>
+            <a href={`/systems/${s.id}/`}>{s.name}</a>
+            <span class="small muted">{s.tier} · {s.year}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .crumbs { color: var(--muted); margin-bottom: 16px; }
+  .intro h1 { border-left: 6px solid var(--c); padding-left: 16px; margin-left: -22px; }
+  .pick { display: flex; flex-wrap: wrap; gap: 6px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .grid2 > * { min-width: 0; }
+  h2 { font-size: var(--step-2); }
+  .names { list-style: none; padding: 0; columns: 2; column-gap: 24px; }
+  .names li { padding: 3px 0; break-inside: avoid; }
+  .sys { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px 24px; }
+  .sys li { display: flex; flex-direction: column; border-left: 3px solid var(--c); padding-left: 10px; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } .intro h1 { margin-left: 0; } }
+</style>

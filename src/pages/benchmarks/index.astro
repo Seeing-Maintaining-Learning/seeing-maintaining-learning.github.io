@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import BarList from '../../components/BarList.astro';
+import CoverageHeatmap from '../../components/viz/CoverageHeatmap.svelte';
+import { FAMILY_CAPS, SHARED_CAPS, benchmarks } from '../../data/index.ts';
+import { MODALITIES, MODALITY_LABEL } from '../../data/vocab.ts';
+import { breadcrumbs, dataset } from '../../lib/seo.ts';
+
+const modalities = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], cls: `mod-${m}` }));
+const rows = benchmarks.map((b) => ({ id: b.id, name: b.name, modality: b.modality, coverage: b.coverage, source: b.source, task: b.task }));
+const direct = SHARED_CAPS.map(([code, name], i) => ({
+  label: name,
+  note: code,
+  value: benchmarks.filter((b) => b.coverage[i] === 'direct').length,
+}));
+const description = `Coverage of ${benchmarks.length} multimodal agent memory benchmarks across six shared and fifteen modality-specific memory capabilities, from the survey’s Table 2.`;
+---
+
+<Base
+  title="Multimodal agent memory benchmarks: what they test"
+  description={description}
+  og="/og/benchmarks.png"
+  jsonld={[
+    dataset('Multimodal agent memory benchmarks', description, '/benchmarks/', benchmarks.length),
+    breadcrumbs([['Home', '/'], ['Benchmarks', '/benchmarks/']]),
+  ]}
+>
+  <section class="wrap block intro">
+    <h1>Benchmarks</h1>
+    <p class="lede">
+      What do current benchmarks actually test? Almost all of them check whether an agent can find evidence spread over
+      a long history. Far fewer check whether memory stays correct as the world changes, or whether it guides action.
+    </p>
+    <div class="top">
+      <BarList bars={direct} max={benchmarks.length} unit="benchmarks" caption={`Benchmarks that directly evaluate each shared capability, of ${benchmarks.length}`} />
+    </div>
+  </section>
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Coverage by benchmark</h2>
+      <p>
+        Six capabilities apply to every modality. The last three columns are specific to each modality family; filter by
+        modality to see their names.
+      </p>
+    </div>
+    <CoverageHeatmap
+      client:visible
+      rows={rows}
+      shared={SHARED_CAPS.map(([a, b]) => [a, b])}
+      familyCaps={Object.fromEntries(Object.entries(FAMILY_CAPS).map(([k, v]) => [k, v.map(([a, b]) => [a, b])]))}
+      modalities={modalities}
+    />
+  </section>
+</Base>
+
+<style>
+  .intro .lede { margin-bottom: 32px; }
+  .top { max-width: 760px; }
+</style>

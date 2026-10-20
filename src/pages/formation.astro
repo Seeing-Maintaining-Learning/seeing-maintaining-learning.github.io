@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import BarList from '../components/BarList.astro';
+import FormationSankey from '../components/viz/FormationSankey.svelte';
+import SixForms from '../components/viz/SixForms.svelte';
+import { systems } from '../data/index.ts';
+import {
+  FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, LEAF_SHORT, LEAVES, MODALITIES, MODALITY_LABEL, RETRIEVAL_LABEL, SOURCE_ACCESS_LABEL,
+  STORAGE_LABEL,
+} from '../data/vocab.ts';
+import { countBy, formationFlows, leafCounts } from '../lib/aggregate.ts';
+import { breadcrumbs } from '../lib/seo.ts';
+
+const flows = formationFlows(systems);
+const leafN = leafCounts(systems);
+const ids = new Set(flows.flatMap((l) => [l.source, l.target]));
+const ORDER: Record<string, string[]> = {
+  m: [...MODALITIES],
+  l: [...LEAVES],
+  s: Object.keys(STORAGE_LABEL),
+  r: Object.keys(RETRIEVAL_LABEL),
+};
+const LABELS: Record<string, Record<string, string>> = { m: MODALITY_LABEL, l: LEAF_SHORT, s: STORAGE_LABEL, r: RETRIEVAL_LABEL };
+const STAGE: Record<string, number> = { m: 0, l: 1, s: 2, r: 3 };
+const nodes = [...ids].map((id) => {
+  const [p, key] = id.split(':');
+  return { id, label: LABELS[p][key] ?? key, stage: STAGE[p], order: ORDER[p].indexOf(key) };
+});
+const modalities = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], cls: `mod-${m}` }));
+const pathCount = systems.reduce((a, s) => a + s.paths.length, 0);
+const access = countBy(
+  systems.flatMap((s) => s.paths),
+  (p) => p.sourceAccess,
+);
+
+const EXAMPLES: Record<string, { stored: string; traits: [string, number][] }> = {
+  retained_perceptual_source_evidence: {
+    stored: 'frame_1042.jpg  (1920×1080)\ncrop_mug_keys.png\naudio_0810.wav  “I’ll be back at six.”\nindex: { time: 08:10, camera: kitchen }',
+    traits: [['Source fidelity', 4], ['Editability', 2], ['Compactness', 1], ['Integration with inference', 2]],
+  },
+  modality_specific_encodings_and_geometric_state: {
+    stored: 'visual tokens  [576 × 4096] fp16\n3D map:\n  mug   @ (1.42, 0.31, 0.93) m\n  keys  @ (1.71, 0.28, 0.92) m\nspeech embedding  [1 × 1024]',
+    traits: [['Source fidelity', 3], ['Editability', 1], ['Compactness', 2], ['Integration with inference', 3]],
+  },
+  perception_to_text_records_and_summaries: {
+    stored: '[08:10] A mug and a set of keys are on the kitchen counter.\n[08:10] The user said they will be back at 6 pm.',
+    traits: [['Source fidelity', 1], ['Editability', 4], ['Compactness', 4], ['Integration with inference', 2]],
+  },
+  spatial_temporal_and_cross_modal_structured_memory: {
+    stored: '(mug)  -[on]->  (counter)\n(keys) -[on]->  (counter)\n(counter) -[in]-> (kitchen)\n(user) -[returns_at]-> (18:00)\nobserved_at: 08:10 · source: frame_1042',
+    traits: [['Source fidelity', 2], ['Editability', 4], ['Compactness', 3], ['Integration with inference', 2]],
+  },
+  persistent_multimodal_latent_state: {
+    stored: 'recurrent state  h_t ∈ ℝ²⁰⁴⁸\n[ 0.12, −0.87, 0.33, 0.05, … ]\nretained KV blocks 311–318',
+    traits: [['Source fidelity', 2], ['Editability', 1], ['Compactness', 3], ['Integration with inference', 4]],
+  },
+  experience_conditioned_parametric_memory: {
+    stored: 'ΔW  (LoRA, rank 8) on layers 20–24\nupdated by a few gradient steps on this episode\n— the observation itself is not kept',
+    traits: [['Source fidelity', 1], ['Editability', 1], ['Compactness', 4], ['Integration with inference', 4]],
+  },
+};
+const forms = LEAVES.map((leaf) => ({
+  leaf,
+  label: LEAF_LABEL[leaf],
+  family: FAMILY_LABEL[LEAF_FAMILY[leaf]],
+  count: leafN[leaf] ?? 0,
+  ...EXAMPLES[leaf],
+}));
+const UNITS = ['image or region', 'video frame or clip', 'audiovisual event', 'object track', 'interface state', 'action–observation transition', 'trajectory', 'episode'];
+const description =
+  'How multimodal agents turn raw images, video, audio, GUI and embodied experience into memory: six representation forms, storage, retrieval, and source access across 297 systems.';
+---
+
+<Base
+  title="Memory formation: from raw multimodal experience to stored memory"
+  description={description}
+  og="/og/formation.png"
+  jsonld={[breadcrumbs([['Home', '/'], ['Formation', '/formation/']])]}
+>
+  <section class="wrap block intro">
+    <p class="small muted">Axis I · Formation</p>
+    <h1>How raw experience becomes memory</h1>
+    <p class="lede">
+      Formation decides what an agent keeps from what it sees and hears, how that stream is cut into memory units, and in
+      what form those units persist. The survey classifies each memory by the form that is finally handed back to the model,
+      not by how it is indexed.
+    </p>
+    <ul class="units" aria-label="Typical memory units">
+      {UNITS.map((u) => <li>{u}</li>)}
+    </ul>
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>One observation, six possible memories</h2>
+      <p>The same moment can be kept as pixels, features, text, a graph, a hidden state, or a change to the weights. Each choice keeps something and loses something.</p>
+    </div>
+    <SixForms client:visible forms={forms} />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>From modality to retrieval, across the corpus</h2>
+      <p>
+        {pathCount} memory paths from {systems.length} systems, traced from the input modality to the stored form, the
+        store that holds it, and how it is found again. Band width counts paths; a path using several stores or retrieval
+        methods is split evenly between them. Hover to trace a flow, or pick a modality.
+      </p>
+    </div>
+    <FormationSankey
+      client:visible
+      links={flows}
+      nodes={nodes}
+      modalities={modalities}
+      stages={['Modality', 'Represented as', 'Stored in', 'Retrieved by']}
+    />
+  </section>
+
+  <section class="wrap block twocol">
+    <div class="section-head">
+      <h2>Can the agent get back to the source?</h2>
+      <p>
+        Abstraction saves space but can cut the link to the original evidence. Only some memory paths keep the raw
+        observation available, or link back to it, so that a summary can be checked against what was actually seen.
+      </p>
+      <p><a href="/representation/">Compare the representation families</a></p>
+    </div>
+    <BarList
+      unit="memory paths"
+      bars={['direct', 'linked_recoverable', 'retained_not_accessible', 'none'].map((k) => ({
+        label: SOURCE_ACCESS_LABEL[k],
+        value: access[k] ?? 0,
+      }))}
+    />
+  </section>
+</Base>
+
+<style>
+  .intro h1 { max-width: 16ch; }
+  .units { list-style: none; padding: 0; margin: 24px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .units li { font-size: var(--step--1); padding: 4px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule); color: var(--ink-2); }
+  .twocol { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
+  @media (max-width: 860px) { .twocol { grid-template-columns: 1fr; } }
+</style>

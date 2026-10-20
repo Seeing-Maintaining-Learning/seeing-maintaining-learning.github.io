@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE_NAME, abs } from '../lib/seo.ts';
+import { SITE_NAME, abs, clip } from '../lib/seo.ts';
 import { FULL_TITLE, LINKS } from '../data/paper.ts';
 
 interface Props {
@@ -10,10 +10,13 @@ interface Props {
   jsonld?: Record<string, unknown>[];
   type?: 'website' | 'article';
   noSuffix?: boolean;
+  noindex?: boolean;
 }
 
-const { title, description, og = '/og/default.png', jsonld = [], type = 'website', noSuffix = false } = Astro.props;
-const fullTitle = noSuffix ? title : `${title} | ${SITE_NAME}`;
+const { title, description: rawDescription, og = '/og/default.png', jsonld = [], type = 'website', noSuffix = false, noindex = false } = Astro.props;
+const description = clip(rawDescription);
+const suffixed = `${title} | ${SITE_NAME}`;
+const fullTitle = noSuffix || suffixed.length > 65 ? title : suffixed;
 const canonical = abs(Astro.url.pathname);
 const path = Astro.url.pathname;
 const verification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
@@ -37,7 +40,7 @@ const NAV: [string, string][] = [
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content={noindex ? 'noindex' : 'index, follow, max-image-preview:large'} />
     {verification && <meta name="google-site-verification" content={verification} />}
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={SITE_NAME} />

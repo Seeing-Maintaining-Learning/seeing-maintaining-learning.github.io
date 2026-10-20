@@ -1,4 +1,156 @@
 ---
 import Base from '../layouts/Base.astro';
+import HeroField from '../components/viz/HeroField.svelte';
+import { benchmarks, systems } from '../data/index.ts';
+import { AUTHORS, BIBTEX, DESCRIPTION, INSTITUTIONS, LINKS, SUBTITLE, TITLE } from '../data/paper.ts';
+import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
+import { countBy, crossMatrix } from '../lib/aggregate.ts';
+import { scholarlyArticle, website } from '../lib/seo.ts';
+
+const points = systems.map((s) => {
+  const d = new Date(s.date);
+  const doy = Number.isNaN(d.getTime()) ? 0.5 : (d.getTime() - Date.UTC(s.year, 0, 1)) / (365 * 864e5);
+  return {
+    id: s.id,
+    name: s.name,
+    tier: s.tier,
+    modality: s.modality,
+    modalityLabel: MODALITY_LABEL[s.modality],
+    category: s.category,
+    year: s.year,
+    t: s.year + doy,
+  };
+});
+const lenses: { key: 'representation' | 'management' | 'modality' | 'timeline'; label: string }[] = [
+  { key: 'representation', label: 'Representation' },
+  { key: 'management', label: 'Management tier' },
+  { key: 'modality', label: 'Modality' },
+  { key: 'timeline', label: 'Timeline' },
+];
+const tiers = countBy(systems, (s) => s.tier);
+const cm = crossMatrix(systems);
+const hybridPct = ((cm.hybrid.T1 + cm.hybrid.T2 + cm.hybrid.T3) / systems.length) * 100;
+const cfDirect = benchmarks.filter((b) => b.coverage[3] === 'direct').length;
+const explicitT3 = cm.cross.T3 + cm.hybrid.T3;
+
+const DOORS = [
+  { q: 'What does stored memory look like?', a: 'Six representation forms in three families, and the hybrids that combine them.', href: '/representation/', tag: 'Representation' },
+  { q: 'How does experience become memory?', a: 'From pixels and speech to records, graphs, states, and weights, traced across the corpus.', href: '/formation/', tag: 'Formation' },
+  { q: 'What can change while the agent runs?', a: 'Static, dynamic, and self-evolving memory, with interactive walk-throughs.', href: '/management/', tag: 'Management T1–T3' },
+  { q: 'I work on one modality.', a: 'Systems and benchmarks for image, video, audio, GUI, or embodied agents.', href: '/modalities/', tag: 'Modalities' },
+];
 ---
-<Base title="Multimodal Agent Memory Survey" description="placeholder" noSuffix><p class="wrap">Home</p></Base>
+
+<Base
+  title={`Multimodal Agent Memory Survey | ${TITLE}`}
+  description={DESCRIPTION}
+  noSuffix
+  jsonld={[website(), scholarlyArticle()]}
+>
+  <section class="wrap hero">
+    <div class="intro">
+      <h1>
+        <span class="t">{TITLE}</span>
+        <span class="s">{SUBTITLE}</span>
+      </h1>
+      <div class="side">
+      <p class="lede">
+        A survey of how multimodal agents remember: how they turn what they see and hear into memory, and how that memory
+        is maintained and improved through experience. {`We reviewed ${systems.length} systems and ${benchmarks.length} benchmarks across five modalities.`}
+      </p>
+      <p class="cta">
+        <a class="btn primary" href={LINKS.openreview}>Read the paper</a>
+        <a class="btn" href="/systems/">Browse the systems</a>
+      </p>
+      </div>
+    </div>
+    <HeroField client:load points={points} lenses={lenses} />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Find your way in</h2>
+      <p>Start from the question you have. Each view uses the same corpus.</p>
+    </div>
+    <ul class="doors">
+      {
+        DOORS.map((d) => (
+          <li>
+            <a href={d.href}>
+              <span class="tag small muted">{d.tag}</span>
+              <span class="q">{d.q}</span>
+              <span class="a">{d.a}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mods small">
+      Or jump to a modality:{' '}
+      {MODALITIES.map((m) => <a class={`chip mod-${m}`} href={`/modalities/${MODALITY_SLUG[m]}/`}><span class="dot" />{MODALITY_LABEL[m]}</a>)}
+    </p>
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>What the corpus shows</h2>
+    </div>
+    <ol class="findings">
+      <li>
+        <p class="f"><span class="num">{((tiers.T2 / systems.length) * 100).toFixed(1)}%</span> of systems update memory under a fixed policy (T2).</p>
+        <p class="muted">Dynamic memory is the norm. Only {tiers.T3} systems let feedback change the policy itself.</p>
+        <a href="/management/">See the tiers</a>
+      </li>
+      <li>
+        <p class="f"><span class="num">{hybridPct.toFixed(1)}%</span> of systems are hybrids.</p>
+        <p class="muted">Most pair explicit records with source-level evidence or modality-specific encodings.</p>
+        <a href="/representation/#hybrid">See hybrid patterns</a>
+      </li>
+      <li>
+        <p class="f"><span class="num">{explicitT3} of {tiers.T3}</span> self-evolving systems keep explicit memory.</p>
+        <p class="muted">Policies evolve where memory can be read and edited; none of the purely latent systems do.</p>
+        <a href="/management/">See the matrix</a>
+      </li>
+      <li>
+        <p class="f"><span class="num">{cfDirect} of {benchmarks.length}</span> benchmarks directly test conflicting memories.</p>
+        <p class="muted">Evaluation favors finding old evidence over keeping memory correct as the world changes.</p>
+        <a href="/benchmarks/">See benchmark coverage</a>
+      </li>
+    </ol>
+  </section>
+
+  <section class="wrap block cite">
+    <div>
+      <h2>Cite the survey</h2>
+      <p class="muted">{AUTHORS.length} authors from {INSTITUTIONS.length} institutions. <a href="/paper/">Authors, abstract, and links</a></p>
+    </div>
+    <pre><code>{BIBTEX.split('\n').slice(0, 3).join('\n')}{'\n  …\n}'}</code></pre>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-top: clamp(32px, 5vw, 64px); padding-bottom: clamp(40px, 6vw, 72px); display: grid; gap: 32px; }
+  h1 { margin: 0; font-size: clamp(2.6rem, 5.6vw, 4.5rem); letter-spacing: -0.03em; line-height: 0.98; }
+  h1 .t { display: block; }
+  h1 .s { display: block; font-size: 0.42em; font-weight: 500; letter-spacing: -0.01em; color: var(--ink-2); margin-top: 14px; line-height: 1.15; }
+  .intro { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px 48px; align-items: end; }
+  .side .lede { font-size: 1.0625rem; margin-bottom: 0; }
+  @media (max-width: 900px) { .intro { grid-template-columns: 1fr; } }
+  .cta { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }
+  .btn { font: inherit; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; }
+  .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .doors { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .doors a { display: flex; flex-direction: column; gap: 8px; height: 100%; padding: 18px; border-radius: 12px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; transition: border-color var(--dur-1); }
+  .doors a:hover { border-color: var(--accent); }
+  .doors a:hover .q { text-decoration: underline; text-decoration-thickness: 1px; }
+  .q { font-size: var(--step-1); font-weight: 650; line-height: 1.2; }
+  .a { color: var(--ink-2); font-size: 0.9375rem; }
+  .mods { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 20px; }
+  .findings { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
+  .findings li { border-top: 2px solid var(--ink); padding-top: 14px; }
+  .f { font-size: var(--step-1); font-weight: 600; line-height: 1.3; }
+  .f .num { color: var(--accent-ink); }
+  .cite { display: grid; grid-template-columns: 1fr 1.3fr; gap: 32px; align-items: center; }
+  .cite pre { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; overflow-x: auto; margin: 0; font-size: 0.8125rem; }
+  @media (max-width: 760px) { .cite { grid-template-columns: 1fr; } }
+</style>

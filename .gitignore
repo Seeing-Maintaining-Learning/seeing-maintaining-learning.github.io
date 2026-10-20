@@ -5,3 +5,4 @@ src/data/generated/
 .DS_Store
 temp/
 vendor/paper/private/
+public/logos/

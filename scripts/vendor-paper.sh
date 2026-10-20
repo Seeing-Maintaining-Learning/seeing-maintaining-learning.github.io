@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # One-off, local: copy public-facing paper material from the private survey repo.
-# Requires: gh (authenticated with access), poppler (pdftocairo).
+# Requires: gh (authenticated with access to the private repo).
 set -euo pipefail
 REPO="QingyueJ-nd/Multimodal-Agent-Memory-Survey-Arxiv"
 OUT="$(cd "$(dirname "$0")/.." && pwd)/vendor/paper"
-mkdir -p "$OUT/raw" "$OUT/private" "$OUT/logos"
+mkdir -p "$OUT/raw" "$OUT/private"
 # raw/ is committed (public data the build reads); private/ is gitignored (reference sources only).
 
 fetch() { gh api "repos/$REPO/contents/$1" -H "Accept: application/vnd.github.raw" > "$2"; }
@@ -24,9 +24,4 @@ for f in multimodal-memory-lifecycle-illustrated.svg embodied-memory-lifecycle-t
   fetch "content/figures/$f" "$OUT/private/$f"
 done
 
-for name in $(gh api "repos/$REPO/contents/content/figures/logos" --jq '.[].name | select(endswith(".pdf"))'); do
-  fetch "content/figures/logos/$name" "$OUT/logos/$name"
-  pdftocairo -svg "$OUT/logos/$name" "$OUT/logos/${name%.pdf}.svg" && rm "$OUT/logos/$name"
-done
-fetch content/figures/logos/SOURCES.json "$OUT/logos/SOURCES.json"
 echo "Vendored into $OUT"

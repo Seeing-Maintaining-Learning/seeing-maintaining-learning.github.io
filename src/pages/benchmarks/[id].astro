@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import { FAMILY_CAPS, SHARED_CAPS, benchmarks } from '../../data/index.ts';
+import type { Benchmark } from '../../data/normalize.ts';
+import { MODALITY_LABEL, MODALITY_SLUG } from '../../data/vocab.ts';
+import { breadcrumbs, citedWork, clip } from '../../lib/seo.ts';
+
+export function getStaticPaths() {
+  return benchmarks.map((b) => ({ params: { id: b.id }, props: { b } }));
+}
+
+const { b } = Astro.props as { b: Benchmark };
+const caps = [...SHARED_CAPS, ...(FAMILY_CAPS[b.modality] ?? [])];
+const direct = caps.filter((_, i) => b.coverage[i] === 'direct').map(([, n]) => n.toLowerCase());
+const WORD = { direct: 'Directly evaluated', partial: 'Partially evaluated', none: 'Not evaluated' } as const;
+const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Hybrid real + synthetic' };
+const ROLE: Record<string, string> = {
+  memory_specific: 'Memory-specific benchmark',
+  mixed_memory_tracks: 'Benchmark with memory tracks',
+  broader_evaluation: 'Broader evaluation with memory demands',
+};
+const authorLine = b.authors.length > 6 ? `${b.authors.slice(0, 6).join(', ')}, et al.` : b.authors.join(', ');
+const description = clip(
+  `${b.name}: a ${MODALITY_LABEL[b.modality].toLowerCase()} memory benchmark${direct.length ? ` that directly tests ${direct.slice(0, 4).join(', ')}` : ''}.`,
+);
+---
+
+<Base
+  title={`${b.name}: multimodal memory benchmark`}
+  description={description}
+  type="article"
+  jsonld={[
+    citedWork(b.name, b.title, b.url ?? '', b.authors, b.date),
+    breadcrumbs([['Home', '/'], ['Benchmarks', '/benchmarks/'], [b.name, `/benchmarks/${b.id}/`]]),
+  ]}
+>
+  <article class="wrap bench">
+    <nav class="crumbs small" aria-label="Breadcrumb"><a href="/benchmarks/">Benchmarks</a> / <span>{b.name}</span></nav>
+    <h1>{b.name}</h1>
+    <p class="paper-title">{b.title}</p>
+    {authorLine && <p class="small muted">{authorLine}{b.date ? ` · ${b.date}` : ''}</p>}
+    {b.url && <p><a href={b.url} rel="noopener">Read the paper</a></p>}
+
+    <dl class="facts">
+      <div class={`mod-${b.modality}`}><dt>Modality</dt><dd><a class="chip" href={`/modalities/${MODALITY_SLUG[b.modality]}/`}><span class="dot" />{MODALITY_LABEL[b.modality]}</a></dd></div>
+      <div><dt>Data</dt><dd>{SOURCE[b.source] ?? b.source}</dd></div>
+      <div><dt>Task · ground truth</dt><dd>{b.task} · {b.groundTruth}</dd></div>
+      <div><dt>Scope</dt><dd>{ROLE[b.role] ?? b.role.replace(/_/g, ' ')}</dd></div>
+    </dl>
+
+    <h2>What it tests</h2>
+    <ul class="caps">
+      {
+        caps.map(([code, name], i) => (
+          <li class={b.coverage[i]}>
+            <span class="code">{code}</span>
+            <span>{name}</span>
+            <span class="w small">{WORD[b.coverage[i]]}</span>
+          </li>
+        ))
+      }
+    </ul>
+    {
+      b.rationale && (
+        <>
+          <h2>Survey notes</h2>
+          <p class="prose">{b.rationale}</p>
+        </>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .bench { padding-block: clamp(32px, 5vw, 64px); max-width: 860px; }
+  .crumbs { color: var(--muted); margin-bottom: 16px; }
+  .paper-title { font-family: var(--font-read); font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin: 32px 0 40px; }
+  .facts div { border-top: 2px solid var(--c, var(--rule)); padding-top: 8px; }
+  dt { font-size: var(--step--1); color: var(--muted); margin-bottom: 4px; }
+  dd { margin: 0; }
+  h2 { font-size: var(--step-2); }
+  .caps { list-style: none; padding: 0; margin: 0 0 40px; display: grid; gap: 4px; }
+  .caps li { display: grid; grid-template-columns: 3.5ch 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px; background: var(--surface); border: 1px solid var(--rule); }
+  .caps li.direct { border-left: 4px solid var(--cov-direct); }
+  .caps li.partial { border-left: 4px solid var(--cov-partial); }
+  .caps li.none { color: var(--muted); }
+  .code { font-weight: 650; }
+  .w { color: var(--muted); }
+</style>

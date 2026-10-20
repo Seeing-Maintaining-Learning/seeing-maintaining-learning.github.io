@@ -155,6 +155,7 @@ code, pre { font-family: var(--font-mono); font-size: 0.875em; }
 }
 
 section.block { padding-block: clamp(48px, 8vw, 96px); }
+section.block > * { min-width: 0; }
 section.block + section.block { border-top: 1px solid var(--rule); }
 .section-head { max-width: 68ch; margin-bottom: 32px; }
 .section-head p { color: var(--ink-2); }

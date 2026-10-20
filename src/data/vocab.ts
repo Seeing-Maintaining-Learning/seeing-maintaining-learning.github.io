@@ -77,6 +77,16 @@ export const LEAF_LABEL: Record<Leaf, string> = {
   experience_conditioned_parametric_memory: 'Experience-conditioned parametric memory',
 };
 
+/** Short leaf names for dense charts. */
+export const LEAF_SHORT: Record<Leaf, string> = {
+  retained_perceptual_source_evidence: 'Raw source evidence',
+  modality_specific_encodings_and_geometric_state: 'Encodings & geometry',
+  perception_to_text_records_and_summaries: 'Text records & summaries',
+  spatial_temporal_and_cross_modal_structured_memory: 'Structured records & graphs',
+  persistent_multimodal_latent_state: 'Latent state',
+  experience_conditioned_parametric_memory: 'Parametric memory',
+};
+
 export const LEAF_FAMILY: Record<Leaf, Family> = {
   retained_perceptual_source_evidence: 'source_preserving_and_modality_native_memory',
   modality_specific_encodings_and_geometric_state: 'source_preserving_and_modality_native_memory',

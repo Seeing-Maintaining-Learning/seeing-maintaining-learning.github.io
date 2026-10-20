@@ -53,31 +53,36 @@ export interface SankeyLink {
   source: string;
   target: string;
   value: number;
+  modality: string;
 }
 
 /**
- * Formation flow: modality -> leaf -> storage -> retrieval.
+ * Formation flow: modality -> leaf -> storage -> retrieval, with each band keeping its modality.
  * Each representation path contributes one unit, split evenly across its storage and
  * retrieval mechanisms so that flow is conserved at every stage.
  */
 export function formationFlows(systems: System[]): SankeyLink[] {
   const acc = new Map<string, number>();
-  const add = (a: string, b: string, v: number) => acc.set(`${a}|${b}`, (acc.get(`${a}|${b}`) ?? 0) + v);
+  const add = (a: string, b: string, m: string, v: number) => {
+    const k = `${a}|${b}|${m}`;
+    acc.set(k, (acc.get(k) ?? 0) + v);
+  };
   for (const s of systems) {
+    const m = s.modality;
     for (const p of s.paths) {
       const storage = p.storage.filter((x) => x !== 'unclear');
       const retrieval = p.retrieval.filter((x) => x !== 'unclear');
       if (!storage.length || !retrieval.length) continue;
-      add(`m:${s.modality}`, `l:${p.leaf}`, 1);
+      add(`m:${m}`, `l:${p.leaf}`, m, 1);
       for (const st of storage) {
-        add(`l:${p.leaf}`, `s:${st}`, 1 / storage.length);
-        for (const rt of retrieval) add(`s:${st}`, `r:${rt}`, 1 / storage.length / retrieval.length);
+        add(`l:${p.leaf}`, `s:${st}`, m, 1 / storage.length);
+        for (const rt of retrieval) add(`s:${st}`, `r:${rt}`, m, 1 / storage.length / retrieval.length);
       }
     }
   }
   return [...acc].map(([k, value]) => {
-    const [source, target] = k.split('|');
-    return { source, target, value };
+    const [source, target, modality] = k.split('|');
+    return { source, target, value, modality };
   });
 }
 

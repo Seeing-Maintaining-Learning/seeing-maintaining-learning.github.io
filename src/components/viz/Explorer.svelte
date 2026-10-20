@@ -18,7 +18,7 @@
   }
 
   interface Facet {
-    key: keyof Row;
+    key: string;
     label: string;
     options: [string, string][];
   }
@@ -46,8 +46,9 @@
       : out;
   });
 
-  const countFor = (key: keyof Row, value: string) => {
-    const others = Object.entries(selected).filter(([k]) => k !== key);
+  const countFor = (k: string, value: string) => {
+    const key = k as keyof Row;
+    const others = Object.entries(selected).filter(([o]) => o !== key);
     return rows.filter(
       (r) => matches(r, key, [value]) && others.every(([k, vals]) => !vals.length || matches(r, k as keyof Row, vals)),
     ).length;

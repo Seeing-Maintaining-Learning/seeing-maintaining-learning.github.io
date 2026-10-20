@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import GrowthLines from '../../components/viz/GrowthLines.svelte';
+import { benchmarks, systems } from '../../data/index.ts';
+import { LEAF_SHORT, MODALITIES, MODALITY_LABEL, MODALITY_SLUG, TIERS } from '../../data/vocab.ts';
+import { countBy, growthByModality } from '../../lib/aggregate.ts';
+import { breadcrumbs } from '../../lib/seo.ts';
+
+const years = [2023, 2024, 2025, 2026];
+const growth = growthByModality(systems, years);
+const benchN = countBy(benchmarks, (b) => b.modality);
+const cards = MODALITIES.map((m) => {
+  const list = systems.filter((s) => s.modality === m);
+  const tiers = countBy(list, (s) => s.tier);
+  const leaves = Object.entries(countBy(list, (s) => s.paths.map((p) => p.leaf))).sort((a, b) => b[1] - a[1]);
+  return { m, n: list.length, tiers, top: leaves[0], bench: benchN[m] ?? 0 };
+});
+const description =
+  'Multimodal agent memory by modality: image, video and streaming, audio and speech, GUI and computer use, embodied and 3D. Growth, tiers, representations and benchmarks.';
+---
+
+<Base
+  title="Agent memory by modality: image, video, audio, GUI, embodied"
+  description={description}
+  og="/og/modalities.png"
+  jsonld={[breadcrumbs([['Home', '/'], ['Modalities', '/modalities/']])]}
+>
+  <section class="wrap block intro">
+    <h1>Start from your modality</h1>
+    <p class="lede">
+      Memory problems look different for a robot, a video assistant, or a phone agent. Pick the setting you work in to see
+      how its systems remember and how they are evaluated.
+    </p>
+    <ul class="cards">
+      {
+        cards.map((c) => (
+          <li class={`card panel mod-${c.m}`}>
+            <a href={`/modalities/${MODALITY_SLUG[c.m]}/`}>
+              <h2>{MODALITY_LABEL[c.m]}</h2>
+              <p class="big num">{c.n}<span class="small muted"> systems · {c.bench} benchmarks</span></p>
+              <span class="tiers" aria-label={TIERS.map((t) => `${t}: ${c.tiers[t] ?? 0}`).join(', ')}>
+                {TIERS.map((t) => (
+                  <span class={`tier-${t}`} style={`flex:${c.tiers[t] ?? 0}`} title={`${t}: ${c.tiers[t] ?? 0}`} />
+                ))}
+              </span>
+              <span class="small muted">
+                T1 {c.tiers.T1 ?? 0} · T2 {c.tiers.T2 ?? 0} · T3 {c.tiers.T3 ?? 0}
+              </span>
+              {c.top && <span class="small">Most common form: {LEAF_SHORT[c.top[0] as keyof typeof LEAF_SHORT]}</span>}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Embodied and video lead; audio is just starting</h2>
+      <p>Cumulative systems by primary modality and year of the latest paper version.</p>
+    </div>
+    <GrowthLines
+      client:visible
+      title="Cumulative systems by primary modality, 2023–2026"
+      years={years}
+      series={MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], cls: `mod-${m}`, values: growth[m] }))}
+    />
+  </section>
+</Base>
+
+<style>
+  .intro .lede { margin-bottom: 32px; }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .card { border-top: 3px solid var(--c); }
+  .card a { display: flex; flex-direction: column; gap: 8px; padding: 16px; color: var(--ink); text-decoration: none; height: 100%; }
+  .card a:hover h2 { text-decoration: underline; }
+  .card h2 { font-size: var(--step-1); margin: 0; }
+  .big { font-size: var(--step-3); font-weight: 650; margin: 0; line-height: 1; }
+  .tiers { display: flex; gap: 2px; height: 8px; }
+  .tiers span { background: var(--c); border-radius: 2px; }
+</style>
