@@ -10,7 +10,7 @@
 
 <ol class="ladder">
   {#each rows as r, ri (r.tier)}
-    <li class="tier-{r.tier}" style="--step:{ri}">
+    <li class="tier-{r.tier}">
       <div class="head">
         <span class="ic"><Icon name={r.tier} size={15} /></span>
         <strong>{r.tier}</strong>
@@ -44,7 +44,6 @@
 
 <style>
   .ladder { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-  li { padding-left: calc(var(--step) * 14px); }
   .head { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
   .ic { color: var(--c); display: inline-flex; }
   .head strong { color: var(--ink); }
