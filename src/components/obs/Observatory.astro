@@ -10,7 +10,7 @@ import Spotlight from './Spotlight.svelte';
 import { benchmarks, systems } from '../../data/index.ts';
 import { AUTHORS, INSTITUTIONS } from '../../data/paper.ts';
 import { MODALITIES, MODALITY_LABEL } from '../../data/vocab.ts';
-import { callouts, latest, ladder, ringDots, scanItems, spectrum, spotlight } from '../../lib/observatory.ts';
+import { callouts, latest, ladder, ringDots, scanItem, scanItems, spectrum, spotlight } from '../../lib/observatory.ts';
 import { riverPapers } from '../../lib/river.ts';
 
 interface Props { points: unknown[] }
@@ -40,7 +40,7 @@ const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: 
   <div class="grid">
     <div class="cell c-scan">
       <p class="ch"><span class="no">01</span> System scan</p>
-      <SystemScan client:visible items={scanItems(systems)} latest={latest(systems)} />
+      <SystemScan client:visible items={scanItems(systems)} latest={latest(systems)} all={systems.map(scanItem)} />
     </div>
     <div class="cell c-sphere">
       <p class="ch"><span class="no">02</span> Memory sphere <span class="muted">· one arm per modality, time along the arm</span></p>

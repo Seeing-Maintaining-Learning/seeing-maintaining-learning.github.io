@@ -15,25 +15,48 @@
     date: string;
     flow: string[];
   }
-  let { items, latest }: { items: ScanItem[]; latest: ScanItem[] } = $props();
+  let { items, latest, all = [] }: { items: ScanItem[]; latest: ScanItem[]; all?: ScanItem[] } = $props();
+  const byId = new Map(all.map((x) => [x.id, x]));
+  // A system picked on the sphere: shown while hovered and for a few seconds after.
+  let picked = $state<ScanItem | null>(null);
+  let pickTimer: ReturnType<typeof setTimeout> | undefined;
   let k = $state(0);
   let dir = $state(1);
   let hold = $state(false);
   let el: HTMLDivElement;
-  const it = $derived(items[k]);
+  const it = $derived(picked ?? items[k]);
 
   const go = (d: number) => {
+    picked = null;
     dir = d;
     k = (k + d + items.length) % items.length;
   };
 
+  // Tell the sphere which system this card shows, so it can ring the matching dot.
+  $effect(() => {
+    window.dispatchEvent(new CustomEvent('scan-show', { detail: it.id }));
+  });
+
   onMount(() => {
-    if (reducedMotion()) return;
+    const onHover = (e: Event) => {
+      const id = (e as CustomEvent<string | null>).detail;
+      clearTimeout(pickTimer);
+      if (id && byId.has(id)) {
+        dir = 1;
+        picked = byId.get(id)!;
+      } else if (picked) {
+        // Keep the last hovered system on screen briefly before rotation resumes.
+        pickTimer = setTimeout(() => (picked = null), 8000);
+      }
+    };
+    window.addEventListener('sphere-hover', onHover);
     let visible = false;
     const stop = whileVisible(el, (v) => (visible = v));
-    const t = setInterval(() => visible && !hold && go(1), 6000);
+    const t = reducedMotion() ? undefined : setInterval(() => visible && !hold && !picked && go(1), 6000);
     return () => {
       clearInterval(t);
+      clearTimeout(pickTimer);
+      window.removeEventListener('sphere-hover', onHover);
       stop();
     };
   });
@@ -44,11 +67,11 @@
     <div class="top">
       <span class="ic"><Icon name={it.modality} size={16} /></span>
       <span class="small muted">{it.modalityLabel}</span>
-      <span class="count num small muted">{k + 1}/{items.length}</span>
+      <span class="count num small muted">{picked ? 'Hovered' : `${k + 1}/${items.length}`}</span>
       <button type="button" class="nav" aria-label="Previous system" onclick={() => go(-1)}>‹</button>
       <button type="button" class="nav" aria-label="Next system" onclick={() => go(1)}>›</button>
     </div>
-    {#key k}
+    {#key it.id}
       <div class="body" in:fly={{ x: 16 * dir, duration: dur(260) }}>
         <a class="name" href="/systems/{it.id}/">{it.name}</a>
         <p class="title">{it.title}</p>
@@ -77,7 +100,7 @@
 <style>
   .scan { display: grid; gap: 10px; align-content: start; }
   .card { border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; background: var(--surface); min-height: 214px; border-top: 3px solid var(--c); overflow: hidden; }
-  .top { display: flex; align-items: center; gap: 6px; }
+  .top { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
   .ic { color: var(--c); display: inline-flex; }
   .count { margin-left: auto; }
   .nav { font: inherit; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink-2); cursor: pointer; line-height: 1; }

@@ -28,6 +28,14 @@
   let calloutPage = $state(0);
   const shown = $derived(callouts.length ? [0, 1, 2].map((k) => callouts[(calloutPage * 3 + k) % callouts.length]) : []);
   const idIndex = new Map(points.map((p, i) => [p.id, i]));
+  // Cross-panel link with the System scan card: we announce hovers, and ring the system it shows.
+  let scanId: string | null = null;
+  let lastHoverId: string | null = null;
+  const announce = (id: string | null) => {
+    if (id === lastHoverId) return;
+    lastHoverId = id;
+    window.dispatchEvent(new CustomEvent('sphere-hover', { detail: id }));
+  };
   let cardEls: HTMLAnchorElement[] = [];
   let leaderEls: SVGPathElement[] = [];
   let dotEls: SVGCircleElement[] = [];
@@ -270,6 +278,21 @@
     }
     ctx.globalAlpha = 1;
     updateCallouts(ctx);
+    // Ring the system currently shown in the scan card.
+    const si = scanId !== null ? idIndex.get(scanId) : undefined;
+    const sd = si !== undefined ? drawn[si] : undefined;
+    if (sd) {
+      ctx.beginPath();
+      ctx.arc(sd.x, sd.y, sd.r + 7, 0, Math.PI * 2);
+      ctx.strokeStyle = colors[colorBy === 'modality' ? points[si!].modality : points[si!].tier];
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(sd.x, sd.y, sd.r + 11, 0, Math.PI * 2);
+      ctx.globalAlpha = 0.35;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
     const orbiting = !!orbit && view === 'management' && !paused && !rm && !hover;
     const moving = spin || orbiting || Math.abs(vyaw) + Math.abs(vpitch) > 1e-4 || now - blend.t0 < DUR || now - flatT0 < DUR || intro < 1 || !!drag;
     if (moving && visible) raf = requestAnimationFrame(frame);
@@ -339,6 +362,7 @@
       }
     });
     hover = best >= 0 ? { i: best, x: drawn[best].x, y: drawn[best].y } : null;
+    if (compact) announce(hover ? points[hover.i].id : null);
     canvas.style.cursor = hover ? 'pointer' : view === 'sphere' ? 'grab' : 'default';
   }
 
@@ -402,9 +426,15 @@
     window.addEventListener('themechange', onTheme);
     const mq = matchMedia('(prefers-color-scheme: dark)');
     mq.addEventListener('change', onTheme);
+    const onScan = (e: Event) => {
+      scanId = (e as CustomEvent<string | null>).detail;
+      kick();
+    };
+    window.addEventListener('scan-show', onScan);
     kick();
     return () => {
       clearInterval(rot);
+      window.removeEventListener('scan-show', onScan);
       ro.disconnect();
       stop();
       window.removeEventListener('themechange', onTheme);
@@ -445,7 +475,7 @@
       onpointerdown={down}
       onpointermove={move}
       onpointerup={up}
-      onpointerleave={() => { drag = null; hover = null; kick(); }}
+      onpointerleave={() => { drag = null; hover = null; if (compact) announce(null); kick(); }}
     ></canvas>
     {#each groups as g (g.key)}
       <div class="glabel" style="left:{Math.min(W - 56, Math.max(56, g.x))}px; top:{Math.max(4, g.y)}px">
