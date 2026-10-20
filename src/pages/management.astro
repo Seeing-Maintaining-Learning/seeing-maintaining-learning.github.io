@@ -44,7 +44,7 @@ const description =
     <ManagementDemo client:visible tierText={TIER_TEXT} opText={opText} opCounts={opCounts} tierCounts={tierCounts} />
   </section>
 
-  <section class="wrap block">
+  <section class="wrap block pair">
     <div class="section-head">
       <h2>Where the {systems.length} systems sit</h2>
       <p>
@@ -52,6 +52,11 @@ const description =
         own policy. Policy evolution concentrates in systems with explicit memory records, which are easier to inspect
         and revise.
       </p>
+      <ul class="facts small">
+        <li><strong class="num">{cells.find((c) => c.cat === 'hybrid' && c.tier === 'T2')?.n}</strong> hybrid T2 systems: the largest group</li>
+        <li><strong class="num">{cells.filter((c) => c.tier === 'T3' && (c.cat === 'cross' || c.cat === 'hybrid')).reduce((a, c) => a + c.n, 0)} of {tierCounts.T3}</strong> self-evolving systems keep explicit records</li>
+        <li><strong class="num">{cells.filter((c) => c.tier === 'T3' && (c.cat === 'native' || c.cat === 'latent')).reduce((a, c) => a + c.n, 0)}</strong> purely latent or source-only systems evolve their policy</li>
+      </ul>
     </div>
     <TierMatrix client:visible rows={REP_CATEGORIES} cols={[...TIERS]} cells={cells} rowLabels={REP_CATEGORY_LABEL} colLabels={TIER_LABEL} />
   </section>
@@ -165,6 +170,11 @@ const description =
 </Base>
 
 <style>
+  .pair { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 40px; align-items: start; }
+  .pair .section-head { margin-bottom: 0; }
+  .facts { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 8px; color: var(--ink-2); }
+  .facts li { padding-left: 12px; border-left: 3px solid var(--t3); }
+  @media (max-width: 960px) { .pair { grid-template-columns: 1fr; } }
   .intro h1 { max-width: 18ch; }
   .intro .lede { margin-bottom: 32px; }
   .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px 40px; }

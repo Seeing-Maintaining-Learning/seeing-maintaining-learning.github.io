@@ -121,6 +121,33 @@ const NAV: [string, string][] = [
       </div>
     </footer>
     <script>
+      // Scroll reveal, like the PersonalAgentEval blog: each block rises and fades in once.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+        const targets = document.querySelectorAll<HTMLElement>(
+          'main .section-head > *, main section.block > :not(.section-head), main article > *, main .wrap > h1, main .wrap > .lede',
+        );
+        document.documentElement.classList.add('rv-on');
+        const io = new IntersectionObserver(
+          (entries) => {
+            // Stagger elements that enter together so they don't pop in as one slab.
+            entries
+              .filter((e) => e.isIntersecting)
+              .forEach((e, k) => {
+                const el = e.target as HTMLElement;
+                el.style.setProperty('--rv-delay', `${Math.min(k, 5) * 70}ms`);
+                el.classList.add('in');
+                io.unobserve(el);
+              });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        targets.forEach((el) => {
+          el.classList.add('rv');
+          io.observe(el);
+        });
+      }
+    </script>
+    <script>
       const btn = document.querySelector<HTMLButtonElement>('.theme');
       btn?.addEventListener('click', () => {
         const root = document.documentElement;

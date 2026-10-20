@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Icon from '../Icon.svelte';
+
   type Cell = { cat: string; tier: string; n: number };
   let {
     rows,
@@ -15,129 +17,142 @@
     colLabels: Record<string, string>;
     query?: string;
   } = $props();
-  const div = (a: number, b: number) => (b ? a / b : 0);
 
+  const ROW_ICON: Record<string, string> = {
+    native: 'source_preserving_and_modality_native_memory',
+    cross: 'cross_represented_explicit_memory',
+    latent: 'internalized_latent_and_parametric_memory',
+    hybrid: 'hybrid',
+  };
+  const div = (a: number, b: number) => (b ? a / b : 0);
   const N = cells.reduce((a, c) => a + c.n, 0);
+  const get = (r: string, t: string) => cells.find((c) => c.cat === r && c.tier === t)?.n ?? 0;
   const rowTotal = (r: string) => cells.filter((c) => c.cat === r).reduce((a, c) => a + c.n, 0);
   const colTotal = (t: string) => cells.filter((c) => c.tier === t).reduce((a, c) => a + c.n, 0);
-  const max = Math.max(...cells.map((c) => c.n));
-  const get = (r: string, t: string) => cells.find((c) => c.cat === r && c.tier === t)?.n ?? 0;
+  const maxCell = Math.max(1, ...cells.map((c) => c.n));
+  const maxRow = Math.max(1, ...rows.map(rowTotal));
 
   let mode = $state<'count' | 'tier' | 'rep'>('count');
   let hover = $state<{ r: string; t: string } | null>(null);
 
-  const share = (r: string, t: string) => {
-    const n = get(r, t);
-    if (mode === 'tier') return div(n, colTotal(t));
-    if (mode === 'rep') return div(n, rowTotal(r));
-    return div(n, max);
-  };
-  const ratio = (r: string, t: string) => div(get(r, t), (rowTotal(r) * colTotal(t)) / N);
-  const pct = (x: number) => `${(x * 100).toFixed(x < 0.1 && x > 0 ? 1 : 0)}%`;
+  const share = (r: string, t: string) =>
+    mode === 'tier' ? div(get(r, t), colTotal(t)) : mode === 'rep' ? div(get(r, t), rowTotal(r)) : div(get(r, t), maxCell);
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  const valueText = (r: string, t: string) =>
+    mode === 'count' ? String(get(r, t)) : pct(mode === 'tier' ? div(get(r, t), colTotal(t)) : div(get(r, t), rowTotal(r)));
+  // Circle area encodes the value: diameter grows with sqrt(share).
+  const size = (r: string, t: string) => (get(r, t) ? 10 + 38 * Math.sqrt(share(r, t)) : 0);
 
-  const describe = (r: string, t: string) => {
+  const readout = $derived.by(() => {
+    if (!hover) return null;
+    const { r, t } = hover;
     const n = get(r, t);
-    const ra = ratio(r, t);
-    const rel = n === 0 ? 'none observed' : ra >= 1.2 ? `${ra.toFixed(1)}× more than expected` : ra <= 0.8 ? `${ra.toFixed(1)}× of expected` : 'about as expected';
-    return { n, ofTier: pct(div(n, colTotal(t))), ofRep: pct(div(n, rowTotal(r))), rel };
-  };
-  const info = $derived(hover ? describe(hover.r, hover.t) : null);
+    const ratio = div(n, (rowTotal(r) * colTotal(t)) / N);
+    const rel = n === 0 ? 'none observed' : ratio >= 1.2 ? `${ratio.toFixed(1)}× more than expected` : ratio <= 0.8 ? `${ratio.toFixed(1)}× of expected` : 'about as expected';
+    return { n, r, t, ofTier: pct(div(n, colTotal(t))), ofRep: pct(div(n, rowTotal(r))), rel };
+  });
 </script>
 
 <div class="tm">
-  <div class="controls">
-    <div class="seg" role="group" aria-label="Scale cells by">
-      <button type="button" aria-pressed={mode === 'count'} onclick={() => (mode = 'count')}>Count</button>
-      <button type="button" aria-pressed={mode === 'tier'} onclick={() => (mode = 'tier')}>Share of tier</button>
-      <button type="button" aria-pressed={mode === 'rep'} onclick={() => (mode = 'rep')}>Share of representation</button>
-    </div>
+  <div class="seg" role="group" aria-label="Show values as">
+    <button type="button" aria-pressed={mode === 'count'} onclick={() => (mode = 'count')}>Count</button>
+    <button type="button" aria-pressed={mode === 'tier'} onclick={() => (mode = 'tier')}>% of tier</button>
+    <button type="button" aria-pressed={mode === 'rep'} onclick={() => (mode = 'rep')}>% of representation</button>
   </div>
 
   <div class="grid" style="--cols:{cols.length}" role="table" aria-label="Systems by representation and management tier">
-    <div role="row" class="hrow">
-      <span role="columnheader" class="corner"></span>
+    <div class="hrow" role="row">
+      <span role="columnheader"></span>
       {#each cols as t (t)}
-        <span role="columnheader" class="ch tier-{t}">
-          <span class="chip"><span class="dot"></span>{t}</span>
-          <span class="small muted">{colLabels[t]}</span>
+        <span role="columnheader" class="ch tier-{t}" class:on={hover?.t === t}>
+          <span class="ci"><Icon name={t} size={15} /></span>
+          <span class="cn">{t}</span>
+          <span class="cl">{colLabels[t]}</span>
+          <span class="ct num">{colTotal(t)} · {pct(div(colTotal(t), N))}</span>
         </span>
       {/each}
-      <span role="columnheader" class="ch small muted">Total</span>
+      <span role="columnheader" class="ch tot-h">Total</span>
     </div>
     {#each rows as r (r)}
-      <div role="row" class="row" class:dimmed={hover && hover.r !== r}>
-        <span role="rowheader" class="rh">{rowLabels[r]}</span>
+      <div class="row" role="row" class:on={hover?.r === r}>
+        <span role="rowheader" class="rh">
+          <span class="ri"><Icon name={ROW_ICON[r] ?? 'hybrid'} size={16} /></span>
+          <span>{rowLabels[r]}</span>
+        </span>
         {#each cols as t (t)}
-          {@const n = get(r, t)}
-          <span role="cell" class="cw"><a
-            class="cell tier-{t}"
-            class:dim={hover && !(hover.r === r && hover.t === t)}
-            href="/systems/?category={r}&tier={t}{query ? `&${query}` : ''}"
-            onmouseenter={() => (hover = { r, t })}
-            onmouseleave={() => (hover = null)}
-            onfocus={() => (hover = { r, t })}
-            onblur={() => (hover = null)}
-            aria-label="{rowLabels[r]}, {t}: {n} systems"
-          >
-            <span class="sq" style="--s:{Math.sqrt(share(r, t))}"></span>
-            <span class="n num">{n}</span>
-          </a></span>
+          {@const s = size(r, t)}
+          <span role="cell" class="cw tier-{t}" class:col={hover?.t === t}>
+            <a
+              class="cell"
+              href="/systems/?category={r}&tier={t}{query ? `&${query}` : ''}"
+              aria-label="{rowLabels[r]}, {t}: {get(r, t)} systems"
+              onpointerenter={() => (hover = { r, t })}
+              onpointerleave={() => (hover = null)}
+              onfocus={() => (hover = { r, t })}
+              onblur={() => (hover = null)}
+            >
+              <span class="bub" class:zero={!get(r, t)} style="width:{s}px; height:{s}px"></span>
+              <span class="v num" class:inside={s >= 34}>{get(r, t) ? valueText(r, t) : '–'}</span>
+            </a>
+          </span>
         {/each}
         <span role="cell" class="tot">
-          <span class="bar" style="width:{(rowTotal(r) / N) * 100}%"></span>
-          <span class="num small">{rowTotal(r)}</span>
+          <span class="tb"><span style="width:{(rowTotal(r) / maxRow) * 100}%"></span></span>
+          <span class="num">{rowTotal(r)}</span>
         </span>
       </div>
     {/each}
-    <div role="row" class="row foot">
-      <span role="rowheader" class="rh small muted">Total</span>
-      {#each cols as t (t)}
-        <span role="cell" class="ctot num small">{colTotal(t)} <span class="muted">({pct(div(colTotal(t), N))})</span></span>
-      {/each}
-      <span role="cell" class="ctot num small">{N}</span>
-    </div>
   </div>
 
   <p class="readout small" aria-live="polite">
-    {#if hover && info}
-      <strong>{info.n}</strong> {rowLabels[hover.r].toLowerCase()} systems at {hover.t}: {info.ofTier} of {hover.t},
-      {info.ofRep} of this representation, {info.rel}. Click to list them.
+    {#if readout}
+      <strong class="num">{readout.n}</strong> {rowLabels[readout.r].toLowerCase()} systems at {readout.t}: {readout.ofTier} of {readout.t},
+      {readout.ofRep} of this representation, {readout.rel}.
     {:else}
-      Each system is counted once, at its highest tier. Hover a cell to compare it with what independent rows and columns
-      would predict; click to list the systems.
+      Each system counted once, at its highest tier. Circle area shows the value. Hover to compare with chance; click to list the systems.
     {/if}
   </p>
 </div>
 
 <style>
-  .tm { display: grid; gap: 16px; }
-  .grid { display: grid; gap: 6px; }
-  .hrow, .row { display: grid; grid-template-columns: minmax(150px, 1.3fr) repeat(var(--cols), minmax(0, 1fr)) minmax(80px, 0.8fr); gap: 6px; align-items: center; }
-  .row { transition: opacity var(--dur-2) var(--ease); }
-  .ch { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-  .rh { font-weight: 600; font-size: 0.9375rem; line-height: 1.25; }
-  .cw { display: block; }
-  .cell {
-    position: relative; aspect-ratio: 1.35; display: grid; width: 100%; place-items: center; text-decoration: none; color: var(--ink);
-    background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
-    transition: opacity var(--dur-2) var(--ease), border-color var(--dur-1);
+  .tm { display: grid; gap: 14px; max-width: 700px; }
+  .seg { justify-self: start; }
+  .grid { display: grid; gap: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--surface); }
+  .hrow, .row { display: grid; grid-template-columns: minmax(140px, 1.5fr) repeat(var(--cols), minmax(0, 1fr)) minmax(70px, 0.9fr); align-items: center; }
+  .hrow { background: var(--surface-2); border-bottom: 1px solid var(--rule); }
+  .row + .row { border-top: 1px solid var(--rule); }
+  .row { transition: background var(--dur-1); }
+  .row.on { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .ch { display: grid; justify-items: center; gap: 1px; padding: 10px 4px; text-align: center; transition: background var(--dur-1); }
+  .ch.on { background: color-mix(in srgb, var(--c) 12%, transparent); }
+  .ci { color: var(--c); display: inline-flex; }
+  .cn { font-weight: 700; font-size: 0.875rem; }
+  .cl { font-size: 0.75rem; color: var(--muted); }
+  .ct { font-size: 0.75rem; color: var(--ink-2); }
+  .tot-h { font-size: 0.75rem; color: var(--muted); }
+  .rh { display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 0.875rem; font-weight: 600; line-height: 1.2; }
+  .ri { color: var(--accent-ink); display: inline-flex; flex: none; }
+  .cw { display: block; height: 64px; transition: background var(--dur-1); }
+  .cw.col { background: color-mix(in srgb, var(--c) 7%, transparent); }
+  .cell { position: relative; display: grid; place-items: center; height: 100%; text-decoration: none; color: var(--ink); }
+  .bub {
+    border-radius: 50%; background: color-mix(in srgb, var(--c) 82%, transparent); border: 1.5px solid var(--c);
+    transition: width 300ms var(--ease), height 300ms var(--ease), transform 150ms var(--ease);
   }
-  .cell:hover, .cell:focus-visible { border-color: var(--c); }
-  .cell.dim { opacity: 0.45; }
-  .sq {
-    position: absolute; width: calc(var(--s) * 82%); aspect-ratio: 1; max-height: 82%;
-    background: var(--c); border-radius: 6px; transition: width var(--dur-2) var(--ease);
-  }
-  .n { position: relative; font-weight: 650; font-size: var(--step-1); padding: 0 6px; border-radius: 4px; background: color-mix(in srgb, var(--surface) 82%, transparent); }
-  .tot { display: flex; align-items: center; gap: 8px; }
-  .bar { height: 8px; background: var(--ink-2); border-radius: 0 4px 4px 0; opacity: 0.55; }
-  .ctot { text-align: center; }
-  .readout { min-height: 3em; color: var(--ink-2); max-width: 70ch; margin: 0; }
-  @media (max-width: 640px) {
-    .hrow, .row { grid-template-columns: 96px repeat(var(--cols), minmax(0, 1fr)) 44px; gap: 4px; }
-    .ch .small { display: none; }
-    .rh { font-size: 0.8125rem; }
-    .bar { display: none; }
-    .n { font-size: var(--step-0); }
+  .cell:hover .bub, .cell:focus-visible .bub { transform: scale(1.08); }
+  .bub.zero { border: 1px dashed var(--rule); background: none; width: 10px !important; height: 10px !important; }
+  .v { position: absolute; font-size: 0.8125rem; font-weight: 700; color: var(--ink); transform: translateY(calc(50% + 14px)); }
+  .v.inside { transform: none; color: var(--surface); }
+  .tot { display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 0.8125rem; }
+  .tb { flex: 1; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+  .tb span { display: block; height: 100%; background: var(--ink-2); opacity: 0.55; }
+  .readout { min-height: 2.8em; color: var(--ink-2); margin: 0; }
+  @media (max-width: 560px) {
+    .hrow, .row { grid-template-columns: 92px repeat(var(--cols), minmax(0, 1fr)) 38px; }
+    .cl, .ct { display: none; }
+    .rh { font-size: 0.75rem; padding: 0 8px; }
+    .ri { display: none; }
+    .tb { display: none; }
+    .tot { padding: 0 6px; }
   }
 </style>

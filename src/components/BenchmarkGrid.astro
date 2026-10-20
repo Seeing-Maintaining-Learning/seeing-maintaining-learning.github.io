@@ -2,6 +2,7 @@
 /** Benchmarks grouped by modality as cards (static HTML). */
 import type { Benchmark } from '../data/normalize.ts';
 import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
+import Icon from './Icon.astro';
 
 interface Props { benchmarks: Benchmark[] }
 const { benchmarks } = Astro.props;
@@ -23,7 +24,7 @@ const groups = MODALITIES.map((m) => ({ m, list: benchmarks.filter((b) => b.moda
   groups.map((g) => (
     <section class={`group mod-${g.m}`} id={`bench-${MODALITY_SLUG[g.m]}`}>
       <h2 class="gh">
-        <span class="sw" />
+        <span class="gi"><Icon name={g.m} size={22} /></span>
         {MODALITY_LABEL[g.m]}
         <span class="num muted">{g.list.length}</span>
       </h2>
@@ -50,7 +51,7 @@ const groups = MODALITIES.map((m) => ({ m, list: benchmarks.filter((b) => b.moda
   .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .group { margin-top: 36px; scroll-margin-top: 84px; }
   .gh { display: flex; align-items: center; gap: 10px; font-size: var(--step-2); margin-bottom: 14px; }
-  .gh .sw { width: 14px; height: 14px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent); }
+  .gi { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
   .gh .num { font-size: var(--step-0); font-weight: 500; }
   .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
   .card {
