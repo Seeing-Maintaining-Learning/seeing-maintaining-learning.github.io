@@ -13,7 +13,8 @@ const benchmarks = benchmarksJson as Benchmark[];
 
 // Exact paper numbers hold for the corpus snapshot the paper was built from (or a local checkout).
 // Later corpus revisions may add systems, so CI only checks invariants for them.
-const atPaperSnapshot = meta.revision === lineCounts.revision || meta.revision === 'local';
+const atPaperSnapshot =
+  meta.revision === lineCounts.revision || meta.revision === 'local' || systems.length === lineCounts.architecture_count;
 
 describe.skipIf(!atPaperSnapshot)('corpus matches the paper', () => {
   it('has 297 architectures split T1 76 / T2 204 / T3 17', () => {
@@ -79,6 +80,7 @@ describe('stripTex', () => {
   it('removes citations and macros', () => {
     expect(stripTex('LoCoMo~\\citep{maharana2024evaluating}')).toBe('LoCoMo');
     expect(stripTex('\\textbf{ATM}-Bench')).toBe('ATM-Bench');
+    expect(stripTex('M$^3$Exam')).toBe('M3Exam');
   });
 });
 
@@ -97,5 +99,15 @@ describe('crossTab', () => {
     const m = crossTab(systems, (s) => s.paths.map((p) => p.leaf), () => 'all', LEAVES, ['all']);
     const lc = leafCounts(systems);
     LEAVES.forEach((l, i) => expect(m[i][0]).toBe(lc[l] ?? 0));
+  });
+});
+
+describe('benchmark text cleanup', () => {
+  it('has no LaTeX left in task or ground-truth fields', () => {
+    for (const b of benchmarks) {
+      expect(b.name).not.toMatch(/[\\$]/);
+      expect(b.task).not.toMatch(/\\/);
+      expect(b.groundTruth).not.toMatch(/\\/);
+    }
   });
 });

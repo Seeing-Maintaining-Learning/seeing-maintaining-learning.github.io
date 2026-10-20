@@ -1,0 +1,70 @@
+---
+/** Benchmarks grouped by modality as cards (static HTML). */
+import type { Benchmark } from '../data/normalize.ts';
+import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
+
+interface Props { benchmarks: Benchmark[] }
+const { benchmarks } = Astro.props;
+const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Real + synthetic' };
+const TASK: Record<string, string> = {
+  QA: 'Question answering', 'Gen.': 'Generation', 'Ret.': 'Retrieval', 'Act.': 'Action', Plan: 'Planning', 'Loc.': 'Localization',
+  'Seg.': 'Segmentation', 'Reason.': 'Reasoning', Learn: 'Learning', 'Class.': 'Classification', 'Rev.': 'Revision', Map: 'Mapping',
+  'Ref.': 'Referring', State: 'State tracking',
+};
+const task = (t: string) => t.split('/').map((x) => TASK[x.trim()] ?? x.trim()).join(' · ');
+const groups = MODALITIES.map((m) => ({ m, list: benchmarks.filter((b) => b.modality === m) })).filter((g) => g.list.length);
+---
+
+<nav class="jump" aria-label="Jump to modality">
+  {groups.map((g) => <a class={`chip mod-${g.m}`} href={`#bench-${MODALITY_SLUG[g.m]}`}><span class="dot" />{MODALITY_LABEL[g.m]} <span class="num muted">{g.list.length}</span></a>)}
+</nav>
+
+{
+  groups.map((g) => (
+    <section class={`group mod-${g.m}`} id={`bench-${MODALITY_SLUG[g.m]}`}>
+      <h3 class="gh">
+        <span class="sw" />
+        {MODALITY_LABEL[g.m]}
+        <span class="num muted">{g.list.length}</span>
+      </h3>
+      <ul class="cards">
+        {g.list.map((b) => (
+          <li class="card">
+            <a class="name" href={`/benchmarks/${b.id}/`}>{b.name}</a>
+            <p class="title">{b.title}</p>
+            <p class="meta">
+              <span class="tag">{SOURCE[b.source] ?? b.source}</span>
+              <span class="tag">{task(b.task)}</span>
+              {b.crossDomain && <span class="tag cd" title="Cross-domain benchmark listed under its dominant setting">Cross-domain</span>}
+            </p>
+            {b.url && <a class="paper small" href={b.url} rel="noopener">Paper</a>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}
+
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .group { margin-top: 36px; scroll-margin-top: 84px; }
+  .gh { display: flex; align-items: center; gap: 10px; font-size: var(--step-2); margin-bottom: 14px; }
+  .gh .sw { width: 14px; height: 14px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent); }
+  .gh .num { font-size: var(--step-0); font-weight: 500; }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .card {
+    position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--c);
+    transition: transform var(--dur-2) var(--ease), border-color var(--dur-1);
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--c); }
+  .name { font-weight: 650; color: var(--ink); text-decoration: none; }
+  .name::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
+  .name:hover { text-decoration: underline; }
+  .title { margin: 0; font-size: 0.875rem; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { margin: auto 0 0; display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+  .tag.cd { background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); }
+  .paper { position: relative; z-index: 1; align-self: flex-start; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>

@@ -52,6 +52,8 @@ export interface Benchmark {
   groundTruth: string;
   coverage: Coverage[];
   role: string;
+  /** Marked ‡ in Table 2: cross-domain benchmark listed under its dominant setting. */
+  crossDomain: boolean;
   url: string | null;
   rationale: string;
   authors: string[];
@@ -119,9 +121,14 @@ const FAMILY_TO_MODALITY: Record<string, Modality> = {
 /** Strip LaTeX markup from Table 2 cells (e.g. "LoCoMo~\citep{x}"). */
 export const stripTex = (s: string): string =>
   s
+    .replace(/\\mmSlash\s*/g, '/')
+    .replace(/\\mmPlus\s*/g, '+')
+    .replace(/\$\^\{?([^}$]*)\}?\$/g, '$1')
+    .replace(/\$([^$]*)\$/g, '$1')
     .replace(/~?\\cite[pt]?\{[^}]*\}/g, '')
     .replace(/\\textsuperscript\{([^}]*)\}/g, '$1')
     .replace(/\\[a-zA-Z]+\{([^}]*)\}/g, '$1')
+    .replace(/\\[a-zA-Z]+/g, '')
     .replace(/[{}]/g, '')
     .replace(/\\&/g, '&')
     .replace(/~/g, ' ')
@@ -135,7 +142,8 @@ export const slugify = (s: string): string =>
 
 export function normalizeBenchmark(row: Raw, review: Raw | undefined, record: unknown): Benchmark {
   const rec = (record ?? {}) as Raw;
-  const name = stripTex(row.name);
+  const crossDomain = /\\mmCrossDomain/.test(row.name);
+  const name = stripTex(row.name.replace(/\\mmCrossDomain/g, ''));
   const v = rec.paper?.latest_version ?? {};
   return {
     id: review?.id ?? slugify(name),
@@ -144,10 +152,11 @@ export function normalizeBenchmark(row: Raw, review: Raw | undefined, record: un
     cite: row.citation,
     modality: FAMILY_TO_MODALITY[row.family],
     source: row.source,
-    task: row.task,
-    groundTruth: row.ground_truth,
+    task: stripTex(row.task),
+    groundTruth: stripTex(row.ground_truth),
     coverage: row.coverage,
     role: row.evaluation_role,
+    crossDomain,
     url: safeUrl(v.source_url) ?? safeUrl(review?.source),
     rationale: review?.rationale ?? '',
     authors: rec.paper?.authors ?? [],

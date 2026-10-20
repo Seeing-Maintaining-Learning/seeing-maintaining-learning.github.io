@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import BarList from '../../components/BarList.astro';
+import BenchmarkGrid from '../../components/BenchmarkGrid.astro';
 import CoverageHeatmap from '../../components/viz/CoverageHeatmap.svelte';
 import { FAMILY_CAPS, SHARED_CAPS, benchmarks } from '../../data/index.ts';
 import { MODALITIES, MODALITY_LABEL } from '../../data/vocab.ts';
@@ -13,11 +14,13 @@ const direct = SHARED_CAPS.map(([code, name], i) => ({
   note: code,
   value: benchmarks.filter((b) => b.coverage[i] === 'direct').length,
 }));
-const description = `Coverage of ${benchmarks.length} multimodal agent memory benchmarks across six shared and fifteen modality-specific memory capabilities, from the survey’s Table 2.`;
+const cf = direct.find((d) => d.note === 'CF')?.value ?? 0;
+const le = direct.find((d) => d.note === 'LE')?.value ?? 0;
+const description = `${benchmarks.length} multimodal agent memory benchmarks grouped by modality — image, video, audio, GUI, and embodied — with what each one tests.`;
 ---
 
 <Base
-  title="Multimodal agent memory benchmarks: what they test"
+  title="Multimodal agent memory benchmarks by modality"
   description={description}
   og="/og/benchmarks.png"
   jsonld={[
@@ -26,34 +29,51 @@ const description = `Coverage of ${benchmarks.length} multimodal agent memory be
   ]}
 >
   <section class="wrap block intro">
-    <h1>Benchmarks</h1>
-    <p class="lede">
-      What do current benchmarks actually test? Almost all of them check whether an agent can find evidence spread over
-      a long history. Far fewer check whether memory stays correct as the world changes, or whether it guides action.
-    </p>
     <div class="top">
-      <BarList bars={direct} max={benchmarks.length} unit="benchmarks" caption={`Benchmarks that directly evaluate each shared capability, of ${benchmarks.length}`} />
+      <div>
+        <h1>Benchmarks</h1>
+        <p class="lede">
+          {benchmarks.length} benchmarks and evaluation resources from the survey, grouped by the modality they test.
+        </p>
+        <p class="finding">
+          <strong class="num">{le} of {benchmarks.length}</strong> test recall over long histories, but only{' '}
+          <strong class="num">{cf}</strong> test whether memory handles conflicting information.
+        </p>
+      </div>
+      <BarList bars={direct} max={benchmarks.length} unit="benchmarks" caption="Directly evaluated, by shared capability" />
     </div>
+    <BenchmarkGrid benchmarks={benchmarks} />
   </section>
+
   <section class="wrap block">
-    <div class="section-head">
-      <h2>Coverage by benchmark</h2>
-      <p>
-        Six capabilities apply to every modality. The last three columns are specific to each modality family; filter by
-        modality to see their names.
-      </p>
-    </div>
-    <CoverageHeatmap
-      client:visible
-      rows={rows}
-      shared={SHARED_CAPS.map(([a, b]) => [a, b])}
-      familyCaps={Object.fromEntries(Object.entries(FAMILY_CAPS).map(([k, v]) => [k, v.map(([a, b]) => [a, b])]))}
-      modalities={modalities}
-    />
+    <details class="compare">
+      <summary>
+        <span class="st">Compare capabilities</span>
+        <span class="small muted">The survey’s full coverage table: six shared and three modality-specific capabilities per benchmark.</span>
+      </summary>
+      <div class="inner">
+        <CoverageHeatmap
+          client:visible
+          rows={rows}
+          shared={SHARED_CAPS.map(([a, b]) => [a, b])}
+          familyCaps={Object.fromEntries(Object.entries(FAMILY_CAPS).map(([k, v]) => [k, v.map(([a, b]) => [a, b])]))}
+          modalities={modalities}
+        />
+      </div>
+    </details>
   </section>
 </Base>
 
 <style>
-  .intro .lede { margin-bottom: 32px; }
-  .top { max-width: 760px; }
+  .top { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 24px; }
+  .finding { font-size: var(--step-1); line-height: 1.4; max-width: 34ch; }
+  .finding strong { color: var(--accent-ink); }
+  .compare { border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); }
+  .compare summary { cursor: pointer; padding: 18px 20px; display: flex; flex-direction: column; gap: 2px; list-style: none; }
+  .compare summary::-webkit-details-marker { display: none; }
+  .compare summary .st { font-weight: 650; font-size: var(--step-1); }
+  .compare summary .st::before { content: '+ '; color: var(--accent-ink); }
+  .compare[open] summary .st::before { content: '− '; }
+  .inner { padding: 0 20px 20px; }
+  @media (max-width: 860px) { .top { grid-template-columns: 1fr; } }
 </style>
