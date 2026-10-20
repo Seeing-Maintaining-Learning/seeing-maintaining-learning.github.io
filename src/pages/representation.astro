@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HybridTriangle from '../components/viz/HybridTriangle.svelte';
 import ChartSwitch from '../components/viz/ChartSwitch.svelte';
+import RepExplainer from '../components/viz/rep/RepExplainer.svelte';
 import { leafByModality, leafByTier } from '../lib/charts.ts';
 import { systems } from '../data/index.ts';
 import { FAMILY_TEXT, HYBRID_EXAMPLES, LEAF_TEXT, systemLink } from '../data/taxonomy.ts';
@@ -87,6 +88,7 @@ const link = (name: string) => systemLink(name);
           {LEAVES.filter((l) => LEAF_FAMILY[l] === f).map((l) => (
             <article class="leaf panel" id={l}>
               <h3>{LEAF_LABEL[l]}</h3>
+              <RepExplainer client:visible kind={l} />
               <div class="meter">
                 <span style={`width:${(leafN[l] / maxLeaf) * 100}%`} />
                 <span class="num small">{leafN[l]} systems</span>
@@ -128,7 +130,10 @@ const link = (name: string) => systemLink(name);
         ))}
       </p>
     </div>
-    <HybridTriangle client:visible combos={combos} labels={FAMILY_LABEL} order={[...FAMILIES]} />
+    <div class="hyb">
+      <RepExplainer client:visible kind="hybrid" />
+      <HybridTriangle client:visible combos={combos} labels={FAMILY_LABEL} order={[...FAMILIES]} />
+    </div>
   </section>
 </Base>
 
@@ -144,7 +149,11 @@ const link = (name: string) => systemLink(name);
   .fhead .lede { font-size: var(--step-0); }
   .trade { color: var(--ink-2); font-size: 0.9375rem; }
   .leaves { display: grid; gap: 16px; }
-  .leaf { padding: 20px; scroll-margin-top: 84px; }
+  .leaf { padding: 20px; scroll-margin-top: 84px; display: grid; gap: 4px; }
+  .leaf h3 { margin-bottom: 8px; }
+  .leaf :global(.rx) { margin-bottom: 14px; }
+  .hyb { display: grid; gap: 32px; }
+  .hyb > :global(*:first-child) { max-width: 560px; }
   .leaf:target { border-color: var(--accent); }
   .meter { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .meter .num { white-space: nowrap; }

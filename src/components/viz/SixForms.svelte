@@ -1,6 +1,8 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { dur } from './motion.ts';
+  import RepExplainer from './rep/RepExplainer.svelte';
+  import type { Kind } from './rep/captions.ts';
 
   interface Form {
     leaf: string;
@@ -61,7 +63,8 @@
   <div class="out panel" role="tabpanel" aria-labelledby="form-tab-{active}">
     {#key active}
       <div in:fade={{ duration: dur(200) }}>
-        <p class="k">What gets stored</p>
+        <RepExplainer kind={f.leaf as Kind} compact />
+        <p class="k gap">What gets stored</p>
         <pre class="stored">{f.stored}</pre>
         <p class="k">Trade-offs</p>
         <dl class="traits">
@@ -86,6 +89,7 @@
   .six { display: grid; grid-template-columns: 1fr 1.05fr 1.25fr; gap: 16px; align-items: start; }
   .panel { padding: 16px; }
   .k { font-size: 0.75rem; color: var(--muted); margin: 0 0 8px; }
+  .k.gap { margin-top: 14px; }
   .scene svg { width: 100%; height: auto; display: block; margin-bottom: 10px; }
   .wall { fill: var(--surface-2); }
   .counter { fill: color-mix(in srgb, var(--ink) 12%, var(--surface)); }
@@ -104,7 +108,7 @@
   .tl { font-weight: 600; font-size: 0.9375rem; }
   .stored {
     margin: 0 0 16px; padding: 12px; border-radius: 8px; background: var(--surface-2); color: var(--ink);
-    white-space: pre-wrap; word-break: break-word; font-size: 0.8125rem; line-height: 1.55; min-height: 8.5em;
+    white-space: pre-wrap; word-break: break-word; font-size: 0.8125rem; line-height: 1.55;
   }
   .traits { display: grid; gap: 6px; margin: 0 0 14px; }
   .traits div { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; }
