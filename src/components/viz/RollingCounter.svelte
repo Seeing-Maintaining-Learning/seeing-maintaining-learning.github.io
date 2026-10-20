@@ -27,7 +27,8 @@
   {#each items as it, k (it.label)}
     <div class="c">
       <dt>{it.label}</dt>
-      <dd aria-label={String(it.value)}>
+      <dd>
+        <span class="sr-only">{it.value.toLocaleString('en-US')}</span>
         {#each digits(it.value) as d, i (i)}
           {#if /\d/.test(d)}
             <span class="slot" aria-hidden="true">

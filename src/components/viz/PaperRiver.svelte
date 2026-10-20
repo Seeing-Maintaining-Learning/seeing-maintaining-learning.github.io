@@ -192,8 +192,9 @@
 
 <div class="river">
   <div class="bar">
-    <button class="play" type="button" onclick={play} aria-label={playing ? 'Pause timeline' : 'Play timeline'}>
-      {playing ? '❚❚ Pause' : now >= T1 - 0.01 ? '↺ Replay' : '▶ Play'}
+    <button class="play" type="button" onclick={play}>
+      <span aria-hidden="true">{playing ? '❚❚' : now >= T1 - 0.01 ? '↺' : '▶'}</span>
+      {playing ? 'Pause' : now >= T1 - 0.01 ? 'Replay' : 'Play'}
     </button>
     <label class="scrub">
       <span class="sr-only">Show papers up to</span>
