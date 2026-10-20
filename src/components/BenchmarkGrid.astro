@@ -33,8 +33,9 @@ const groups = MODALITIES.map((m) => ({ m, list: benchmarks.filter((b) => b.moda
             <a class="name" href={`/benchmarks/${b.id}/`}>{b.name}</a>
             <p class="title">{b.title}</p>
             <p class="meta">
-              <span class="tag">{SOURCE[b.source] ?? b.source}</span>
-              <span class="tag">{task(b.task)}</span>
+              {b.source && <span class="tag">{SOURCE[b.source] ?? b.source}</span>}
+              {b.task && <span class="tag">{task(b.task)}</span>}
+              {b.isNew && <span class="tag new">Added after the survey</span>}
               {b.crossDomain && <span class="tag cd" title="Cross-domain benchmark listed under its dominant setting">Cross-domain</span>}
             </p>
             {b.url && <a class="paper small" href={b.url} rel="noopener">Paper</a>}
@@ -64,6 +65,7 @@ const groups = MODALITIES.map((m) => ({ m, list: benchmarks.filter((b) => b.moda
   .title { margin: 0; font-size: 0.875rem; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .meta { margin: auto 0 0; display: flex; flex-wrap: wrap; gap: 4px; }
   .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+  .tag.new { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--ink); }
   .tag.cd { background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); }
   .paper { position: relative; z-index: 1; align-self: flex-start; }
   @media (prefers-reduced-motion: reduce) { .card { transition: none; } }

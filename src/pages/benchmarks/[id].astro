@@ -11,7 +11,8 @@ export function getStaticPaths() {
 
 const { b } = Astro.props as { b: Benchmark };
 const caps = [...SHARED_CAPS, ...(FAMILY_CAPS[b.modality] ?? [])];
-const direct = caps.filter((_, i) => b.coverage[i] === 'direct').map(([, n]) => n.toLowerCase());
+const cov = b.coverage;
+const direct = cov ? caps.filter((_, i) => cov[i] === 'direct').map(([, n]) => n.toLowerCase()) : [];
 const WORD = { direct: 'Directly evaluated', partial: 'Partially evaluated', none: 'Not evaluated' } as const;
 const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Hybrid real + synthetic' };
 const ROLE: Record<string, string> = {
@@ -36,6 +37,7 @@ const description = clip(
 >
   <article class="wrap bench">
     <nav class="crumbs small" aria-label="Breadcrumb"><a href="/benchmarks/">Benchmarks</a> / <span>{b.name}</span></nav>
+    {b.isNew && <p class="badges"><span class="badge new">Added after the survey</span></p>}
     <h1>{b.name}</h1>
     <p class="paper-title">{b.title}</p>
     {authorLine && <p class="small muted">{authorLine}{b.date ? ` · ${b.date}` : ''}</p>}
@@ -43,23 +45,29 @@ const description = clip(
 
     <dl class="facts">
       <div class={`mod-${b.modality}`}><dt>Modality</dt><dd><a class="chip" href={`/modalities/${MODALITY_SLUG[b.modality]}/`}><span class="dot" />{MODALITY_LABEL[b.modality]}</a></dd></div>
-      <div><dt>Data</dt><dd>{SOURCE[b.source] ?? b.source}</dd></div>
-      <div><dt>Task · ground truth</dt><dd>{b.task} · {b.groundTruth}</dd></div>
+      {b.source && <div><dt>Data</dt><dd>{SOURCE[b.source] ?? b.source}</dd></div>}
+      {b.task && <div><dt>Task · ground truth</dt><dd>{b.task} · {b.groundTruth}</dd></div>}
       <div><dt>Scope</dt><dd>{ROLE[b.role] ?? b.role.replace(/_/g, ' ')}</dd></div>
     </dl>
 
     <h2>What it tests</h2>
-    <ul class="caps">
+    {
+      cov ? (
+        <ul class="caps">
       {
         caps.map(([code, name], i) => (
-          <li class={b.coverage[i]}>
+          <li class={cov[i]}>
             <span class="code">{code}</span>
             <span>{name}</span>
-            <span class="w small">{WORD[b.coverage[i]]}</span>
+            <span class="w small">{WORD[cov[i]]}</span>
           </li>
         ))
       }
-    </ul>
+        </ul>
+      ) : (
+        <p class="muted">Added to the corpus after the survey. It is not scored in the survey’s capability table yet.</p>
+      )
+    }
     {
       b.rationale && (
         <>
@@ -73,6 +81,8 @@ const description = clip(
 
 <style>
   .bench { padding-block: clamp(32px, 5vw, 64px); max-width: 860px; }
+  .badges { margin: 0 0 8px; }
+  .badge.new { font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--ink); }
   .crumbs { color: var(--muted); margin-bottom: 16px; }
   .paper-title { font-family: var(--font-read); font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; }
   .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin: 32px 0 40px; }

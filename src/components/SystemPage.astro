@@ -1,0 +1,188 @@
+---
+import Base from '../layouts/Base.astro';
+import { systems } from '../data/index.ts';
+import type { System } from '../data/normalize.ts';
+import { related } from '../lib/aggregate.ts';
+import { breadcrumbs, citedWork, clip } from '../lib/seo.ts';
+import {
+  FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, MODALITY_LABEL, MODALITY_SLUG, REP_CATEGORY_LABEL, RETRIEVAL_LABEL,
+  SOURCE_ACCESS_LABEL, STORAGE_LABEL, T2_LEAF, T2_OP_LABEL, T3_TARGET_LABEL, TIER_LABEL, label,
+} from '../data/vocab.ts';
+
+interface Props { s: System }
+const { s } = Astro.props;
+const rel = related(s, systems);
+const leaves = [...new Set(s.paths.map((p) => p.leaf))];
+const authorLine = s.authors.length > 6 ? `${s.authors.slice(0, 6).join(', ')}, et al.` : s.authors.join(', ');
+const description = clip(
+  `${s.name}: ${s.tier} ${TIER_LABEL[s.tier].toLowerCase()} for ${MODALITY_LABEL[s.modality].toLowerCase()}, using ${leaves
+    .map((l) => LEAF_LABEL[l].toLowerCase())
+    .join(' and ')}. How it forms, stores, retrieves and maintains memory.`,
+);
+const tierExplain: Record<string, string> = {
+  T1: 'Memory is built once and reused without change during deployment.',
+  T2: 'Memory changes during deployment through a fixed management policy.',
+  T3: 'Feedback during deployment changes the memory-management policy itself.',
+};
+---
+
+<Base
+  title={`${s.name}: multimodal agent memory`}
+  description={description}
+  type="article"
+  jsonld={[
+    citedWork(s.name, s.title, s.url, s.authors, s.date),
+    breadcrumbs([['Home', '/'], ['Systems', '/systems/'], [s.name, `/systems/${s.id}/`]]),
+  ]}
+>
+  <article class="wrap sys">
+    <nav class="crumbs small" aria-label="Breadcrumb"><a href="/systems/">Systems</a> / <span>{s.name}</span></nav>
+    <header>
+      {
+        (s.isNew || s.reviewStatus === 'community_submitted') && (
+          <p class="badges">
+            {s.isNew && <span class="badge new">Added after the survey</span>}
+            {s.reviewStatus === 'community_submitted' && <span class="badge">Community submission</span>}
+          </p>
+        )
+      }
+      <h1>{s.name}</h1>
+      <p class="paper-title">{s.title}</p>
+      <p class="small muted">{authorLine} · {s.date}</p>
+      <p class="links">
+        <a href={s.url} rel="noopener">Read the paper</a>
+        {s.pdf && <a href={s.pdf} rel="noopener">PDF</a>}
+      </p>
+    </header>
+
+    <dl class="facts">
+      <div class={`fact tier-${s.tier}`}>
+        <dt>Management</dt>
+        <dd><span class="chip"><span class="dot"></span>{s.tier} {TIER_LABEL[s.tier]}</span></dd>
+        <dd class="small muted">{tierExplain[s.tier]}</dd>
+      </div>
+      <div class={`fact mod-${s.modality}`}>
+        <dt>Primary modality</dt>
+        <dd><a class="chip" href={`/modalities/${MODALITY_SLUG[s.modality]}/`}><span class="dot"></span>{MODALITY_LABEL[s.modality]}</a></dd>
+        {s.secondary.length > 0 && <dd class="small muted">Also: {s.secondary.map((m) => label(MODALITY_LABEL, m)).join(', ')}</dd>}
+      </div>
+      <div class="fact">
+        <dt>Representation</dt>
+        <dd>{REP_CATEGORY_LABEL[s.category]}</dd>
+        {s.hybrid && <dd class="small muted">{s.hybridRelation}</dd>}
+      </div>
+    </dl>
+
+    <section>
+      <h2>How experience becomes memory</h2>
+      <p class="muted">Each path is one memory component, traced from what is stored to how it is found again.</p>
+      <ol class="paths">
+        {
+          s.paths.map((p) => (
+            <li class="path panel">
+              <p class="component">{p.component}</p>
+              <ol class="flow" aria-label="Formation path">
+                <li><span class="k">Represented as</span><a href={`/formation/#${p.leaf}`}>{LEAF_LABEL[p.leaf]}</a><span class="small muted">{FAMILY_LABEL[LEAF_FAMILY[p.leaf]]}</span></li>
+                <li><span class="k">Stored in</span>{p.storage.map((x) => label(STORAGE_LABEL, x)).join(', ')}</li>
+                <li><span class="k">Retrieved by</span>{p.retrieval.map((x) => label(RETRIEVAL_LABEL, x)).join(', ')}</li>
+                <li><span class="k">Source evidence</span>{label(SOURCE_ACCESS_LABEL, p.sourceAccess)}</li>
+              </ol>
+              {p.evidence.map((e) => (
+                <blockquote class="small">
+                  {e.text}
+                  <cite class="muted">{[e.section, e.page, e.figure].filter(Boolean).join(' · ')}</cite>
+                </blockquote>
+              ))}
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    {
+      s.t2.length > 0 && (
+        <section>
+          <h2>How memory changes (T2 operations)</h2>
+          <ul class="ops">
+            {s.t2.map((o) => (
+              <li class="panel">
+                <p class="op">
+                  <strong>{T2_LEAF[o.leaf] ? T2_OP_LABEL[T2_LEAF[o.leaf].op] : 'Operation'}</strong>
+                  <span class="muted"> · {T2_LEAF[o.leaf]?.label ?? label({}, o.leaf)}</span>
+                </p>
+                {o.evidence.map((e) => <p class="small">{e.text}</p>)}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      s.t3.length > 0 && (
+        <section>
+          <h2>How the policy evolves (T3)</h2>
+          <ul class="ops">
+            {s.t3.map((o) => (
+              <li class="panel">
+                <p class="op"><strong>{label(T3_TARGET_LABEL, o.leaf)}</strong></p>
+                {o.evidence.map((e) => <p class="small">{e.text}</p>)}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      rel.length > 0 && (
+        <section>
+          <h2>Related systems</h2>
+          <ul class="rel">
+            {rel.map((r) => (
+              <li>
+                <a href={`/systems/${r.id}/`}>{r.name}</a>
+                <span class="small muted">{r.tier} · {MODALITY_LABEL[r.modality]}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .sys { padding-block: clamp(32px, 5vw, 64px); max-width: 920px; }
+  .badges { display: flex; gap: 6px; margin: 0 0 8px; }
+  .badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+  .badge.new { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--ink); }
+  .crumbs { margin-bottom: 16px; color: var(--muted); }
+  .paper-title { font-family: var(--font-read); font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; margin-bottom: 6px; }
+  .links { display: flex; gap: 16px; margin-top: 12px; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 32px 0 48px; }
+  .fact { border-top: 2px solid var(--c, var(--rule)); padding-top: 10px; margin: 0; }
+  .fact dt { font-size: var(--step--1); color: var(--muted); margin-bottom: 6px; }
+  .fact dd { margin: 0 0 6px; }
+  section { margin-bottom: 48px; }
+  h2 { font-size: var(--step-2); }
+  .paths, .ops { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 12px; }
+  .path, .ops li { padding: 16px 18px; }
+  .component { font-weight: 600; margin-bottom: 12px; }
+  .flow { list-style: none; padding: 0; margin: 0 0 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .flow li { background: var(--surface-2); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; font-size: 0.9375rem; }
+  .flow li:first-child { border-radius: 8px 0 0 8px; }
+  .flow li:last-child { border-radius: 0 8px 8px 0; }
+  .k { font-size: 0.75rem; color: var(--muted); }
+  blockquote { margin: 8px 0 0; padding-left: 12px; border-left: 2px solid var(--rule); font-family: var(--font-read); color: var(--ink-2); }
+  cite { display: block; font-style: normal; font-family: var(--font-ui); font-size: 0.75rem; margin-top: 4px; }
+  .op { margin-bottom: 6px; }
+  .rel { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 24px; }
+  .rel li { display: flex; flex-direction: column; }
+  @media (max-width: 720px) {
+    .facts { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow li:first-child { border-radius: 8px 8px 0 0; }
+    .flow li:last-child { border-radius: 0 0 8px 8px; }
+  }
+</style>

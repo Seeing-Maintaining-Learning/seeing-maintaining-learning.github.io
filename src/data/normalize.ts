@@ -1,6 +1,6 @@
 /** Normalize raw corpus / paper records into the compact shapes the site renders. */
 import type { Family, Leaf, Modality, RepCategory, Tier } from './vocab.ts';
-import { FAMILY_TO_CATEGORY, MODALITIES } from './vocab.ts';
+import { FAMILY_TO_CATEGORY, LEAVES, MODALITIES, TIERS } from './vocab.ts';
 
 export interface Evidence {
   section: string;
@@ -37,6 +37,27 @@ export interface System {
   paths: RepPath[];
   t2: { leaf: string; evidence: Evidence[] }[];
   t3: { leaf: string; evidence: Evidence[] }[];
+  /** Added to the corpus after the survey's snapshot. */
+  isNew: boolean;
+  reviewStatus: string;
+}
+
+/** A record merged into the corpus but not yet fully classified (no tier or representation). */
+export interface PendingSystem {
+  id: string;
+  name: string;
+  title: string;
+  authors: string[];
+  date: string;
+  year: number;
+  url: string;
+  pdf: string | null;
+  modality: Modality;
+  leaves: string[];
+  tier: string;
+  isNew: boolean;
+  reviewStatus: string;
+  notes: string[];
 }
 
 export type Coverage = 'direct' | 'partial' | 'none';
@@ -50,10 +71,12 @@ export interface Benchmark {
   source: string;
   task: string;
   groundTruth: string;
-  coverage: Coverage[];
+  /** Table 2 coverage; null for benchmarks added to the corpus after the survey. */
+  coverage: Coverage[] | null;
   role: string;
   /** Marked ‡ in Table 2: cross-domain benchmark listed under its dominant setting. */
   crossDomain: boolean;
+  isNew: boolean;
   url: string | null;
   rationale: string;
   authors: string[];
@@ -74,7 +97,68 @@ const evidence = (list: Raw[] | undefined): Evidence[] =>
     text: e.paraphrase ?? '',
   }));
 
-export function normalizeSystem(input: unknown): System {
+/** True when the record carries enough classification to enter the survey's charts. */
+export function isClassified(input: unknown): boolean {
+  const r = input as Raw;
+  const paths = (r.representation_paths ?? []) as Raw[];
+  return (
+    MODALITIES.includes(r.primary_modality) &&
+    TIERS.includes(r.derived?.highest_management_tier) &&
+    paths.length > 0 &&
+    paths.every((p) => LEAVES.includes(p.leaf)) &&
+    (r.derived?.representation_parent_families ?? []).length > 0
+  );
+}
+
+export function normalizePending(input: unknown, isNew: boolean): PendingSystem | null {
+  const r = input as Raw;
+  if (!MODALITIES.includes(r.primary_modality)) return null;
+  const v = r.provenance?.latest_version ?? {};
+  const date: string = v.published_date ?? '';
+  return {
+    id: r.architecture_id,
+    name: r.architecture_name,
+    title: r.provenance?.paper_title || r.architecture_name,
+    authors: r.provenance?.authors ?? [],
+    date,
+    year: Number(date.slice(0, 4)) || 0,
+    url: safeUrl(v.source_url) ?? '',
+    pdf: safeUrl(v.pdf_url),
+    modality: r.primary_modality,
+    leaves: ((r.representation_paths ?? []) as Raw[]).map((p) => p.leaf).filter((l) => LEAVES.includes(l)),
+    tier: r.derived?.highest_management_tier ?? 'unclear',
+    isNew,
+    reviewStatus: r.review_status ?? '',
+    notes: r.adjudication_notes ?? [],
+  };
+}
+
+/** A corpus benchmark record that is not part of the survey's Table 2. */
+export function normalizeCorpusBenchmark(input: unknown, isNew: boolean): Benchmark | null {
+  const r = input as Raw;
+  if (!MODALITIES.includes(r.primary_modality)) return null;
+  const v = r.paper?.latest_version ?? {};
+  return {
+    id: r.benchmark_id,
+    name: r.benchmark_name,
+    title: r.paper?.title || r.benchmark_name,
+    cite: '',
+    modality: r.primary_modality,
+    source: '',
+    task: '',
+    groundTruth: '',
+    coverage: null,
+    role: r.scope_status ?? '',
+    crossDomain: false,
+    isNew,
+    url: safeUrl(v.source_url),
+    rationale: '',
+    authors: r.paper?.authors ?? [],
+    date: v.published_date || null,
+  };
+}
+
+export function normalizeSystem(input: unknown, isNew = false): System {
   const r = input as Raw;
   const v = r.provenance?.latest_version ?? {};
   const families = (r.derived?.representation_parent_families ?? []) as Family[];
@@ -107,6 +191,8 @@ export function normalizeSystem(input: unknown): System {
     })),
     t2: (r.t2_operations ?? []).map((o: Raw) => ({ leaf: o.leaf, evidence: evidence(o.evidence) })),
     t3: (r.t3_policy_evolution_targets ?? []).map((o: Raw) => ({ leaf: o.leaf, evidence: evidence(o.evidence) })),
+    isNew,
+    reviewStatus: r.review_status ?? '',
   };
 }
 
@@ -157,6 +243,7 @@ export function normalizeBenchmark(row: Raw, review: Raw | undefined, record: un
     coverage: row.coverage,
     role: row.evaluation_role,
     crossDomain,
+    isNew: false,
     url: safeUrl(v.source_url) ?? safeUrl(review?.source),
     rationale: review?.rationale ?? '',
     authors: rec.paper?.authors ?? [],

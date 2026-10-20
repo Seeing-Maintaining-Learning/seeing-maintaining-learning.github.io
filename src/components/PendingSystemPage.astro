@@ -1,0 +1,64 @@
+---
+/** Page for a corpus record that is merged but not yet fully classified. */
+import Base from '../layouts/Base.astro';
+import type { PendingSystem } from '../data/normalize.ts';
+import { LEAF_LABEL, MODALITY_LABEL, MODALITY_SLUG, label } from '../data/vocab.ts';
+import { breadcrumbs, citedWork, clip } from '../lib/seo.ts';
+
+interface Props { p: PendingSystem }
+const { p } = Astro.props;
+const authorLine = p.authors.length > 6 ? `${p.authors.slice(0, 6).join(', ')}, et al.` : p.authors.join(', ');
+---
+
+<Base
+  title={`${p.name}: multimodal agent memory`}
+  description={clip(`${p.name}: ${p.title}. A ${MODALITY_LABEL[p.modality].toLowerCase()} memory paper recently added to the survey corpus; classification pending.`)}
+  type="article"
+  jsonld={[
+    citedWork(p.name, p.title, p.url, p.authors, p.date || null),
+    breadcrumbs([['Home', '/'], ['Systems', '/systems/'], [p.name, `/systems/${p.id}/`]]),
+  ]}
+>
+  <article class="wrap sys">
+    <nav class="crumbs small" aria-label="Breadcrumb"><a href="/systems/">Systems</a> / <span>{p.name}</span></nav>
+    <p class="badges">
+      {p.isNew && <span class="badge new">Added after the survey</span>}
+      <span class="badge">Classification pending</span>
+    </p>
+    <h1>{p.name}</h1>
+    <p class="paper-title">{p.title}</p>
+    {authorLine && <p class="small muted">{authorLine}{p.date ? ` · ${p.date}` : ''}</p>}
+    <p class="links">
+      {p.url && <a href={p.url} rel="noopener">Read the paper</a>}
+      {p.pdf && <a href={p.pdf} rel="noopener">PDF</a>}
+    </p>
+    <dl class="facts">
+      <div class={`mod-${p.modality}`}>
+        <dt>Primary modality</dt>
+        <dd><a class="chip" href={`/modalities/${MODALITY_SLUG[p.modality]}/`}><span class="dot" />{MODALITY_LABEL[p.modality]}</a></dd>
+      </div>
+      {p.leaves.length > 0 && (
+        <div><dt>Representation (as submitted)</dt><dd>{p.leaves.map((l) => label(LEAF_LABEL, l)).join(', ')}</dd></div>
+      )}
+    </dl>
+    <p class="note">
+      This paper has been accepted into the survey corpus. Maintainers are still classifying how it represents and manages
+      memory, so it is not yet counted in the survey’s charts.
+    </p>
+  </article>
+</Base>
+
+<style>
+  .sys { padding-block: clamp(32px, 5vw, 64px); max-width: 860px; }
+  .crumbs { color: var(--muted); margin-bottom: 16px; }
+  .badges { display: flex; gap: 6px; margin: 0 0 8px; }
+  .badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+  .badge.new { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--ink); }
+  .paper-title { font-family: var(--font-read); font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; }
+  .links { display: flex; gap: 16px; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 28px 0; }
+  .facts div { border-top: 2px solid var(--c, var(--rule)); padding-top: 8px; }
+  dt { font-size: var(--step--1); color: var(--muted); margin-bottom: 4px; }
+  dd { margin: 0; }
+  .note { padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--rule); color: var(--ink-2); max-width: 70ch; }
+</style>

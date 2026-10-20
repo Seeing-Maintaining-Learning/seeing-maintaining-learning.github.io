@@ -2,10 +2,16 @@
 import systemsJson from './generated/systems.json';
 import benchmarksJson from './generated/benchmarks.json';
 import meta from './generated/meta.json';
-import type { Benchmark, System } from './normalize.ts';
+import pendingJson from './generated/pending.json';
+import type { Benchmark, Coverage, PendingSystem, System } from './normalize.ts';
 
 export const systems = systemsJson as System[];
 export const benchmarks = benchmarksJson as Benchmark[];
+/** Benchmarks scored in the survey's Table 2 (coverage known). */
+export type ScoredBenchmark = Benchmark & { coverage: Coverage[] };
+export const scoredBenchmarks = benchmarks.filter((b): b is ScoredBenchmark => b.coverage !== null);
+/** Merged corpus records still awaiting classification. */
+export const pending = pendingJson as PendingSystem[];
 export const corpusMeta = meta as { corpusRepo: string; revision: string; syncedAt: string };
 
 export const systemById = new Map(systems.map((s) => [s.id, s]));

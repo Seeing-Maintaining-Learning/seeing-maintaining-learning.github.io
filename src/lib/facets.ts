@@ -19,6 +19,7 @@ export const toRow = (s: System) => ({
   retrieval: [...new Set(s.paths.flatMap((p) => p.retrieval))],
   ops: [...new Set(s.t2.map((o) => T2_LEAF[o.leaf]?.op).filter(Boolean))] as string[],
   t3: [...new Set(s.t3.map((o) => o.leaf))],
+  isNew: s.isNew,
 });
 
 const pick = (map: Record<string, string>) => Object.entries(map).filter(([k]) => k !== 'unclear');

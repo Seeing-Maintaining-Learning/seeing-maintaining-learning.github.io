@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import systemsJson from '../src/data/generated/systems.json';
 import benchmarksJson from '../src/data/generated/benchmarks.json';
 import lineCounts from '../vendor/paper/raw/line_graph_counts.json';
-import meta from '../src/data/generated/meta.json';
+import snapshot from '../vendor/paper/raw/snapshot.json';
 import type { Benchmark, System } from '../src/data/normalize.ts';
 import { crossMatrix, formationFlows, growthByModality, growthByTier } from '../src/lib/aggregate.ts';
 import { stripTex } from '../src/data/normalize.ts';
@@ -11,21 +11,21 @@ import { LEAVES, T2_LEAF } from '../src/data/vocab.ts';
 const systems = systemsJson as System[];
 const benchmarks = benchmarksJson as Benchmark[];
 
-// Exact paper numbers hold for the corpus snapshot the paper was built from (or a local checkout).
-// Later corpus revisions may add systems, so CI only checks invariants for them.
-const atPaperSnapshot =
-  meta.revision === lineCounts.revision || meta.revision === 'local' || systems.length === lineCounts.architecture_count;
+// Exact paper numbers are checked on the systems that existed when the survey was published,
+// so they keep holding as the corpus grows.
+const snapIds = new Set(snapshot.systems);
+const paperSystems = systems.filter((s) => snapIds.has(s.id));
 
-describe.skipIf(!atPaperSnapshot)('corpus matches the paper', () => {
+describe('corpus matches the paper (snapshot)', () => {
   it('has 297 architectures split T1 76 / T2 204 / T3 17', () => {
-    expect(systems).toHaveLength(297);
+    expect(paperSystems).toHaveLength(297);
     const tiers = { T1: 0, T2: 0, T3: 0 };
-    for (const s of systems) tiers[s.tier] += 1;
+    for (const s of paperSystems) tiers[s.tier] += 1;
     expect(tiers).toEqual({ T1: 76, T2: 204, T3: 17 });
   });
 
   it('reproduces the 4x3 representation x tier matrix (fig_cross_matrix.tex)', () => {
-    expect(crossMatrix(systems)).toEqual({
+    expect(crossMatrix(paperSystems)).toEqual({
       native: { T1: 23, T2: 26, T3: 0 },
       cross: { T1: 18, T2: 49, T3: 13 },
       latent: { T1: 7, T2: 22, T3: 0 },
@@ -33,23 +33,29 @@ describe.skipIf(!atPaperSnapshot)('corpus matches the paper', () => {
     });
   });
 
+  it('marks only post-survey records as new', () => {
+    for (const s of systems) expect(s.isNew).toBe(!snapIds.has(s.id));
+  });
+
   it('reproduces the cumulative growth counts', () => {
-    expect(growthByModality(systems, lineCounts.years)).toEqual(lineCounts.primary_modality);
-    expect(growthByTier(systems, lineCounts.years)).toEqual(lineCounts.tier);
+    expect(growthByModality(paperSystems, lineCounts.years)).toEqual(lineCounts.primary_modality);
+    expect(growthByTier(paperSystems, lineCounts.years)).toEqual(lineCounts.tier);
   });
 
 });
 
 describe('benchmarks (vendored Table 2)', () => {
-  it('has 82 benchmarks with nine coverage cells each', () => {
-    expect(benchmarks).toHaveLength(82);
-    for (const b of benchmarks) expect(b.coverage).toHaveLength(9);
+  it('has 82 Table 2 benchmarks with nine coverage cells each', () => {
+    const scored = benchmarks.filter((b) => b.coverage !== null);
+    expect(scored).toHaveLength(82);
+    for (const b of scored) expect(b.coverage).toHaveLength(9);
+    for (const b of benchmarks.filter((x) => x.coverage === null)) expect(b.isNew).toBe(true);
   });
 });
 
 describe('record integrity', () => {
-  it('has a non-trivial corpus', () => {
-    expect(systems.length).toBeGreaterThan(200);
+  it('keeps every snapshot system in the corpus', () => {
+    expect(paperSystems.length).toBe(snapshot.systems.length);
   });
 
   it('gives every system a unique id, source URL, and known leaves', () => {

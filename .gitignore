@@ -6,3 +6,4 @@ src/data/generated/
 temp/
 vendor/paper/private/
 public/logos/
+public/corpus-revision.txt

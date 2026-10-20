@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import BarList from '../../components/BarList.astro';
 import TierMatrix from '../../components/viz/TierMatrix.svelte';
-import { FAMILY_CAPS, SHARED_CAPS, benchmarks, systems } from '../../data/index.ts';
+import { FAMILY_CAPS, SHARED_CAPS, benchmarks, scoredBenchmarks, systems } from '../../data/index.ts';
 import type { Modality } from '../../data/vocab.ts';
 import {
   LEAF_LABEL, LEAVES, MODALITIES, MODALITY_LABEL, MODALITY_SLUG, REP_CATEGORIES, REP_CATEGORY_LABEL, T2_OPS, T2_OP_LABEL,
@@ -18,6 +18,7 @@ export function getStaticPaths() {
 const { mod } = Astro.props as { mod: Modality };
 const list = systems.filter((s) => s.modality === mod).sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
 const benches = benchmarks.filter((b) => b.modality === mod);
+const scored = scoredBenchmarks.filter((b) => b.modality === mod);
 const matrix = crossMatrix(list);
 const cells = REP_CATEGORIES.flatMap((cat) => TIERS.map((tier) => ({ cat, tier, n: matrix[cat][tier] })));
 const leafN = countBy(list, (s) => s.paths.map((p) => p.leaf));
@@ -26,7 +27,7 @@ const caps = [...SHARED_CAPS, ...(FAMILY_CAPS[mod] ?? [])];
 const capDirect = caps.map(([code, name], i) => ({
   label: name,
   note: code,
-  value: benches.filter((b) => b.coverage[i] === 'direct').length,
+  value: scored.filter((b) => b.coverage[i] === 'direct').length,
 }));
 const label = MODALITY_LABEL[mod];
 const description = `${list.length} ${label.toLowerCase()} agent memory systems and ${benches.length} benchmarks: how they represent, store, update and evaluate memory.`;
@@ -71,7 +72,7 @@ const description = `${list.length} ${label.toLowerCase()} agent memory systems 
       <section class="wrap block grid2">
         <div>
           <h2>What its benchmarks test</h2>
-          <BarList bars={capDirect} max={benches.length} unit="benchmarks" caption={`Directly evaluated, of ${benches.length} benchmarks`} />
+          <BarList bars={capDirect} max={Math.max(1, scored.length)} unit="benchmarks" caption={`Directly evaluated, of ${scored.length} benchmarks in the survey's Table 2`} />
         </div>
         <div>
           <h2>Benchmarks</h2>

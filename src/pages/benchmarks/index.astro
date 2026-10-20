@@ -3,16 +3,16 @@ import Base from '../../layouts/Base.astro';
 import BarList from '../../components/BarList.astro';
 import BenchmarkGrid from '../../components/BenchmarkGrid.astro';
 import CoverageHeatmap from '../../components/viz/CoverageHeatmap.svelte';
-import { FAMILY_CAPS, SHARED_CAPS, benchmarks } from '../../data/index.ts';
+import { FAMILY_CAPS, SHARED_CAPS, benchmarks, scoredBenchmarks } from '../../data/index.ts';
 import { MODALITIES, MODALITY_LABEL } from '../../data/vocab.ts';
 import { breadcrumbs, dataset } from '../../lib/seo.ts';
 
 const modalities = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], cls: `mod-${m}` }));
-const rows = benchmarks.map((b) => ({ id: b.id, name: b.name, modality: b.modality, coverage: b.coverage, source: b.source, task: b.task }));
+const rows = scoredBenchmarks.map((b) => ({ id: b.id, name: b.name, modality: b.modality, coverage: b.coverage, source: b.source, task: b.task }));
 const direct = SHARED_CAPS.map(([code, name], i) => ({
   label: name,
   note: code,
-  value: benchmarks.filter((b) => b.coverage[i] === 'direct').length,
+  value: scoredBenchmarks.filter((b) => b.coverage[i] === 'direct').length,
 }));
 const cf = direct.find((d) => d.note === 'CF')?.value ?? 0;
 const le = direct.find((d) => d.note === 'LE')?.value ?? 0;
@@ -36,11 +36,11 @@ const description = `${benchmarks.length} multimodal agent memory benchmarks gro
           {benchmarks.length} benchmarks and evaluation resources from the survey, grouped by the modality they test.
         </p>
         <p class="finding">
-          <strong class="num">{le} of {benchmarks.length}</strong> test recall over long histories, but only{' '}
+          <strong class="num">{le} of {scoredBenchmarks.length}</strong> test recall over long histories, but only{' '}
           <strong class="num">{cf}</strong> test whether memory handles conflicting information.
         </p>
       </div>
-      <BarList bars={direct} max={benchmarks.length} unit="benchmarks" caption="Directly evaluated, by shared capability" />
+      <BarList bars={direct} max={scoredBenchmarks.length} unit="benchmarks" caption="Directly evaluated, by shared capability" />
     </div>
     <BenchmarkGrid benchmarks={benchmarks} />
   </section>

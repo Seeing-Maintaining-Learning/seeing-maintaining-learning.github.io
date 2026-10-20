@@ -9,7 +9,9 @@ import { execFileSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { normalizeBenchmark, normalizeSystem } from '../src/data/normalize.ts';
+import {
+  isClassified, normalizeBenchmark, normalizeCorpusBenchmark, normalizePending, normalizeSystem,
+} from '../src/data/normalize.ts';
 
 const REPO = 'Seeing-Maintaining-Learning/multimodal-agent-memory-evolution';
 const ROOT = resolve(import.meta.dirname, '..');
@@ -49,9 +51,20 @@ function readRecords(dir: string): unknown[] {
 
 async function main(): Promise<void> {
   const { dir, revision } = await fetchCorpus();
-  const systems = readRecords(join(dir, 'architectures'))
-    .map(normalizeSystem)
+  const snapshot = JSON.parse(readFileSync(join(VENDOR, 'snapshot.json'), 'utf8'));
+  const snapSystems = new Set<string>(snapshot.systems);
+  const snapBenchFiles = new Set<string>(snapshot.benchmarkFiles);
+  const raws = readRecords(join(dir, 'architectures')) as Record<string, any>[];
+  const isNew = (r: Record<string, any>) => !snapSystems.has(r.architecture_id);
+  const systems = raws
+    .filter(isClassified)
+    .map((r) => normalizeSystem(r, isNew(r)))
     .sort((a, b) => a.name.localeCompare(b.name));
+  const pending = raws
+    .filter((r) => !isClassified(r))
+    .map((r) => normalizePending(r, isNew(r)))
+    .filter((p): p is NonNullable<typeof p> => p !== null)
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   const coverage = JSON.parse(readFileSync(join(VENDOR, 'benchmark_coverage.json'), 'utf8'));
   const scope = JSON.parse(readFileSync(join(VENDOR, 'benchmark_scope_review.json'), 'utf8'));
@@ -71,6 +84,12 @@ async function main(): Promise<void> {
       return normalizeBenchmark(row, review, record);
     })
     .sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name));
+  // Benchmarks added to the corpus after the survey (not in Table 2) are listed without coverage.
+  for (const [file, record] of corpusBench) {
+    if (snapBenchFiles.has(file)) continue;
+    const b = normalizeCorpusBenchmark(record, true);
+    if (b) benchmarks.push(b);
+  }
 
   mkdirSync(LOGOS, { recursive: true });
   const logoDir = join(dir, 'assets/institutions');
@@ -79,11 +98,15 @@ async function main(): Promise<void> {
   mkdirSync(OUT, { recursive: true });
   writeFileSync(join(OUT, 'systems.json'), JSON.stringify(systems));
   writeFileSync(join(OUT, 'benchmarks.json'), JSON.stringify(benchmarks));
+  writeFileSync(join(OUT, 'pending.json'), JSON.stringify(pending));
+  writeFileSync(join(ROOT, 'public/corpus-revision.txt'), `${revision}\n`);
   writeFileSync(
     join(OUT, 'meta.json'),
     JSON.stringify({ corpusRepo: REPO, revision, syncedAt: new Date().toISOString() }, null, 2),
   );
-  console.log(`Synced ${systems.length} systems, ${benchmarks.length} benchmarks @ ${revision.slice(0, 7)}`);
+  console.log(
+    `Synced ${systems.length} systems (+${pending.length} pending), ${benchmarks.length} benchmarks @ ${revision.slice(0, 7)}`,
+  );
 }
 
 main().catch((err: unknown) => {

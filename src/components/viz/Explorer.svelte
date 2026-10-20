@@ -15,6 +15,7 @@
     retrieval: string[];
     ops: string[];
     t3: string[];
+    isNew?: boolean;
   }
 
   interface Facet {
@@ -148,7 +149,7 @@
       {#each filtered as r (r.id)}
         <li>
           <a href="/systems/{r.id}/">
-            <span class="name">{r.name}</span>
+            <span class="name">{r.name}{#if r.isNew}<span class="new">New</span>{/if}</span>
             <span class="title">{r.title}</span>
           </a>
           <span class="meta">
@@ -192,6 +193,7 @@
   .list a { text-decoration: none; color: inherit; min-width: 0; }
   .list a:hover .name { color: var(--accent-ink); text-decoration: underline; }
   .name { display: block; font-weight: 600; }
+  .new { margin-left: 8px; font-size: 0.6875rem; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, var(--surface)); color: var(--ink); vertical-align: 2px; }
   .title { display: block; color: var(--muted); font-size: var(--step--1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .meta { display: flex; gap: 6px; align-items: center; }
   .year { font-size: var(--step--1); min-width: 3ch; }

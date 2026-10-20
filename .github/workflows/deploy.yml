@@ -7,7 +7,7 @@ on:
   repository_dispatch:
     types: [corpus-updated]
   schedule:
-    - cron: '17 6 * * 1' # weekly: pick up corpus changes
+    - cron: '23 * * * *' # hourly: publish newly merged corpus records
 
 permissions:
   contents: read
@@ -17,7 +17,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # On the hourly schedule, rebuild only when the corpus moved past what the live site was built from.
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.cmp.outputs.changed }}
+    steps:
+      - id: cmp
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          latest=$(gh api repos/Seeing-Maintaining-Learning/multimodal-agent-memory-evolution/commits/main --jq .sha)
+          live=$(curl -fsSL https://seeing-maintaining-learning.github.io/corpus-revision.txt || echo none)
+          echo "latest=$latest live=$live"
+          if [ "$latest" = "$live" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
   build:
+    needs: check
+    if: needs.check.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
