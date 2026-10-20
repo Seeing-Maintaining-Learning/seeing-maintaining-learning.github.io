@@ -30,6 +30,8 @@ jobs:
         run: npm run sync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Type check
+        run: npx astro check
       - name: Check data against the paper
         run: npm test
       - name: Build
