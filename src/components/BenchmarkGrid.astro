@@ -22,11 +22,11 @@ const groups = MODALITIES.map((m) => ({ m, list: benchmarks.filter((b) => b.moda
 {
   groups.map((g) => (
     <section class={`group mod-${g.m}`} id={`bench-${MODALITY_SLUG[g.m]}`}>
-      <h3 class="gh">
+      <h2 class="gh">
         <span class="sw" />
         {MODALITY_LABEL[g.m]}
         <span class="num muted">{g.list.length}</span>
-      </h3>
+      </h2>
       <ul class="cards">
         {g.list.map((b) => (
           <li class="card">

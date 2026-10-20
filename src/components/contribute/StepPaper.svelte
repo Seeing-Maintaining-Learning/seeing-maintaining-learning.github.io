@@ -7,6 +7,17 @@
   let status = $state<'idle' | 'loading' | 'found' | 'manual' | 'invalid'>(draft.title ? 'found' : 'idle');
   const dup = $derived(draft.arxiv ? index[draft.arxiv] : undefined);
 
+  function onInput() {
+    const id = parseArxivId(input) ?? '';
+    if (id !== draft.arxiv) {
+      // A different paper: drop details fetched for the previous ID.
+      draft.arxiv = id;
+      draft.title = '';
+      draft.authors = '';
+      status = 'idle';
+    }
+  }
+
   async function lookup() {
     const id = parseArxivId(input);
     if (!id) {
@@ -35,7 +46,7 @@
   <p class="muted">Paste an arXiv ID or link — that and a modality are all we need. We’ll fetch the title and check whether the survey already covers it.</p>
   <form class="lookup" onsubmit={(e) => { e.preventDefault(); lookup(); }}>
     <label class="sr-only" for="arxiv-in">arXiv ID or URL</label>
-    <input id="arxiv-in" type="text" placeholder="e.g. 2610.19366 or https://arxiv.org/abs/…" bind:value={input} autocomplete="off" oninput={() => { const id = parseArxivId(input); if (id) draft.arxiv = id; }} />
+    <input id="arxiv-in" type="text" placeholder="e.g. 2610.19366 or https://arxiv.org/abs/…" bind:value={input} autocomplete="off" oninput={onInput} />
     <button class="btn primary" type="submit" disabled={status === 'loading'}>{status === 'loading' ? 'Looking up…' : 'Look up'}</button>
   </form>
 

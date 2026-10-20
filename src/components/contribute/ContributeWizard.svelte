@@ -63,7 +63,13 @@
   <ol class="stepper" aria-label="Progress">
     {#each STEPS as s, i (s)}
       <li class:done={i < step} class:cur={i === step}>
-        <button type="button" onclick={() => go(i)} disabled={i > maxStep} aria-current={i === step ? 'step' : undefined}>
+        <button
+          type="button"
+          onclick={() => go(i)}
+          disabled={i > maxStep}
+          aria-current={i === step ? 'step' : undefined}
+          aria-label="{s}{OPTIONAL[i] ? ' (optional)' : ''}{i < step ? ', completed' : ''}"
+        >
           <span class="b num">{i < step ? '✓' : i + 1}</span><span class="sl">{s}{#if OPTIONAL[i]}<span class="opt"> (optional)</span>{/if}</span>
         </button>
       </li>
@@ -94,7 +100,7 @@
             <button type="button" class="btn primary" onclick={() => go(STEPS.length - 1)}>Submit now</button>
           {/if}
         {/if}
-        <button type="button" class="btn ghost" onclick={async () => { reset(); reached = 0; ready = false; await tick(); ready = true; go(0); }}>Start over</button>
+        <button type="button" class="btn ghost" onclick={async () => { reset(); ready = false; await tick(); ready = true; go(0); }}>Start over</button>
       </div>
     </div>
 

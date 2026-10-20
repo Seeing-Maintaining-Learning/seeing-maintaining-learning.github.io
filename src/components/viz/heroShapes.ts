@@ -57,6 +57,7 @@ export function venn(points: Pt[], W: number, H: number): Shape {
 
   const keyOf = (p: Pt) => FAM.map((f, i) => (p.families.includes(f) ? i : -1)).filter((i) => i >= 0).join('');
   const region = (k: string): [number, number] => {
+    if (!k) return [cx, cy + R * 1.05]; // no family recorded: park below the diagram
     const idx = k.split('').map(Number);
     if (idx.length === 3) return [cx, cy];
     if (idx.length === 2) {
@@ -162,8 +163,9 @@ export function bloom(points: Pt[], W: number, H: number): Shape {
   const S = Math.min(W, H) * (W < 640 ? 0.82 : 1);
   const byMod = new Map<string, number[]>();
   points.forEach((p, i) => byMod.set(p.modality, [...(byMod.get(p.modality) ?? []), i]));
-  const nMax = Math.max(...MODS.map((m) => byMod.get(m)?.length ?? 0));
-  const pos: [number, number][] = new Array(points.length);
+  const nMax = Math.max(1, ...MODS.map((m) => byMod.get(m)?.length ?? 0));
+  // Unknown modalities stay at the core so every point has a position.
+  const pos: [number, number][] = points.map(() => [cx, cy]);
   const decor: Decor[] = [];
   const groups: Group[] = [];
   MODS.forEach((m, k) => {

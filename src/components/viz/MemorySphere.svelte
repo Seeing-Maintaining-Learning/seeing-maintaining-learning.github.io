@@ -44,6 +44,8 @@
   let orbit: Orbit[] | null = null;
   let dot = 4;
   let orbitClock = 0;
+  let lastFrame = 0;
+  let decorColors: Record<string, string> = {};
   let introT0 = 0;
   let introFrom: [number, number][] = [];
   let drawn: { x: number; y: number; r: number }[] = [];
@@ -58,6 +60,7 @@
     const cs = getComputedStyle(box);
     colors = Object.fromEntries(Object.entries(VAR).map(([k, v]) => [k, cs.getPropertyValue(v).trim()]));
     colors.bg = cs.getPropertyValue('--surface').trim();
+    decorColors = Object.fromEntries(Object.values(VAR).map((v) => [v, cs.getPropertyValue(v).trim()]));
     colors.ink = cs.getPropertyValue('--ink').trim();
   }
 
@@ -72,8 +75,9 @@
     const f = flat(next);
     groups = f ? f.groups : [];
     if (f) {
-      flatFrom = curBlend > 0.01 ? cur : f.pos;
-      flatTo = f.pos;
+      const start = f.orbit ? f.orbit.map((o) => orbitPos(o, orbitClock)) : f.pos;
+      flatFrom = curBlend > 0.01 ? cur : start;
+      flatTo = start;
       flatT0 = rm ? -1e9 : now;
       decor = f.decor;
       orbit = f.orbit ?? null;
@@ -90,16 +94,14 @@
   function currentFlat(now: number): [number, number][] {
     if (!flatTo.length) return [];
     const t = ease(Math.min(1, (now - flatT0) / DUR));
-    // Orbit targets move with time (frozen when paused or under reduced motion).
-    const clock = paused || reducedMotion() ? orbitClock : (orbitClock = now);
-    const target = orbit ? orbit.map((o) => orbitPos(o, clock)) : flatTo;
+    // Orbit targets follow an accumulated clock that only advances while orbiting.
+    const target = orbit ? orbit.map((o) => orbitPos(o, orbitClock)) : flatTo;
     return target.map((p, i) => [flatFrom[i][0] + (p[0] - flatFrom[i][0]) * t, flatFrom[i][1] + (p[1] - flatFrom[i][1]) * t]);
   }
 
   function drawDecor(ctx: CanvasRenderingContext2D, b: number) {
-    const css = getComputedStyle(box);
     for (const d of decor) {
-      const col = css.getPropertyValue(d.c).trim();
+      const col = decorColors[d.c] ?? colors.ink;
       ctx.save();
       ctx.beginPath();
       if (d.kind === 'circle') {
@@ -145,6 +147,8 @@
 
   function frame(now: number) {
     raf = 0;
+    if (orbit && view === 'management' && !paused && !reducedMotion() && !hover && lastFrame) orbitClock += Math.min(50, now - lastFrame);
+    lastFrame = now;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const dpr = window.devicePixelRatio || 1;
@@ -245,7 +249,7 @@
       drawn[it.i] = { x: it.x, y: it.y, r };
     }
     ctx.globalAlpha = 1;
-    const orbiting = !!orbit && view === 'management' && !paused && !rm;
+    const orbiting = !!orbit && view === 'management' && !paused && !rm && !hover;
     const moving = spin || orbiting || Math.abs(vyaw) + Math.abs(vpitch) > 1e-4 || now - blend.t0 < DUR || now - flatT0 < DUR || intro < 1 || !!drag;
     if (moving && visible) raf = requestAnimationFrame(frame);
   }
