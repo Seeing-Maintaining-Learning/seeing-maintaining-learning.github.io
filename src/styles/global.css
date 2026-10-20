@@ -184,6 +184,17 @@ section.block + section.block { border-top: 1px solid var(--rule); }
 .tier-T1 .dot { background: transparent; box-shadow: inset 0 0 0 2px var(--c); }
 .tier-T3 .dot { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 35%, transparent); }
 
+/* Buttons */
+.btn {
+  font: inherit; display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px;
+  border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer;
+  transition: border-color var(--dur-1), background var(--dur-1);
+}
+.btn:hover { border-color: var(--ink-2); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.ghost { border-color: transparent; color: var(--muted); background: none; }
+.btn:disabled { opacity: 0.45; cursor: default; }
+
 /* Segmented control */
 .seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 999px; }
 .seg button {

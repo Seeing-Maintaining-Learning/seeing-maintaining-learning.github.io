@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import ContributeWizard from '../components/contribute/ContributeWizard.svelte';
+import { benchmarks, systems } from '../data/index.ts';
+import { LEAF_TEXT, OP_TEXT, T3_TEXT } from '../data/taxonomy.ts';
+import {
+  FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, LEAVES, MODALITIES, MODALITY_LABEL, RETRIEVAL_LABEL, STORAGE_LABEL, T2_OPS,
+  T2_OP_LABEL, T3_TARGET_LABEL, TIER_LABEL,
+} from '../data/vocab.ts';
+import { arxivIndex, CORPUS_REPO } from '../lib/contribute.ts';
+import { breadcrumbs } from '../lib/seo.ts';
+
+const index = arxivIndex([
+  ...systems.map((s) => ({ url: s.url, path: `/systems/${s.id}/` })),
+  ...benchmarks.map((b) => ({ url: b.url, path: `/benchmarks/${b.id}/` })),
+]);
+const HINT: Record<string, string> = {
+  image: 'Photos, documents, screenshots, multimodal chat',
+  video_streaming: 'Long videos, live streams, egocentric video',
+  audio_speech: 'Speech, sound, spoken dialogue',
+  gui: 'Phone, web, and desktop agents',
+  embodied_3d: 'Robots, navigation, 3D scenes',
+};
+const modalities = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], hint: HINT[m], n: systems.filter((s) => s.modality === m).length }));
+const drop = (m: Record<string, string>) => Object.entries(m).filter(([k]) => k !== 'unclear').map(([key, label]) => ({ key, label }));
+const labels = {
+  modality: MODALITY_LABEL,
+  leaf: LEAF_LABEL,
+  storage: STORAGE_LABEL,
+  retrieval: RETRIEVAL_LABEL,
+  tier: TIER_LABEL,
+  op: T2_OP_LABEL,
+  t3: T3_TARGET_LABEL,
+} as Record<string, Record<string, string>>;
+const VAR: Record<string, string> = { image: 'm-image', video_streaming: 'm-video', audio_speech: 'm-audio', gui: 'm-gui', embodied_3d: 'm-embodied' };
+const cloud = systems.slice(0, 160).map((s, i) => {
+  const a = i * 2.39996;
+  const r = 5.2 * Math.sqrt(i + 1);
+  return { x: 100 + r * Math.cos(a) * 1.5, y: 55 + r * Math.sin(a) * 0.75, m: VAR[s.modality] };
+});
+---
+
+<Base
+  title="Submit a paper to the multimodal agent memory survey"
+  description="Suggest a multimodal agent memory system or benchmark for the survey. A guided form classifies it and opens a pre-filled GitHub issue for the maintainers."
+  jsonld={[breadcrumbs([['Home', '/'], ['Contribute', '/contribute/']])]}
+>
+  <section class="wrap block intro">
+    <h1>Add a paper to the survey</h1>
+    <p class="lede">
+      Know a multimodal agent memory system or benchmark we missed? Classify it in five short steps. You’ll get a
+      pre-filled issue in the <a href={`https://github.com/${CORPUS_REPO}`}>corpus repository</a>, and maintainers will
+      verify and add it.
+    </p>
+    <ContributeWizard
+      client:load
+      index={index}
+      labels={labels}
+      modalities={modalities}
+      leaves={LEAVES.map((l) => ({ key: l, label: LEAF_LABEL[l], family: FAMILY_LABEL[LEAF_FAMILY[l]], short: LEAF_TEXT[l].definition }))}
+      storage={drop(STORAGE_LABEL)}
+      retrieval={drop(RETRIEVAL_LABEL)}
+      ops={T2_OPS.map((o) => ({ key: o, label: T2_OP_LABEL[o], hint: OP_TEXT[o].definition }))}
+      targets={Object.entries(T3_TEXT).map(([k, v]) => ({ key: k, label: T3_TARGET_LABEL[k], hint: v.definition }))}
+      cloud={cloud}
+    />
+  </section>
+  <section class="wrap block faq">
+    <h2>What we include</h2>
+    <p class="prose">
+      Systems where persistent memory matters to how the agent works, and where at least one non-text modality takes part
+      in forming, storing, retrieving, maintaining, or using that memory. Generic multimodal models and plain context
+      windows are out of scope.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .intro h1 { max-width: 18ch; }
+  .intro .lede { margin-bottom: 32px; }
+</style>

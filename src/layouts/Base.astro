@@ -93,6 +93,7 @@ const NAV: [string, string][] = [
             }
           </ul>
         </nav>
+        <a class="submit" href="/contribute/">Submit a paper</a>
         <button class="theme" type="button" aria-label="Toggle color theme" title="Toggle color theme">
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
             <path d="M12 3a9 9 0 1 0 9 9A9 9 0 0 0 12 3Zm0 16V5a7 7 0 0 1 0 14Z" fill="currentColor"></path>
@@ -147,26 +148,33 @@ const NAV: [string, string][] = [
     -webkit-backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: 1px solid var(--rule);
   }
-  .bar { display: flex; align-items: center; gap: 20px; height: 60px; }
+  .bar { display: flex; align-items: center; gap: 14px; height: 60px; }
   .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 650; white-space: nowrap; }
   nav { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
   nav::-webkit-scrollbar { display: none; }
-  nav ul { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; justify-content: flex-end; }
+  nav ul { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  nav li:first-child { margin-left: auto; }
   nav a {
-    display: block; padding: 6px 10px; border-radius: 999px; color: var(--ink-2);
-    text-decoration: none; font-size: 0.9375rem; white-space: nowrap;
+    display: block; padding: 6px 9px; border-radius: 999px; color: var(--ink-2);
+    text-decoration: none; font-size: 0.90625rem; white-space: nowrap;
   }
   nav a:hover { background: var(--surface-2); color: var(--ink); }
   nav a[aria-current='page'] { color: var(--ink); background: var(--surface-2); }
+  .submit {
+    flex: none; padding: 6px 14px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none;
+    font-size: 0.875rem; font-weight: 600; white-space: nowrap;
+  }
+  .submit:hover { background: var(--accent); }
   .theme {
     flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
     border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); cursor: pointer;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1180px) {
     .bar { flex-wrap: wrap; height: auto; padding-block: 10px; row-gap: 6px; }
     .brand { flex: 1; }
     nav { order: 3; flex-basis: 100%; }
     nav ul { justify-content: flex-start; }
+    nav li:first-child { margin-left: 0; }
   }
   .foot { border-top: 1px solid var(--rule); padding-block: 40px 56px; margin-top: 40px; }
   .foot-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; }
