@@ -5,10 +5,16 @@ export const TITLE = 'Seeing, Maintaining, and Learning';
 export const SUBTITLE = 'The Evolution of Multimodal Agent Memory';
 export const FULL_TITLE = `${TITLE}: ${SUBTITLE}`;
 
+export const ARXIV_ID = '2610.19366';
+export const PUBLISHED = '2026-10-14';
+
 export const LINKS = {
+  arxiv: `https://arxiv.org/abs/${ARXIV_ID}`,
+  pdf: `https://arxiv.org/pdf/${ARXIV_ID}`,
+  doi: `https://doi.org/10.48550/arXiv.${ARXIV_ID}`,
+  huggingface: `https://huggingface.co/papers/${ARXIV_ID}`,
   openreview: 'https://openreview.net/forum?id=5u8ag6LBFH',
   corpus: 'https://github.com/Seeing-Maintaining-Learning/multimodal-agent-memory-evolution',
-  arxiv: null as string | null,
 };
 
 export const ABSTRACT: string[] = [
@@ -61,10 +67,13 @@ const bibAuthors = AUTHORS.map((a) => {
   return `${last}, ${parts.join(' ')}`;
 }).join(' and ');
 
-export const BIBTEX = `@misc{guo2026seeing,
-  title  = {${TITLE}: {${SUBTITLE}}},
-  author = {${bibAuthors}},
-  year   = {2026},
-  howpublished = {OpenReview},
-  url    = {${LINKS.openreview}}
+export const BIBTEX = `@article{guo2026seeing,
+  title         = {${TITLE}: {${SUBTITLE}}},
+  author        = {${bibAuthors}},
+  journal       = {arXiv preprint arXiv:${ARXIV_ID}},
+  year          = {2026},
+  eprint        = {${ARXIV_ID}},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {${LINKS.arxiv}}
 }`;

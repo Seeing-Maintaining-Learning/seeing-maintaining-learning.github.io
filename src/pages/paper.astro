@@ -2,7 +2,7 @@
 import { existsSync } from 'node:fs';
 import Base from '../layouts/Base.astro';
 import {
-  ABSTRACT, AUTHORS, BIBTEX, CONTACTS, DEFINITION, FULL_TITLE, INSTITUTIONS, LINKS, MARK_LEGEND, SUBTITLE, TITLE,
+  ABSTRACT, ARXIV_ID, AUTHORS, BIBTEX, PUBLISHED, CONTACTS, DEFINITION, FULL_TITLE, INSTITUTIONS, LINKS, MARK_LEGEND, SUBTITLE, TITLE,
 } from '../data/paper.ts';
 import { breadcrumbs, scholarlyArticle } from '../lib/seo.ts';
 
@@ -20,16 +20,21 @@ const description = `${FULL_TITLE}. Abstract, ${AUTHORS.length} authors from ${I
   <Fragment slot="head">
     <meta name="citation_title" content={FULL_TITLE} />
     {AUTHORS.map((a) => <meta name="citation_author" content={a.name} />)}
-    <meta name="citation_publication_date" content="2026" />
-    <meta name="citation_abstract_html_url" content={LINKS.openreview} />
-    {LINKS.arxiv && <meta name="citation_arxiv_id" content={LINKS.arxiv} />}
+    <meta name="citation_publication_date" content={PUBLISHED.replace(/-/g, '/')} />
+    <meta name="citation_arxiv_id" content={ARXIV_ID} />
+    <meta name="citation_pdf_url" content={LINKS.pdf} />
+    <meta name="citation_abstract_html_url" content={LINKS.arxiv} />
+    <meta name="citation_doi" content={`10.48550/arXiv.${ARXIV_ID}`} />
   </Fragment>
 
   <article class="wrap paper">
     <header>
       <h1><span>{TITLE}:</span> {SUBTITLE}</h1>
       <p class="links">
-        <a class="btn primary" href={LINKS.openreview}>Read on OpenReview</a>
+        <a class="btn primary" href={LINKS.arxiv}>arXiv:{ARXIV_ID}</a>
+        <a class="btn" href={LINKS.pdf}>PDF</a>
+        <a class="btn" href={LINKS.huggingface}>Hugging Face</a>
+        <a class="btn" href={LINKS.openreview}>OpenReview</a>
         <a class="btn" href={LINKS.corpus}>Corpus on GitHub</a>
         <a class="btn" href="#cite">Cite</a>
       </p>

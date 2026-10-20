@@ -1,5 +1,5 @@
 /** SEO helpers: canonical URLs and JSON-LD builders. */
-import { AUTHORS, DESCRIPTION, FULL_TITLE, INSTITUTIONS, LINKS } from '../data/paper.ts';
+import { ARXIV_ID, AUTHORS, DESCRIPTION, FULL_TITLE, INSTITUTIONS, LINKS, PUBLISHED } from '../data/paper.ts';
 
 export const SITE_URL = 'https://seeing-maintaining-learning.github.io';
 export const SITE_NAME = 'Multimodal Agent Memory Survey';
@@ -18,8 +18,10 @@ export function scholarlyArticle(): Json {
     name: FULL_TITLE,
     abstract: DESCRIPTION,
     url: abs('/paper/'),
-    sameAs: [LINKS.openreview, LINKS.arxiv].filter(Boolean),
-    datePublished: '2026',
+    sameAs: [LINKS.arxiv, LINKS.doi, LINKS.huggingface, LINKS.openreview],
+    identifier: { '@type': 'PropertyValue', propertyID: 'arXiv', value: ARXIV_ID },
+    encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: LINKS.pdf },
+    datePublished: PUBLISHED,
     inLanguage: 'en',
     keywords: [
       'multimodal agent memory',
