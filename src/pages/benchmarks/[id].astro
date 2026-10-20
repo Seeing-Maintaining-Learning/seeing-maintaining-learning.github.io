@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { FAMILY_CAPS, SHARED_CAPS, benchmarks } from '../../data/index.ts';
 import type { Benchmark } from '../../data/normalize.ts';
-import { MODALITY_LABEL, MODALITY_SLUG } from '../../data/vocab.ts';
+import { MODALITY_LABEL, MODALITY_PHRASE, MODALITY_SLUG } from '../../data/vocab.ts';
 import { breadcrumbs, citedWork, clip } from '../../lib/seo.ts';
 
 export function getStaticPaths() {
@@ -14,7 +14,7 @@ const caps = [...SHARED_CAPS, ...(FAMILY_CAPS[b.modality] ?? [])];
 const cov = b.coverage;
 const direct = cov ? caps.filter((_, i) => cov[i] === 'direct').map(([, n]) => n.toLowerCase()) : [];
 const WORD = { direct: 'Directly evaluated', partial: 'Partially evaluated', none: 'Not evaluated' } as const;
-const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Hybrid real + synthetic' };
+const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Hybrid (real + synthetic/simulated)' };
 const ROLE: Record<string, string> = {
   memory_specific: 'Memory-specific benchmark',
   mixed_memory_tracks: 'Benchmark with memory tracks',
@@ -22,7 +22,7 @@ const ROLE: Record<string, string> = {
 };
 const authorLine = b.authors.length > 6 ? `${b.authors.slice(0, 6).join(', ')}, et al.` : b.authors.join(', ');
 const description = clip(
-  `${b.name}: a ${MODALITY_LABEL[b.modality].toLowerCase()} memory benchmark${direct.length ? ` that directly tests ${direct.slice(0, 4).join(', ')}` : ''}.`,
+  `${b.name}: ${/^[aeiou]/.test(MODALITY_PHRASE[b.modality]) ? 'an' : 'a'} ${MODALITY_PHRASE[b.modality]} memory benchmark${direct.length ? ` that directly tests ${direct.slice(0, 4).join(', ')}` : ''}.`,
 );
 ---
 

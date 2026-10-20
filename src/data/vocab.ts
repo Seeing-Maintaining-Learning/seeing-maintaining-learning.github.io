@@ -11,6 +11,24 @@ export const MODALITY_LABEL: Record<Modality, string> = {
   embodied_3d: 'Embodied & 3D',
 };
 
+/** Lowercase-safe modality phrases for running text (keeps GUI and 3D capitalized). */
+export const MODALITY_PHRASE: Record<Modality, string> = {
+  image: 'image',
+  video_streaming: 'video & streaming',
+  audio_speech: 'audio & speech',
+  gui: 'GUI & computer-use',
+  embodied_3d: 'embodied & 3D',
+};
+
+/** Modality headings as the survey writes them. */
+export const MODALITY_HEADING: Record<Modality, string> = {
+  image: 'Image Memory',
+  video_streaming: 'Video Memory',
+  audio_speech: 'Audio and Speech Memory',
+  gui: 'GUI Memory',
+  embodied_3d: 'Embodied Memory',
+};
+
 export const MODALITY_SLUG: Record<Modality, string> = {
   image: 'image',
   video_streaming: 'video',
@@ -23,9 +41,9 @@ export const TIERS = ['T1', 'T2', 'T3'] as const;
 export type Tier = (typeof TIERS)[number];
 
 export const TIER_LABEL: Record<Tier, string> = {
-  T1: 'Static memory',
-  T2: 'Dynamic memory',
-  T3: 'Self-evolving memory',
+  T1: 'Static Memory',
+  T2: 'Dynamic Memory',
+  T3: 'Self-Evolving Memory',
 };
 
 export const FAMILIES = [
@@ -79,7 +97,7 @@ export const LEAF_LABEL: Record<Leaf, string> = {
 
 /** Short leaf names for dense charts. */
 export const LEAF_SHORT: Record<Leaf, string> = {
-  retained_perceptual_source_evidence: 'Raw source evidence',
+  retained_perceptual_source_evidence: 'Retained source evidence',
   modality_specific_encodings_and_geometric_state: 'Encodings & geometry',
   perception_to_text_records_and_summaries: 'Text records & summaries',
   spatial_temporal_and_cross_modal_structured_memory: 'Structured records & graphs',
@@ -107,7 +125,7 @@ export const STORAGE_LABEL: Record<string, string> = {
 
 export const RETRIEVAL_LABEL: Record<string, string> = {
   similarity_based_retrieval: 'Similarity search',
-  metadata_spatiotemporal_retrieval: 'Metadata / spatiotemporal lookup',
+  metadata_spatiotemporal_retrieval: 'Metadata / spatiotemporal retrieval',
   structure_based_traversal: 'Structure traversal',
   planner_tool_assisted_retrieval: 'Planner / tool-assisted retrieval',
   latent_parametric_activation: 'Latent / parametric activation',
@@ -117,7 +135,7 @@ export const RETRIEVAL_LABEL: Record<string, string> = {
 export const SOURCE_ACCESS_LABEL: Record<string, string> = {
   direct: 'Source directly available',
   linked_recoverable: 'Source linked & recoverable',
-  retained_not_accessible: 'Retained, not exposed',
+  retained_not_accessible: 'Retained but not accessible to the agent',
   none: 'Source not retained',
   unclear: 'Unclear',
 };
@@ -138,15 +156,15 @@ export const T2_LEAF: Record<string, { label: string; op: T2Op }> = {
   rule_based_update: { label: 'Rule-based update', op: 'update' },
   learned_update_module: { label: 'Learned update module', op: 'update' },
   optimization_based_update: { label: 'Optimization-based update', op: 'update' },
-  llm_based_memory_editing: { label: 'LLM-based memory editing', op: 'update' },
+  llm_based_memory_editing: { label: 'Prompted LLM/VLM record update', op: 'update' },
   episodic_or_hierarchical_summarization: { label: 'Episodic / hierarchical summarization', op: 'consolidation' },
   memory_merging_and_deduplication: { label: 'Merging & deduplication', op: 'consolidation' },
   experience_abstraction: { label: 'Experience abstraction', op: 'consolidation' },
   rule_based_state_correction: { label: 'Rule-based state correction', op: 'revision' },
   evidence_weighted_belief_revision: { label: 'Evidence-weighted belief revision', op: 'revision' },
   llm_based_conflict_resolution: { label: 'LLM-based conflict resolution', op: 'revision' },
-  memory_relinking_and_reindexing: { label: 'Relinking & re-indexing', op: 'reorganization' },
-  memory_tier_migration: { label: 'Tier migration', op: 'reorganization' },
+  memory_relinking_and_reindexing: { label: 'Relinking & reindexing', op: 'reorganization' },
+  memory_tier_migration: { label: 'Memory-level migration (short- to long-term)', op: 'reorganization' },
   discrete_memory_eviction: { label: 'Discrete eviction', op: 'forgetting' },
   progressive_memory_decay: { label: 'Progressive decay', op: 'forgetting' },
 };

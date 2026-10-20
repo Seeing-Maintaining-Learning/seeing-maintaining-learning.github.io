@@ -14,9 +14,9 @@
   <p class="muted">Optional — helps maintainers. Answer two questions and we’ll suggest the management tier.</p>
 
   <div class="q">
-    <p class="qt"><span class="n">1</span> After deployment, can the stored memory change — new entries added, merged, corrected, regrouped, or forgotten?</p>
+    <p class="qt"><span class="n">1</span> During deployment, can the stored memory change — new entries added, merged, corrected, regrouped, or forgotten?</p>
     <fieldset class="yn">
-      <legend class="sr-only">Memory changes after deployment</legend>
+      <legend class="sr-only">Memory changes during deployment</legend>
       <label class:on={draft.memoryChanges === false}><input class="sr-only" type="radio" name="q1" checked={draft.memoryChanges === false} onchange={() => { draft.memoryChanges = false; draft.policyEvolves = null; }} />No, it is built once and reused</label>
       <label class:on={draft.memoryChanges === true}><input class="sr-only" type="radio" name="q1" checked={draft.memoryChanges === true} onchange={() => (draft.memoryChanges = true)} />Yes, it changes</label>
     </fieldset>
@@ -24,11 +24,12 @@
 
   {#if draft.memoryChanges}
     <div class="q" in:scale={{ duration: dur(220), start: 0.96 }}>
-      <p class="qt"><span class="n">2</span> Does feedback (task outcomes, a verifier, user corrections) persistently change the <em>rules</em> that decide how memory is written, maintained, or retrieved?</p>
+      <p class="qt"><span class="n">2</span> Does feedback (task outcomes, a verifier, user corrections) persistently change the <em>memory-management policy</em> (rules, prompts, procedures, or learned components) that decides how memory is written, maintained, or retrieved?</p>
+      <p class="hint small muted">Updating stored content, retrieval keys, or usage statistics alone counts as T2.</p>
       <fieldset class="yn">
         <legend class="sr-only">Policy evolves from feedback</legend>
-        <label class:on={draft.policyEvolves === false}><input class="sr-only" type="radio" name="q2" checked={draft.policyEvolves === false} onchange={() => (draft.policyEvolves = false)} />No, the rules are fixed</label>
-        <label class:on={draft.policyEvolves === true}><input class="sr-only" type="radio" name="q2" checked={draft.policyEvolves === true} onchange={() => (draft.policyEvolves = true)} />Yes, the rules evolve</label>
+        <label class:on={draft.policyEvolves === false}><input class="sr-only" type="radio" name="q2" checked={draft.policyEvolves === false} onchange={() => (draft.policyEvolves = false)} />No, the policy stays stable</label>
+        <label class:on={draft.policyEvolves === true}><input class="sr-only" type="radio" name="q2" checked={draft.policyEvolves === true} onchange={() => (draft.policyEvolves = true)} />Yes, the policy evolves</label>
       </fieldset>
     </div>
   {/if}
@@ -69,6 +70,7 @@
 <style>
   .q { margin: 16px 0; padding: 16px; border-radius: 14px; border: 1px solid var(--rule); background: var(--surface); }
   .qt { margin: 0 0 12px; }
+  .hint { margin: -6px 0 12px; }
   .n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 0.75rem; margin-right: 6px; }
   .yn { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
   .yn label { padding: 10px 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; }

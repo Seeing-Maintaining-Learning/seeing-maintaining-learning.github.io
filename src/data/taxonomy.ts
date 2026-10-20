@@ -63,7 +63,7 @@ export const HYBRID_EXAMPLES = ['VimRAG', 'FOLIO', 'MementoGUI', 'ObsGraph', 'Hi
 
 export const TIER_TEXT: Record<Tier, { title: string; question: string; definition: string; change: string; examples: string[] }> = {
   T1: {
-    title: 'Static memory',
+    title: 'Static Memory',
     question: 'Memory is built, then reused.',
     definition:
       'Memory is constructed before downstream reasoning or action and then stored and reused without modification. Each query may retrieve a different subset, but content, organization, indices, and metadata stay fixed.',
@@ -71,16 +71,16 @@ export const TIER_TEXT: Record<Tier, { title: string; question: string; definiti
     examples: ['VideoAgent', 'PIXELRAG', 'VisRAG', 'AutoDroid', 'Memory-QA'],
   },
   T2: {
-    title: 'Dynamic memory',
-    question: 'Memory changes; the rules do not.',
+    title: 'Dynamic Memory',
+    question: 'Memory updates; the management policy stays stable.',
     definition:
-      'New observations update memory content, organization, indices, or metadata through a stable management policy, hand-coded or learned before deployment, that does not change during inference.',
-    change: 'Memory state M changes; policy π is fixed.',
+      'New observations update memory content, organization, indices, or metadata through a stable management policy, hard-coded or learned before deployment, that does not change during inference.',
+    change: 'Memory state M changes; policy π stays stable.',
     examples: ['M2A', 'M3-Agent', 'DynaMem', 'MovieChat', 'StreamChat'],
   },
   T3: {
-    title: 'Self-evolving memory',
-    question: 'Feedback rewrites the rules.',
+    title: 'Self-Evolving Memory',
+    question: 'Feedback evolves the management policy.',
     definition:
       'Feedback from interactions or task outcomes persistently changes the policy that governs how memory is written, maintained, or retrieved.',
     change: 'Both memory M and policy π change.',

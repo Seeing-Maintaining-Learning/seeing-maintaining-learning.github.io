@@ -28,7 +28,7 @@
   const t3n = dots.filter((d) => d.tier === 'T3').length;
 </script>
 
-<div class="spot" bind:this={el} role="region" aria-label="Self-evolving memory spotlight" onpointerenter={() => (hold = true)} onpointerleave={() => (hold = false)}>
+<div class="spot" bind:this={el} role="region" aria-label="T3 Self-Evolving Memory spotlight" onpointerenter={() => (hold = true)} onpointerleave={() => (hold = false)}>
   <div class="left">
     <div class="tabs" role="tablist" aria-label="Spotlight items">
       {#each items as s, i (s.id)}
@@ -38,7 +38,7 @@
     </div>
     {#key k}
       <div class="body mod-{it.modality}" in:fade={{ duration: dur(250) }}>
-        <p class="kick small"><span class="ic"><Icon name="T3" size={13} /></span> Self-evolving memory · {it.date}</p>
+        <p class="kick small"><span class="ic"><Icon name="T3" size={13} /></span> T3 Self-Evolving Memory · {it.date}</p>
         <a class="name" href="/systems/{it.id}/">{it.name}</a>
         <p class="title">{it.title}</p>
         <p class="small">

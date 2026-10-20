@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.astro';
 import { FAMILY_CAPS, SHARED_CAPS, benchmarks, scoredBenchmarks, systems } from '../../data/index.ts';
 import type { Modality } from '../../data/vocab.ts';
 import {
-  LEAF_LABEL, LEAVES, MODALITIES, MODALITY_LABEL, MODALITY_SLUG, REP_CATEGORIES, REP_CATEGORY_LABEL, T2_OPS, T2_OP_LABEL,
+  LEAF_LABEL, LEAVES, MODALITIES, MODALITY_HEADING, MODALITY_LABEL, MODALITY_PHRASE, MODALITY_SLUG, REP_CATEGORIES, REP_CATEGORY_LABEL, T2_OPS, T2_OP_LABEL,
   TIERS, TIER_LABEL,
 } from '../../data/vocab.ts';
 import { countBy, crossMatrix, t2OpCounts } from '../../lib/aggregate.ts';
@@ -31,7 +31,8 @@ const capDirect = caps.map(([code, name], i) => ({
   value: scored.filter((b) => b.coverage[i] === 'direct').length,
 }));
 const label = MODALITY_LABEL[mod];
-const description = `${list.length} ${label.toLowerCase()} agent memory systems and ${benches.length} benchmarks: how they represent, store, update and evaluate memory.`;
+const phrase = MODALITY_PHRASE[mod];
+const description = `${list.length} ${phrase} agent memory systems and ${benches.length} benchmarks: how they represent, store, update and evaluate memory.`;
 ---
 
 <Base
@@ -41,9 +42,9 @@ const description = `${list.length} ${label.toLowerCase()} agent memory systems 
 >
   <section class={`wrap block intro mod-${mod}`}>
     <nav class="crumbs small" aria-label="Breadcrumb"><a href="/modalities/">Modalities</a> / <span>{label}</span></nav>
-    <h1><span class="hi"><Icon name={mod} size={34} /></span>{label} memory</h1>
+    <h1><span class="hi"><Icon name={mod} size={34} /></span>{MODALITY_HEADING[mod]}</h1>
     <p class="lede">
-      {list.length} systems and {benches.length} benchmarks whose primary modality is {label.toLowerCase()}.
+      {list.length} systems and {benches.length} benchmarks whose primary modality is {phrase}.
     </p>
     <div class="pick">
       {MODALITIES.filter((m) => m !== mod).map((m) => <a class={`chip mod-${m}`} href={`/modalities/${MODALITY_SLUG[m]}/`}><span class="dot" />{MODALITY_LABEL[m]}</a>)}

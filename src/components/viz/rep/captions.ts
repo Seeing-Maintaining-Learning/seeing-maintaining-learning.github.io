@@ -18,7 +18,7 @@ export const CAPTIONS: Record<Kind, string[]> = {
   modality_specific_encodings_and_geometric_state: [
     'The robot’s camera sees the kitchen at 08:10.',
     'An encoder cuts the frame into patches and turns each into a feature token.',
-    'Similar tokens are merged so long streams stay compact. Fine detail is partly lost.',
+    'The tokens keep the frame’s spatial layout in a compact, model-specific form. Some fine detail may be lost.',
     'Objects are also placed in a 3D map of the room, keeping where things are.',
   ],
   perception_to_text_records_and_summaries: [
@@ -36,12 +36,12 @@ export const CAPTIONS: Record<Kind, string[]> = {
   persistent_multimodal_latent_state: [
     'Frames arrive one after another.',
     'Each frame is blended into a hidden state vector carried forward in time.',
-    'The state keeps a compressed trace of everything seen, outside the model’s weights.',
+    'The state keeps a compressed, lossy summary of what has been seen so far, outside the model’s weights.',
     'It is fast for the model to use, but a person cannot read or edit it directly.',
   ],
   experience_conditioned_parametric_memory: [
     'The robot collects an episode of experience.',
-    'A few gradient steps update a small adapter attached to the model.',
+    'Experience is written into the weights or a small adapter, by gradient updates or a generated adapter.',
     'The experience now shapes the weights; the connections that changed light up.',
     'The original observation is discarded. The knowledge lives only in the parameters.',
   ],

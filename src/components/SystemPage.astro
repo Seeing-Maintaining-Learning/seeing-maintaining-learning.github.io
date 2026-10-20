@@ -5,7 +5,7 @@ import type { System } from '../data/normalize.ts';
 import { related } from '../lib/aggregate.ts';
 import { breadcrumbs, citedWork, clip, systemTitle } from '../lib/seo.ts';
 import {
-  FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, MODALITY_LABEL, MODALITY_SLUG, REP_CATEGORY_LABEL, RETRIEVAL_LABEL,
+  FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, MODALITY_LABEL, MODALITY_PHRASE, MODALITY_SLUG, REP_CATEGORY_LABEL, RETRIEVAL_LABEL,
   SOURCE_ACCESS_LABEL, STORAGE_LABEL, T2_LEAF, T2_OP_LABEL, T3_TARGET_LABEL, TIER_LABEL, label,
 } from '../data/vocab.ts';
 
@@ -15,13 +15,13 @@ const rel = related(s, systems);
 const leaves = [...new Set(s.paths.map((p) => p.leaf))];
 const authorLine = s.authors.length > 6 ? `${s.authors.slice(0, 6).join(', ')}, et al.` : s.authors.join(', ');
 const description = clip(
-  `${s.name}: ${s.tier} ${TIER_LABEL[s.tier].toLowerCase()} for ${MODALITY_LABEL[s.modality].toLowerCase()}, using ${leaves
+  `${s.name}: ${s.tier} ${TIER_LABEL[s.tier]} for ${MODALITY_PHRASE[s.modality]}, using ${leaves
     .map((l) => LEAF_LABEL[l].toLowerCase())
     .join(' and ')}. How it forms, stores, retrieves and maintains memory.`,
 );
 const tierExplain: Record<string, string> = {
   T1: 'Memory is built once and reused without change during deployment.',
-  T2: 'Memory changes during deployment through a fixed management policy.',
+  T2: 'Memory changes during deployment through a stable management policy.',
   T3: 'Feedback during deployment changes the memory-management policy itself.',
 };
 ---
@@ -81,7 +81,7 @@ const tierExplain: Record<string, string> = {
           s.paths.map((p) => (
             <li class="path panel">
               <p class="component">{p.component}</p>
-              <ol class="flow" aria-label="Formation path">
+              <ol class="flow" aria-label="Memory path">
                 <li><span class="k">Represented as</span><a href={`/formation/#${p.leaf}`}>{LEAF_LABEL[p.leaf]}</a><span class="small muted">{FAMILY_LABEL[LEAF_FAMILY[p.leaf]]}</span></li>
                 <li><span class="k">Stored in</span>{p.storage.map((x) => label(STORAGE_LABEL, x)).join(', ')}</li>
                 <li><span class="k">Retrieved by</span>{p.retrieval.map((x) => label(RETRIEVAL_LABEL, x)).join(', ')}</li>

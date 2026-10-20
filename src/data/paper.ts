@@ -24,7 +24,7 @@ export const ABSTRACT: string[] = [
 ];
 
 export const DESCRIPTION =
-  'A survey of multimodal agent memory: how agents form and represent memory from images, video, audio, GUI and embodied experience, and how T1–T3 memory management evolves. 297 systems, 82 benchmarks.';
+  'A survey of multimodal agent memory: how agents form and represent memory from images, video, audio, GUI and embodied experience, and how memory management ranges from T1 static to T3 self-evolving. 297 systems, 82 benchmarks.';
 
 export const DEFINITION =
   'Agent memory is state derived from prior observation or experience that persists beyond the instant at which it is produced and later affects reasoning, generation, or action.';

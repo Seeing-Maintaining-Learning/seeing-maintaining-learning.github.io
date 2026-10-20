@@ -6,7 +6,7 @@ import Icon from './Icon.astro';
 
 interface Props { benchmarks: Benchmark[] }
 const { benchmarks } = Astro.props;
-const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Real + synthetic' };
+const SOURCE: Record<string, string> = { 'Real': 'Real data', 'Syn.': 'Synthetic', 'Sim.': 'Simulated', 'Hyb.': 'Hybrid (real + synthetic/simulated)' };
 const TASK: Record<string, string> = {
   QA: 'Question answering', 'Gen.': 'Generation', 'Ret.': 'Retrieval', 'Act.': 'Action', Plan: 'Planning', 'Loc.': 'Localization',
   'Seg.': 'Segmentation', 'Reason.': 'Reasoning', Learn: 'Learning', 'Class.': 'Classification', 'Rev.': 'Revision', Map: 'Mapping',

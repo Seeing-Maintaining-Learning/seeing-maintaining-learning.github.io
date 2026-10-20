@@ -27,8 +27,8 @@ const pick = (map: Record<string, string>) => Object.entries(map).filter(([k]) =
 export const FACETS = [
   { key: 'modality', label: 'Modality', options: MODALITIES.map((m) => [m, MODALITY_LABEL[m]]) },
   { key: 'tier', label: 'Management tier', options: TIERS.map((t) => [t, `${t} · ${TIER_LABEL[t]}`]) },
-  { key: 'category', label: 'Representation', options: REP_CATEGORIES.map((c) => [c, REP_CATEGORY_LABEL[c]]) },
-  { key: 'leaves', label: 'Representation leaf', options: LEAVES.map((l) => [l, LEAF_LABEL[l]]) },
+  { key: 'category', label: 'Representation category', options: REP_CATEGORIES.map((c) => [c, REP_CATEGORY_LABEL[c]]) },
+  { key: 'leaves', label: 'Representation form', options: LEAVES.map((l) => [l, LEAF_LABEL[l]]) },
   { key: 'storage', label: 'Storage & indexing', options: pick(STORAGE_LABEL) },
   { key: 'retrieval', label: 'Retrieval & activation', options: pick(RETRIEVAL_LABEL) },
   { key: 'ops', label: 'T2 operation', options: T2_OPS.map((o) => [o, T2_OP_LABEL[o]]) },

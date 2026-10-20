@@ -40,17 +40,27 @@ export function scanItems(systems: System[]) {
 
 export const latest = (systems: System[], n = 8) => [...systems].sort(byDate).slice(0, n).map(scanItem);
 
+// One-word axis labels for the spectrum chart.
+const SPECTRUM_LABEL: Record<string, string> = {
+  retained_perceptual_source_evidence: 'Source',
+  modality_specific_encodings_and_geometric_state: 'Encodings',
+  perception_to_text_records_and_summaries: 'Text',
+  spatial_temporal_and_cross_modal_structured_memory: 'Structured',
+  persistent_multimodal_latent_state: 'Latent',
+  experience_conditioned_parametric_memory: 'Parametric',
+};
+
 export const spectrum = (systems: System[]) =>
   LEAVES.map((l) => ({
     key: l,
-    label: LEAF_SHORT[l].split(/[ &]/)[0],
+    label: SPECTRUM_LABEL[l],
     values: MODALITIES.map((m) => systems.filter((s) => s.modality === m && s.paths.some((p) => p.leaf === l)).length),
   }));
 
 const HINT: Record<string, string> = {
   T1: 'Built once, then reused',
-  T2: 'Memory changes; rules stay fixed',
-  T3: 'Feedback rewrites the rules',
+  T2: 'Memory updates; the policy stays stable',
+  T3: 'Feedback evolves the policy',
 };
 export const ladder = (systems: System[]) =>
   TIERS.map((t) => ({ tier: t, label: TIER_LABEL[t], hint: HINT[t], values: MODALITIES.map((m) => systems.filter((s) => s.tier === t && s.modality === m).length) }));
@@ -79,7 +89,7 @@ export const ringDots = (systems: System[]) =>
 export function callouts(systems: System[]) {
   const newest = [...systems].sort(byDate).slice(0, 3).map((s) => ({ id: s.id, kicker: `Newest · ${s.date}`, title: s.name, sub: s.title }));
   const t3 = systems.filter((s) => s.tier === 'T3').sort(byDate).slice(0, 3)
-    .map((s) => ({ id: s.id, kicker: 'Self-evolving · T3', title: s.name, sub: s.title }));
+    .map((s) => ({ id: s.id, kicker: 'T3 · Self-Evolving', title: s.name, sub: s.title }));
   const hybrid = systems.filter((s) => s.hybrid).sort((a, b) => b.paths.length - a.paths.length || byDate(a, b)).slice(0, 3)
     .map((s) => ({ id: s.id, kicker: `Hybrid · ${s.paths.length} memory paths`, title: s.name, sub: s.title }));
   // Interleave so each group of three shows one of each.

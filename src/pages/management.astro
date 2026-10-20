@@ -35,11 +35,11 @@ const description =
   jsonld={[breadcrumbs([['Home', '/'], ['Management', '/management/']])]}
 >
   <section class="wrap block intro">
-    <p class="small muted">Axis II · Memory management</p>
+    <p class="small muted">Axis II · Memory Management</p>
     <h1>What can change while the agent is running?</h1>
     <p class="lede">
       The survey separates systems by the scope of change they allow during deployment. In T1, memory is fixed after it
-      is built. In T2, memory changes but the rules that change it do not. In T3, feedback rewrites the rules themselves.
+      is built. In T2, memory is updated through a stable management policy. In T3, feedback also evolves that policy.
     </p>
     <ManagementDemo client:visible tierText={TIER_TEXT} opText={opText} opCounts={opCounts} tierCounts={tierCounts} />
   </section>
@@ -55,7 +55,7 @@ const description =
       <ul class="facts small">
         <li><strong class="num">{cells.find((c) => c.cat === 'hybrid' && c.tier === 'T2')?.n}</strong> hybrid T2 systems: the largest group</li>
         <li><strong class="num">{cells.filter((c) => c.tier === 'T3' && (c.cat === 'cross' || c.cat === 'hybrid')).reduce((a, c) => a + c.n, 0)} of {tierCounts.T3}</strong> self-evolving systems keep explicit records</li>
-        <li><strong class="num">{cells.filter((c) => c.tier === 'T3' && (c.cat === 'native' || c.cat === 'latent')).reduce((a, c) => a + c.n, 0)}</strong> purely latent or source-only systems evolve their policy</li>
+        <li><strong class="num">{cells.filter((c) => c.tier === 'T3' && (c.cat === 'native' || c.cat === 'latent')).reduce((a, c) => a + c.n, 0)}</strong> source/modality-specific-only or latent/parametric-only systems evolve their policy</li>
       </ul>
     </div>
     <TierMatrix client:visible rows={REP_CATEGORIES} cols={[...TIERS]} cells={cells} rowLabels={REP_CATEGORY_LABEL} colLabels={TIER_LABEL} />
@@ -65,7 +65,7 @@ const description =
     <div class="section-head">
       <h2>T2 is growing fastest</h2>
       <p>
-        Cumulative systems by highest tier and the year of the latest paper version. Dynamic memory dominates the recent
+        Cumulative systems by highest tier and the year of the latest paper version. T2 Dynamic Memory dominates the recent
         surge; self-evolving memory appears only from 2025.
       </p>
     </div>
@@ -150,7 +150,7 @@ const description =
     <div class="table-wrap">
       <table class="bt">
         <thead>
-          <tr><th scope="col">Tier</th><th scope="col">What persists and changes</th><th scope="col">Core requirement</th><th scope="col">Key bottlenecks</th></tr>
+          <tr><th scope="col">Tier</th><th scope="col">Scope of persistent change</th><th scope="col">Core requirement</th><th scope="col">Key bottlenecks</th></tr>
         </thead>
         <tbody>
           {

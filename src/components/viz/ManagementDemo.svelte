@@ -53,7 +53,7 @@
   function t1Observe() {
     t1Moved = true;
     t1 = t1.map((i) => ({ ...i, state: undefined }));
-    t1Answer = 'New observation: keys are now on the desk. Static memory does not change after formation.';
+    t1Answer = 'New observation: keys are now on the desk. T1 Static Memory does not change after formation.';
   }
   function t1Reset() {
     t1 = T1_START.map((i) => ({ ...i }));
@@ -61,7 +61,7 @@
     t1Moved = false;
   }
 
-  // ---------- T2: fixed policy, changing memory ----------
+  // ---------- T2: stable policy, changing memory ----------
   const T2_START: Item[] = [
     { id: 'map', text: 'Kitchen & living-room map', group: 'Places' },
     { id: 'keys', text: 'Keys — hallway table', group: 'Objects', note: 'Mon' },
@@ -153,7 +153,7 @@
     <div role="tabpanel" id="mpanel-T2" aria-labelledby="mtab-T2" hidden={tier !== 'T2'}>
       <div class="stage two">
         <div class="side">
-          <div class="card"><p class="k">Policy π (fixed)</p><p>The same rules decide every operation, before and after deployment.</p></div>
+          <div class="card"><p class="k">Policy π (stable)</p><p>Hard-coded or learned before deployment; it does not change during inference, though it may choose different operations for different inputs.</p></div>
           <div class="ops" role="group" aria-label="Memory operations">
             {#each OP_ORDER as op (op)}
               <button class="btn op" type="button" class:on={lastOp === op} onclick={() => applyOp(op)} disabled={applied.includes(op)}>
