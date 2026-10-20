@@ -1,4 +1,5 @@
 /** Target layouts for the hero field: each lens maps every system to an (x, y) position. */
+import { bloom, orbits, venn, type Shape } from './heroShapes.ts';
 
 export type Lens = 'representation' | 'management' | 'modality' | 'timeline';
 
@@ -9,6 +10,7 @@ export interface Pt {
   modality: string;
   modalityLabel: string;
   category: string;
+  families: string[];
   year: number;
   t: number; // fractional year for the timeline
 }
@@ -22,69 +24,7 @@ export interface Group {
   align?: string;
 }
 
-const GOLDEN = Math.PI * (3 - Math.sqrt(5));
 const TIER_RANK: Record<string, number> = { T3: 0, T2: 1, T1: 2 };
-
-/** Phyllotaxis packing; points sorted so tiers form rings (T3 at the centre). */
-function sunflower(n: number, cx: number, cy: number, spacing: number): [number, number][] {
-  return Array.from({ length: n }, (_, i) => {
-    const r = spacing * Math.sqrt(i + 0.5);
-    const a = i * GOLDEN;
-    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
-  });
-}
-
-interface Spec {
-  key: (p: Pt) => string;
-  order: string[];
-  labels: Record<string, string>;
-}
-
-export const SPECS: Record<Exclude<Lens, 'timeline'>, Spec> = {
-  representation: {
-    key: (p) => p.category,
-    order: ['native', 'cross', 'latent', 'hybrid'],
-    labels: { native: 'Source & modality-specific', cross: 'Cross-represented explicit', latent: 'Latent & parametric', hybrid: 'Hybrid' },
-  },
-  management: {
-    key: (p) => p.tier,
-    order: ['T1', 'T2', 'T3'],
-    labels: { T1: 'T1 Static', T2: 'T2 Dynamic', T3: 'T3 Self-evolving' },
-  },
-  modality: {
-    key: (p) => p.modality,
-    order: ['image', 'video_streaming', 'audio_speech', 'gui', 'embodied_3d'],
-    labels: { image: 'Image', video_streaming: 'Video', audio_speech: 'Audio', gui: 'GUI', embodied_3d: 'Embodied' },
-  },
-};
-
-function clusters(spec: Spec, points: Pt[], W: number, H: number) {
-  const pos: [number, number][] = new Array(points.length);
-  const narrow = W < 640;
-  const n = spec.order.length;
-  const cols = narrow ? (n === 4 ? 2 : Math.min(3, n)) : n;
-  const rows = Math.ceil(spec.order.length / cols);
-  const cellW = W / cols;
-  const cellH = (H - 20) / rows;
-  const maxN = Math.max(...spec.order.map((k) => points.filter((p) => spec.key(p) === k).length));
-  // Spacing so the largest cluster fits its cell.
-  const spacing = (Math.min(cellW * 0.92, cellH - 70) / 2 / Math.sqrt(maxN + 1)) * 0.95;
-  const groups: Group[] = [];
-  spec.order.forEach((k, gi) => {
-    const idx = points
-      .map((p, i) => ({ p, i }))
-      .filter(({ p }) => spec.key(p) === k)
-      .sort((a, b) => TIER_RANK[a.p.tier] - TIER_RANK[b.p.tier] || b.p.t - a.p.t);
-    const cx = cellW * (gi % cols) + cellW / 2;
-    const cy = 20 + cellH * Math.floor(gi / cols) + 40 + (cellH - 40) / 2;
-    const spots = sunflower(idx.length, cx, cy, spacing);
-    idx.forEach(({ i }, j) => (pos[i] = spots[j]));
-    const r = spacing * Math.sqrt(idx.length + 0.5);
-    const half = Math.min(90, cellW / 2);
-    groups.push({ key: k, label: spec.labels[k], n: idx.length, x: Math.min(W - half, Math.max(half, cx)), y: Math.max(6, cy - r - (narrow ? 54 : 40)) });
-  });
-  return { pos, groups };
-}
 
 /** Timeline: x by publication date, stacked into a beeswarm-like column per month bin. */
 function timeline(points: Pt[], W: number, H: number) {
@@ -123,6 +63,9 @@ function timeline(points: Pt[], W: number, H: number) {
   return { pos, groups };
 }
 
-export function layoutFor(lens: Lens, points: Pt[], W: number, H: number) {
-  return lens === 'timeline' ? timeline(points, W, H) : clusters(SPECS[lens], points, W, H);
+export function layoutFor(lens: Lens, points: Pt[], W: number, H: number): Shape {
+  if (lens === 'representation') return venn(points, W, H);
+  if (lens === 'management') return orbits(points, W, H);
+  if (lens === 'modality') return bloom(points, W, H);
+  return { ...timeline(points, W, H), decor: [], dot: 4 };
 }

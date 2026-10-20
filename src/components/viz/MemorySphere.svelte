@@ -3,6 +3,7 @@
   import { reducedMotion, whileVisible } from './motion.ts';
   import { layoutFor, type Lens, type Pt, type Group } from './heroLayout.ts';
   import { project, spherePoints, wireframe } from './sphereLayout.ts';
+  import { orbitPos, type Decor, type Orbit } from './heroShapes.ts';
 
   type View = 'sphere' | Lens;
   let { points, lenses, modalities }: {
@@ -39,6 +40,10 @@
   let flatFrom: [number, number][] = [];
   let flatTo: [number, number][] = [];
   let flatT0 = 0;
+  let decor: Decor[] = [];
+  let orbit: Orbit[] | null = null;
+  let dot = 4;
+  let orbitClock = 0;
   let introT0 = 0;
   let introFrom: [number, number][] = [];
   let drawn: { x: number; y: number; r: number }[] = [];
@@ -70,6 +75,9 @@
       flatFrom = curBlend > 0.01 ? cur : f.pos;
       flatTo = f.pos;
       flatT0 = rm ? -1e9 : now;
+      decor = f.decor;
+      orbit = f.orbit ?? null;
+      dot = f.dot;
     }
     blend = { from: rm ? (next === 'sphere' ? 0 : 1) : curBlend, to: next === 'sphere' ? 0 : 1, t0: now };
     kick();
@@ -82,7 +90,57 @@
   function currentFlat(now: number): [number, number][] {
     if (!flatTo.length) return [];
     const t = ease(Math.min(1, (now - flatT0) / DUR));
-    return flatTo.map((p, i) => [flatFrom[i][0] + (p[0] - flatFrom[i][0]) * t, flatFrom[i][1] + (p[1] - flatFrom[i][1]) * t]);
+    // Orbit targets move with time (frozen when paused or under reduced motion).
+    const clock = paused || reducedMotion() ? orbitClock : (orbitClock = now);
+    const target = orbit ? orbit.map((o) => orbitPos(o, clock)) : flatTo;
+    return target.map((p, i) => [flatFrom[i][0] + (p[0] - flatFrom[i][0]) * t, flatFrom[i][1] + (p[1] - flatFrom[i][1]) * t]);
+  }
+
+  function drawDecor(ctx: CanvasRenderingContext2D, b: number) {
+    const css = getComputedStyle(box);
+    for (const d of decor) {
+      const col = css.getPropertyValue(d.c).trim();
+      ctx.save();
+      ctx.beginPath();
+      if (d.kind === 'circle') {
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.globalAlpha = 0.09 * b;
+        ctx.fillStyle = col;
+        ctx.fill();
+        ctx.globalAlpha = 0.55 * b;
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = col;
+        ctx.stroke();
+      } else if (d.kind === 'ring') {
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.globalAlpha = 0.35 * b;
+        ctx.setLineDash([2, 5]);
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = col;
+        ctx.stroke();
+      } else {
+        // Petal: two quadratic curves from the core to the tip.
+        const cos = Math.cos(d.angle);
+        const sin = Math.sin(d.angle);
+        const tipX = d.x + cos * d.len;
+        const tipY = d.y + sin * d.len;
+        const mx = d.x + cos * d.len * 0.5;
+        const my = d.y + sin * d.len * 0.5;
+        const px = -sin * d.width;
+        const py = cos * d.width;
+        ctx.moveTo(d.x, d.y);
+        ctx.quadraticCurveTo(mx + px, my + py, tipX, tipY);
+        ctx.quadraticCurveTo(mx - px, my - py, d.x, d.y);
+        ctx.globalAlpha = 0.1 * b;
+        ctx.fillStyle = col;
+        ctx.fill();
+        ctx.globalAlpha = 0.5 * b;
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = col;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
   }
 
   function frame(now: number) {
@@ -119,6 +177,7 @@
       const d = s.depth * (1 - b);
       return { i, x, y, d };
     });
+    if (b > 0.01 && decor.length) drawDecor(ctx, b);
     // Wireframe and arm lines fade out as points flatten into a lens layout.
     if (b < 0.99) {
       ctx.globalAlpha = 0.09 * (1 - b) * intro;
@@ -154,7 +213,7 @@
     for (const it of items) {
       const p = points[it.i];
       const depthF = (1 - it.d) / 2; // 0 back .. 1 front
-      const r = (2.2 + depthF * 2.6) * (1 - b) + 4 * b;
+      const r = (2.2 + depthF * 2.6) * (1 - b) + dot * b;
       const dim = focusMod && p.modality !== focusMod ? 0.12 : 1;
       ctx.globalAlpha = (0.35 + depthF * 0.65 * (1 - b) + 0.65 * b) * dim;
       const col = colors[colorBy === 'modality' ? p.modality : p.tier];
@@ -186,7 +245,8 @@
       drawn[it.i] = { x: it.x, y: it.y, r };
     }
     ctx.globalAlpha = 1;
-    const moving = spin || Math.abs(vyaw) + Math.abs(vpitch) > 1e-4 || now - blend.t0 < DUR || now - flatT0 < DUR || intro < 1 || !!drag;
+    const orbiting = !!orbit && view === 'management' && !paused && !rm;
+    const moving = spin || orbiting || Math.abs(vyaw) + Math.abs(vpitch) > 1e-4 || now - blend.t0 < DUR || now - flatT0 < DUR || intro < 1 || !!drag;
     if (moving && visible) raf = requestAnimationFrame(frame);
   }
 
@@ -207,6 +267,9 @@
       groups = f.groups;
       flatFrom = f.pos;
       flatTo = f.pos;
+      decor = f.decor;
+      orbit = f.orbit ?? null;
+      dot = f.dot;
     }
     kick();
   }
@@ -329,7 +392,7 @@
       onpointerleave={() => { drag = null; hover = null; kick(); }}
     ></canvas>
     {#each groups as g (g.key)}
-      <div class="glabel" style="left:{g.x}px; top:{g.y}px">
+      <div class="glabel" style="left:{Math.min(W - 56, Math.max(56, g.x))}px; top:{Math.max(4, g.y)}px">
         <span class="gl">{g.label}</span><span class="gn num">{g.n}</span>
       </div>
     {/each}
