@@ -1,0 +1,21 @@
+---
+/** Design lab: compare 3D lens prototypes. Not linked from the nav; noindex. */
+import Base from '../../layouts/Base.astro';
+import Lab2D from '../../components/viz/lab2d/Lab2D.svelte';
+import { systems } from '../../data/index.ts';
+import { MODALITY_LABEL } from '../../data/vocab.ts';
+
+const points = systems.map((s) => {
+  const d = new Date(s.date);
+  const doy = Number.isNaN(d.getTime()) ? 0.5 : (d.getTime() - Date.UTC(s.year, 0, 1)) / (365 * 864e5);
+  return { id: s.id, name: s.name, tier: s.tier, modality: s.modality, modalityLabel: MODALITY_LABEL[s.modality], category: s.category, families: s.families, year: s.year, t: s.year + doy };
+});
+---
+
+<Base title="2D lens lab" description="Design prototypes for the home-page lenses." noindex>
+  <section class="wrap block">
+    <h1>2D lens lab</h1>
+    <p class="lede">Prototype designs for the home-page views. Two richer 2D designs per view. Switch views and options, hover and click points, and try light and dark themes.</p>
+    <Lab2D client:load points={points} />
+  </section>
+</Base>
