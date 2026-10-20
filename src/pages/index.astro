@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Observatory from '../components/obs/Observatory.astro';
 import { benchmarks, pending, scoredBenchmarks, systems } from '../data/index.ts';
-import { ARXIV_ID, AUTHORS, BIBTEX, DESCRIPTION, LINKS, SUBTITLE, TITLE } from '../data/paper.ts';
+import { ARXIV_ID, AUTHORS, BIBTEX, DESCRIPTION, SUBTITLE, TITLE } from '../data/paper.ts';
 import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
 import { countBy, crossMatrix } from '../lib/aggregate.ts';
 import { scholarlyArticle, website } from '../lib/seo.ts';
@@ -53,23 +53,10 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
   jsonld={[website(), scholarlyArticle()]}
 >
   <section class="wrap hero">
-    <div class="intro">
-      <h1>
-        <span class="t">{TITLE}</span>
-        <span class="s">{SUBTITLE}</span>
-      </h1>
-      <div class="side">
-      <p class="lede">
-        A survey of how multimodal agents remember: how they turn what they see and hear into memory, and how that memory
-        is maintained and improved through experience. {`We reviewed ${systems.length} systems and ${benchmarks.length} benchmarks across five modalities.`}
-      </p>
-      <p class="cta">
-        <a class="btn primary" href={LINKS.arxiv}>Read the paper on arXiv</a>
-        <a class="btn" href="/systems/">Browse the systems</a>
-        <a class="btn" href="/contribute/">Submit a paper</a>
-      </p>
-      </div>
-    </div>
+    <h1>
+      <span class="t">{TITLE}</span>
+      <span class="s">{SUBTITLE}</span>
+    </h1>
     <Observatory points={points} />
   </section>
 
@@ -183,10 +170,6 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
     padding-bottom: 0.06em;
   }
   h1 .s { display: block; font-size: 0.5em; font-weight: 700; letter-spacing: 0; color: var(--title-b); margin-top: 10px; line-height: 1.2; }
-  .intro { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px 48px; align-items: end; }
-  .side .lede { font-size: 1.0625rem; margin-bottom: 0; }
-  @media (max-width: 900px) { .intro { grid-template-columns: 1fr; } }
-  .cta { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }
   .btn { font: inherit; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; }
   .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .doors { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }

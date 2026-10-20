@@ -48,6 +48,7 @@
 
 <style>
   .counters { display: flex; flex-wrap: wrap; gap: 8px 36px; margin: 0; }
+  @media (max-width: 480px) { .counters { gap: 8px 22px; } }
   .c { display: flex; flex-direction: column-reverse; gap: 2px; }
   dt { font-size: var(--step--1); color: var(--muted); }
   dd { margin: 0; display: flex; font-size: var(--step-3); font-weight: 650; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }

@@ -8,7 +8,6 @@ import RepSpectrum from './RepSpectrum.svelte';
 import TierLadder from './TierLadder.svelte';
 import Spotlight from './Spotlight.svelte';
 import { benchmarks, systems } from '../../data/index.ts';
-import { AUTHORS, INSTITUTIONS } from '../../data/paper.ts';
 import { MODALITIES, MODALITY_LABEL } from '../../data/vocab.ts';
 import { callouts, latest, ladder, ringDots, scanItem, scanItems, spectrum, spotlight } from '../../lib/observatory.ts';
 import { riverPapers } from '../../lib/river.ts';
@@ -29,8 +28,6 @@ const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: 
           { value: systems.length, label: 'memory systems' },
           { value: benchmarks.length, label: 'benchmarks' },
           { value: 5, label: 'modalities' },
-          { value: AUTHORS.length, label: 'authors' },
-          { value: INSTITUTIONS.length, label: 'institutions' },
         ]}
       />
     </div>
