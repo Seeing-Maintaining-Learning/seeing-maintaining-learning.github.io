@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import HeroField from '../components/viz/HeroField.svelte';
+import MemorySphere from '../components/viz/MemorySphere.svelte';
+import RollingCounter from '../components/viz/RollingCounter.svelte';
 import { benchmarks, systems } from '../data/index.ts';
 import { AUTHORS, BIBTEX, DESCRIPTION, INSTITUTIONS, LINKS, SUBTITLE, TITLE } from '../data/paper.ts';
 import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
@@ -64,7 +65,22 @@ const DOORS = [
       </p>
       </div>
     </div>
-    <HeroField client:load points={points} lenses={lenses} />
+    <MemorySphere
+      client:load
+      points={points}
+      lenses={lenses}
+      modalities={MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: systems.filter((s) => s.modality === m).length }))}
+    />
+    <RollingCounter
+      client:visible
+      items={[
+        { value: systems.length, label: 'memory systems reviewed' },
+        { value: benchmarks.length, label: 'benchmarks' },
+        { value: 5, label: 'modalities' },
+        { value: AUTHORS.length, label: 'authors' },
+        { value: INSTITUTIONS.length, label: 'institutions' },
+      ]}
+    />
   </section>
 
   <section class="wrap block">
