@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import GrowthLines from '../../components/viz/GrowthLines.svelte';
 import ChartSwitch from '../../components/viz/ChartSwitch.svelte';
+import PaperRiver from '../../components/viz/PaperRiver.svelte';
+import { riverPapers } from '../../lib/river.ts';
 import { storageByModality, tierByModality } from '../../lib/charts.ts';
 import { benchmarks, systems } from '../../data/index.ts';
 import { LEAF_SHORT, MODALITIES, MODALITY_LABEL, MODALITY_SLUG, TIERS } from '../../data/vocab.ts';
@@ -76,6 +78,8 @@ const description =
       <h2>Embodied and video lead; audio is just starting</h2>
       <p>Cumulative systems by primary modality and year of the latest paper version.</p>
     </div>
+    <PaperRiver client:visible papers={riverPapers(systems)} lanes={MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m] }))} />
+    <div class="gap"></div>
     <GrowthLines
       client:visible
       title="Cumulative systems by primary modality, 2023–2026"
@@ -87,6 +91,7 @@ const description =
 
 <style>
   .intro .lede { margin-bottom: 32px; }
+  .gap { height: 40px; }
   .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
   .card { border-top: 3px solid var(--c); }
   .card a { display: flex; flex-direction: column; gap: 8px; padding: 16px; color: var(--ink); text-decoration: none; height: 100%; }

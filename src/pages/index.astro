@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import MemorySphere from '../components/viz/MemorySphere.svelte';
 import RollingCounter from '../components/viz/RollingCounter.svelte';
+import PaperRiver from '../components/viz/PaperRiver.svelte';
+import { riverPapers } from '../lib/river.ts';
 import { benchmarks, systems } from '../data/index.ts';
 import { AUTHORS, BIBTEX, DESCRIPTION, INSTITUTIONS, LINKS, SUBTITLE, TITLE } from '../data/paper.ts';
 import { MODALITIES, MODALITY_LABEL, MODALITY_SLUG } from '../data/vocab.ts';
@@ -81,6 +83,14 @@ const DOORS = [
         { value: INSTITUTIONS.length, label: 'institutions' },
       ]}
     />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Watch the field grow</h2>
+      <p>Every system, placed by the date of its latest paper version. Press play to replay how multimodal agent memory took off, or drag the slider.</p>
+    </div>
+    <PaperRiver client:visible papers={riverPapers(systems)} lanes={MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m] }))} />
   </section>
 
   <section class="wrap block">
