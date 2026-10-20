@@ -36,7 +36,7 @@ const recent = [
   .sort((a, b) => b.date.localeCompare(a.date))
   .slice(0, 6);
 
-// Tints follow the banner: Axis I sky, Axis II mint, modalities peach.
+// Door tints: Axis I sky, Axis II mint, modalities peach.
 const DOORS = [
   { q: 'What does stored memory look like?', a: 'Six representation forms in three families, and the hybrids that combine them.', href: '/formation/#families', tag: 'Axis I · Representation', tint: 'sky' },
   { q: 'How does experience become memory?', a: 'From pixels and speech to records, graphs, states, and weights, traced across the corpus.', href: '/formation/', tag: 'Axis I · Formation', tint: 'sky' },
@@ -53,17 +53,6 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
   jsonld={[website(), scholarlyArticle()]}
 >
   <section class="wrap hero">
-    <figure class="banner">
-      <img
-        src="/banner-1000.webp"
-        srcset="/banner-1000.webp 1000w, /banner-2000.webp 2000w"
-        sizes="(min-width: 1240px) 1120px, calc(100vw - 32px)"
-        width="2000"
-        height="667"
-        fetchpriority="high"
-        alt="Illustrated overview of the survey. Multimodal experience (image, video, audio, GUI, embodied) is perceived by an agent; Axis I, formation and representation, stores it as source evidence, explicit structure, latent memory, or hybrid memory; Axis II, memory management, ranges from T1 static memory (store and reuse) through T2 dynamic memory (update and organize) to T3 self-evolving memory (learn and improve), leading to a more capable multimodal agent."
-      />
-    </figure>
     <div class="intro">
       <h1>
         <span class="t">{TITLE}</span>
@@ -182,12 +171,8 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
 </script>
 
 <style>
-  .banner { margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid var(--rule); background: #eef5fc; box-shadow: 0 10px 30px -18px rgb(31 47 102 / 0.35); }
-  .banner img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; }
-  :global(:root[data-theme='dark']) .banner img { filter: brightness(0.86) saturate(0.95); }
-  @media (prefers-color-scheme: dark) { :global(:root:not([data-theme='light'])) .banner img { filter: brightness(0.86) saturate(0.95); } }
   .hero { padding-top: clamp(32px, 5vw, 64px); padding-bottom: clamp(40px, 6vw, 72px); display: grid; gap: 32px; }
-  h1 { margin: 0; font-size: clamp(2.1rem, 4.2vw, 3.4rem); letter-spacing: -0.01em; line-height: 1.02; font-weight: 850; }
+  h1 { margin: 0; font-size: clamp(2.4rem, 4.6vw, 3.6rem); letter-spacing: -0.01em; line-height: 1.02; font-weight: 850; }
   h1 .t {
     display: block;
     color: var(--title-a);
