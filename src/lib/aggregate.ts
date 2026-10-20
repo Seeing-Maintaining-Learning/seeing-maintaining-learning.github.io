@@ -120,3 +120,33 @@ export function related(s: System, all: System[], n = 6): System[] {
     .slice(0, n)
     .map((x) => x.o);
 }
+
+export type Keyer = (s: System) => string | string[];
+
+/**
+ * Cross-tabulate systems by two keys. Multi-valued keys count a system once per distinct value,
+ * so row totals equal `countBy` for the row key restricted to the given columns.
+ */
+export function crossTab(
+  systems: System[],
+  rowKey: Keyer,
+  colKey: Keyer,
+  rows: readonly string[],
+  cols: readonly string[],
+): number[][] {
+  const ri = new Map(rows.map((r, i) => [r, i]));
+  const ci = new Map(cols.map((c, i) => [c, i]));
+  const m = rows.map(() => cols.map(() => 0));
+  for (const s of systems) {
+    const rk = rowKey(s);
+    const ck = colKey(s);
+    for (const r of new Set(Array.isArray(rk) ? rk : [rk])) {
+      for (const c of new Set(Array.isArray(ck) ? ck : [ck])) {
+        const i = ri.get(r);
+        const j = ci.get(c);
+        if (i !== undefined && j !== undefined) m[i][j] += 1;
+      }
+    }
+  }
+  return m;
+}

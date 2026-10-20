@@ -1,6 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import GrowthLines from '../../components/viz/GrowthLines.svelte';
+import ChartSwitch from '../../components/viz/ChartSwitch.svelte';
+import { storageByModality, tierByModality } from '../../lib/charts.ts';
 import { benchmarks, systems } from '../../data/index.ts';
 import { LEAF_SHORT, MODALITIES, MODALITY_LABEL, MODALITY_SLUG, TIERS } from '../../data/vocab.ts';
 import { countBy, growthByModality } from '../../lib/aggregate.ts';
@@ -53,6 +55,22 @@ const description =
       }
     </ul>
   </section>
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>How much each modality adapts</h2>
+      <p>Management tier by modality, shown as shares so modalities of different sizes compare fairly. Switch to Stacked for counts.</p>
+    </div>
+    <ChartSwitch client:visible title="Systems by modality and management tier" variants={[{ label: 'Tier', props: { ...tierByModality(systems), initial: 'percent' } }]} />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Where memory is stored</h2>
+      <p>Storage and indexing structures by modality. A system with several stores counts once in each.</p>
+    </div>
+    <ChartSwitch client:visible title="Systems by storage structure and modality" variants={[{ label: 'Modality', props: storageByModality(systems) }]} />
+  </section>
+
   <section class="wrap block">
     <div class="section-head">
       <h2>Embodied and video lead; audio is just starting</h2>

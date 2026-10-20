@@ -11,14 +11,14 @@
   --ink-2: #3c4752;
   --muted: #5b6672;
   --rule: #d9dfe5;
-  --accent: #5d4cc9;
-  --accent-ink: #4a3ab0;
+  --accent: #2a5bd7;
+  --accent-ink: #1f4fbf;
   --focus: #2a78d6;
 
-  /* Management tiers: ordinal ramp (validated) */
-  --t1: #9a8fec;
-  --t2: #5d4cc9;
-  --t3: #2b1f7a;
+  /* Management tiers: categorical (validated all-pairs) + shape cue on chips/marks */
+  --t1: #8a4fd6;
+  --t2: #0a8fb5;
+  --t3: #d9473f;
 
   /* Modalities: categorical, fixed order (validated, adjacent pairs; direct labels required) */
   --m-image: #2a78d6;
@@ -28,8 +28,8 @@
   --m-embodied: #e87ba4;
 
   /* Coverage */
-  --cov-direct: #5d4cc9;
-  --cov-partial: #b9b0f2;
+  --cov-direct: #256abf;
+  --cov-partial: #9ec5f4;
   --cov-none: #e9edf1;
 
   --font-ui: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
@@ -63,19 +63,19 @@
     --ink-2: #c3ccd5;
     --muted: #93a0ad;
     --rule: #2a343e;
-    --accent: #8577e6;
-    --accent-ink: #b3a9f5;
+    --accent: #6da7ec;
+    --accent-ink: #9ec5f4;
     --focus: #6da7ec;
-    --t1: #5546b8;
-    --t2: #8577e6;
-    --t3: #c9c3f8;
+    --t1: #a86ff0;
+    --t2: #14a0c8;
+    --t3: #e45d4b;
     --m-image: #3987e5;
     --m-video: #d95926;
     --m-audio: #199e70;
     --m-gui: #c98500;
     --m-embodied: #d55181;
-    --cov-direct: #8577e6;
-    --cov-partial: #463d86;
+    --cov-direct: #6da7ec;
+    --cov-partial: #1c5cab;
     --cov-none: #1d262f;
   }
 }
@@ -88,19 +88,19 @@
   --ink-2: #c3ccd5;
   --muted: #93a0ad;
   --rule: #2a343e;
-  --accent: #8577e6;
-  --accent-ink: #b3a9f5;
+  --accent: #6da7ec;
+  --accent-ink: #9ec5f4;
   --focus: #6da7ec;
-  --t1: #5546b8;
-  --t2: #8577e6;
-  --t3: #c9c3f8;
+  --t1: #a86ff0;
+  --t2: #14a0c8;
+  --t3: #e45d4b;
   --m-image: #3987e5;
   --m-video: #d95926;
   --m-audio: #199e70;
   --m-gui: #c98500;
   --m-embodied: #d55181;
-  --cov-direct: #8577e6;
-  --cov-partial: #463d86;
+  --cov-direct: #6da7ec;
+  --cov-partial: #1c5cab;
   --cov-none: #1d262f;
 }
 
@@ -180,6 +180,9 @@ section.block + section.block { border-top: 1px solid var(--rule); }
 .mod-gui { --c: var(--m-gui); }
 .mod-embodied_3d { --c: var(--m-embodied); }
 .chip .dot { background: var(--c, currentColor); }
+/* Tier shape cue: T1 ring, T2 filled, T3 filled with halo */
+.tier-T1 .dot { background: transparent; box-shadow: inset 0 0 0 2px var(--c); }
+.tier-T3 .dot { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 35%, transparent); }
 
 /* Segmented control */
 .seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 999px; }

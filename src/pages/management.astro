@@ -4,6 +4,8 @@ import BarList from '../components/BarList.astro';
 import ManagementDemo from '../components/viz/ManagementDemo.svelte';
 import TierMatrix from '../components/viz/TierMatrix.svelte';
 import GrowthLines from '../components/viz/GrowthLines.svelte';
+import ChartSwitch from '../components/viz/ChartSwitch.svelte';
+import { opsByModality } from '../lib/charts.ts';
 import { systems } from '../data/index.ts';
 import { OP_TEXT, T3_TEXT, TIER_BOTTLENECK, TIER_TEXT, systemLink } from '../data/taxonomy.ts';
 import { REP_CATEGORIES, REP_CATEGORY_LABEL, T2_LEAF, T2_OPS, T2_OP_LABEL, T3_TARGET_LABEL, TIERS, TIER_LABEL } from '../data/vocab.ts';
@@ -73,8 +75,11 @@ const description =
   <section class="wrap block">
     <div class="section-head">
       <h2>How T2 systems change memory</h2>
-      <p>Systems using each mechanism, grouped under the paper's five operations. A system can use several.</p>
+      <p>Systems using each of the paper's five operations, by modality. A system can use several. Open the breakdown below for the specific mechanisms.</p>
     </div>
+    <ChartSwitch client:visible title="T2 operations by modality" variants={[{ label: 'Modality', props: opsByModality(systems) }]} />
+    <details class="mech">
+      <summary>Mechanism breakdown</summary>
     <div class="ops-grid">
       {
         T2_OPS.map((op) => (
@@ -94,6 +99,7 @@ const description =
         ))
       }
     </div>
+    </details>
     <p class="small muted note">
       Mechanism names come from the corpus records; their grouping under the five operations is this site's summary.
     </p>
@@ -164,6 +170,8 @@ const description =
   .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px 40px; }
   .op h3, .t3 h3 { display: flex; justify-content: space-between; gap: 8px; border-top: 2px solid var(--c); padding-top: 10px; }
   .note { margin-top: 24px; }
+  .mech { margin-top: 28px; }
+  .mech summary { cursor: pointer; font-weight: 600; margin-bottom: 20px; }
   .t3-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
   .t3 { padding: 16px 18px; }
   .table-wrap { overflow-x: auto; }

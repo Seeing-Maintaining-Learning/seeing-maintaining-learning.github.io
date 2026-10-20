@@ -3,6 +3,8 @@ import Base from '../layouts/Base.astro';
 import BarList from '../components/BarList.astro';
 import FormationSankey from '../components/viz/FormationSankey.svelte';
 import SixForms from '../components/viz/SixForms.svelte';
+import ChartSwitch from '../components/viz/ChartSwitch.svelte';
+import { retrievalByModality } from '../lib/charts.ts';
 import { systems } from '../data/index.ts';
 import {
   FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, LEAF_SHORT, LEAVES, MODALITIES, MODALITY_LABEL, RETRIEVAL_LABEL, SOURCE_ACCESS_LABEL,
@@ -114,6 +116,14 @@ const description =
       modalities={modalities}
       stages={['Modality', 'Represented as', 'Stored in', 'Retrieved by']}
     />
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>How memory is found again</h2>
+      <p>Retrieval and activation methods by modality. Planner- and tool-driven retrieval is as common as similarity search.</p>
+    </div>
+    <ChartSwitch client:visible title="Systems by retrieval method and modality" variants={[{ label: 'Modality', props: retrievalByModality(systems) }]} />
   </section>
 
   <section class="wrap block twocol">

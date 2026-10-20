@@ -81,3 +81,21 @@ describe('stripTex', () => {
     expect(stripTex('\\textbf{ATM}-Bench')).toBe('ATM-Bench');
   });
 });
+
+describe('crossTab', () => {
+  it('row totals match countBy for single-valued columns', async () => {
+    const { crossTab, countBy } = await import('../src/lib/aggregate.ts');
+    const { MODALITIES, TIERS } = await import('../src/data/vocab.ts');
+    const m = crossTab(systems, (s) => s.tier, (s) => s.modality, TIERS, MODALITIES);
+    const byTier = countBy(systems, (s) => s.tier);
+    TIERS.forEach((t, i) => expect(m[i].reduce((a, b) => a + b, 0)).toBe(byTier[t]));
+  });
+
+  it('counts a system once per distinct multi-valued key', async () => {
+    const { crossTab, leafCounts } = await import('../src/lib/aggregate.ts');
+    const { LEAVES } = await import('../src/data/vocab.ts');
+    const m = crossTab(systems, (s) => s.paths.map((p) => p.leaf), () => 'all', LEAVES, ['all']);
+    const lc = leafCounts(systems);
+    LEAVES.forEach((l, i) => expect(m[i][0]).toBe(lc[l] ?? 0));
+  });
+});

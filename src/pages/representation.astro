@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import HybridTriangle from '../components/viz/HybridTriangle.svelte';
+import ChartSwitch from '../components/viz/ChartSwitch.svelte';
+import { leafByModality, leafByTier } from '../lib/charts.ts';
 import { systems } from '../data/index.ts';
 import { FAMILY_TEXT, HYBRID_EXAMPLES, LEAF_TEXT, systemLink } from '../data/taxonomy.ts';
 import { FAMILIES, FAMILY_LABEL, LEAF_FAMILY, LEAF_LABEL, LEAVES, REP_CATEGORIES, REP_CATEGORY_LABEL } from '../data/vocab.ts';
@@ -55,6 +57,21 @@ const link = (name: string) => systemLink(name);
       }
     </ol>
     <p class="small muted">Systems by exclusive representation category, as in the paper. Hybrid systems link more than one representation.</p>
+  </section>
+
+  <section class="wrap block">
+    <div class="section-head">
+      <h2>Which forms each modality uses</h2>
+      <p>Systems using each representation form. A system with several forms counts once in each. Click a bar to list those systems.</p>
+    </div>
+    <ChartSwitch
+      client:visible
+      title="Systems by representation form and modality"
+      variants={[
+        { label: 'Modality', props: leafByModality(systems) },
+        { label: 'Tier', props: leafByTier(systems) },
+      ]}
+    />
   </section>
 
   {

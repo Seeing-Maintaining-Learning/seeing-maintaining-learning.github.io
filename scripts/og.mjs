@@ -18,15 +18,15 @@ const PAGES = [
   ['benchmarks', 'What memory benchmarks test', '82 benchmarks across 21 memory capabilities'],
 ];
 
-const TIER = { T1: '#9a8fec', T2: '#5d4cc9', T3: '#2b1f7a' };
-const RANK = { T3: 0, T2: 1, T1: 2 };
-const sorted = [...systems].sort((a, b) => RANK[a.tier] - RANK[b.tier]);
+const MOD = { image: '#2a78d6', video_streaming: '#eb6834', audio_speech: '#1baf7a', gui: '#eda100', embodied_3d: '#e87ba4' };
+const ORDER = Object.keys(MOD);
+const sorted = [...systems].sort((a, b) => ORDER.indexOf(a.modality) - ORDER.indexOf(b.modality));
 const G = Math.PI * (3 - Math.sqrt(5));
 const dots = sorted
   .map((s, i) => {
     const r = 15.5 * Math.sqrt(i + 0.5);
     const a = i * G;
-    return `<circle cx="${(Math.cos(a) * r).toFixed(1)}" cy="${(Math.sin(a) * r).toFixed(1)}" r="6" fill="${TIER[s.tier]}" stroke="#f3f5f7" stroke-width="1.5"/>`;
+    return `<circle cx="${(Math.cos(a) * r).toFixed(1)}" cy="${(Math.sin(a) * r).toFixed(1)}" r="6" fill="${MOD[s.modality]}" stroke="#f3f5f7" stroke-width="1.5"/>`;
   })
   .join('');
 
