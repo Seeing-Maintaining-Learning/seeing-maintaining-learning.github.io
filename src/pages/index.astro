@@ -159,7 +159,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
 
 <style>
   .hero { padding-top: clamp(32px, 5vw, 64px); padding-bottom: clamp(40px, 6vw, 72px); display: grid; gap: 32px; }
-  h1 { margin: 0; font-size: clamp(2.4rem, 4.6vw, 3.6rem); letter-spacing: -0.01em; line-height: 1.02; font-weight: 850; }
+  h1 { margin: 0; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -0.02em; line-height: 1.04; font-weight: 580; }
   h1 .t {
     display: block;
     color: var(--title-a);
@@ -169,7 +169,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
     -webkit-text-fill-color: transparent;
     padding-bottom: 0.06em;
   }
-  h1 .s { display: block; font-size: 0.5em; font-weight: 700; letter-spacing: 0; color: var(--title-b); margin-top: 10px; line-height: 1.2; }
+  h1 .s { display: block; font-size: 0.5em; font-weight: 420; font-style: italic; letter-spacing: -0.01em; color: var(--title-b); margin-top: 12px; line-height: 1.2; }
   .btn { font: inherit; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; }
   .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .doors { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
@@ -184,7 +184,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
   .doors .pill { background: var(--surface); }
   .doors a:hover { border-color: var(--tk); transform: translateY(-2px); }
   .doors a:hover .q { text-decoration: underline; text-decoration-thickness: 1px; }
-  .q { font-size: var(--step-1); font-weight: 800; line-height: 1.2; color: var(--title-a); }
+  .q { font-family: var(--font-display); font-variation-settings: 'SOFT' 100; font-size: var(--step-1); font-weight: 600; line-height: 1.2; color: var(--title-a); }
   .a { color: var(--ink-2); font-size: 0.9375rem; }
   .mods { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 20px; }
   .findings { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }

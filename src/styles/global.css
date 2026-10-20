@@ -1,4 +1,6 @@
 @import '@fontsource-variable/nunito';
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/fraunces/full-italic.css';
 @import '@fontsource/patrick-hand/latin-400.css';
 @import './icons.css';
 
@@ -49,6 +51,8 @@
 
   --font-ui: 'Nunito Variable', ui-rounded, ui-sans-serif, system-ui, sans-serif;
   --font-read: var(--font-ui);
+  /* Headings: soft optical-size serif; pairs with the rounded UI face. */
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
   --font-hand: 'Patrick Hand', 'Comic Sans MS', ui-rounded, cursive;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -165,11 +169,19 @@ h1,
 h2,
 h3,
 h4 {
-  line-height: 1.15;
+  line-height: 1.12;
   letter-spacing: -0.005em;
   margin: 0 0 0.5em;
   font-weight: 800;
   text-wrap: balance;
+}
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-optical-sizing: auto;
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  letter-spacing: -0.015em;
 }
 h1 { font-size: var(--step-4); color: var(--title-a); }
 h2 { font-size: var(--step-3); color: var(--title-a); }
