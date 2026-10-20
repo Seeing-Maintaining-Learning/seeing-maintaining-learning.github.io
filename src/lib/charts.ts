@@ -15,7 +15,7 @@ const cats = (map: Record<string, string>, keys?: readonly string[]): Cat[] =>
 
 function chart(systems: System[], rows: Cat[], rowKey: Keyer, by: 'modality' | 'tier', href: string) {
   const series = by === 'modality' ? MOD_SERIES : TIER_SERIES;
-  const values = crossTab(systems, rowKey, (s: System) => (by === 'modality' ? s.modality : s.tier), rows.map((r) => r.key), series.map((s) => s.key));
+  const values = crossTab(systems, rowKey, (s: System) => (by === 'modality' ? s.modality : s.tier), rows.map((r) => r.key), series.map((x) => x.key));
   return { rows, series, values, href };
 }
 

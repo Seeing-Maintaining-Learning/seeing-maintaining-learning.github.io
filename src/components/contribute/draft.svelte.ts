@@ -14,7 +14,7 @@ function load(): Draft {
       const v = saved[k];
       const ref = base[k];
       const ok = Array.isArray(ref) ? Array.isArray(v) && v.every((x) => typeof x === 'string') : ref === null ? v === null || typeof v === 'boolean' : typeof v === typeof ref;
-      if (ok) (base as Record<string, unknown>)[k] = v;
+      if (ok) (base as unknown as Record<string, unknown>)[k] = v;
     }
     return base;
   } catch {
