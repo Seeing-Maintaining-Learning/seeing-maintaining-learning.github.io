@@ -5,15 +5,15 @@
 /* ---------- Tokens ---------- */
 :root {
   color-scheme: light;
-  /* Light: the banner's pale sky, navy ink, and soft watercolor panel tints. */
-  --bg: #e9f2fa;
-  --surface: #f7fbff;
-  --bg-top: #d6e7f8;
-  --surface-2: #dbe8f5;
-  --ink: #1b2a44;
-  --ink-2: #34445e;
-  --muted: #536179;
-  --rule: #c9d9ea;
+  /* Light: neutral paper for reading; the banner's navy titles and pastel tints sit on top as accents. */
+  --bg: #ecebe6;
+  --bg-top: #ecebe6;
+  --surface: #f6f5f1;
+  --surface-2: #e4e2dc;
+  --ink: #1d2125;
+  --ink-2: #3e444b;
+  --muted: #5a6068;
+  --rule: #d7d5ce;
   /* Display title: banner navy to banner blue. */
   --title-a: #1f2f66;
   --title-b: #2d63b8;
