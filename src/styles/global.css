@@ -1,23 +1,33 @@
-@import '@fontsource-variable/schibsted-grotesk';
-@import '@fontsource-variable/source-serif-4';
+@import '@fontsource-variable/nunito';
+@import '@fontsource/patrick-hand/latin-400.css';
 @import './icons.css';
 
 /* ---------- Tokens ---------- */
 :root {
   color-scheme: light;
-  /* Light: soft neutral paper (no pure white glare, softened black text). */
-  --bg: #ecebe6;
-  --surface: #f6f5f1;
-  --surface-2: #e4e2dc;
-  --ink: #1d2125;
-  --ink-2: #3e444b;
-  --muted: #5a6068;
-  --rule: #d7d5ce;
-  /* Display title: deep indigo to deep teal. */
-  --title-a: #2a2d6e;
-  --title-b: #1d5a6e;
+  /* Light: the banner's pale sky, navy ink, and soft watercolor panel tints. */
+  --bg: #e9f2fa;
+  --surface: #f7fbff;
+  --bg-top: #d6e7f8;
+  --surface-2: #dbe8f5;
+  --ink: #1b2a44;
+  --ink-2: #34445e;
+  --muted: #536179;
+  --rule: #c9d9ea;
+  /* Display title: banner navy to banner blue. */
+  --title-a: #1f2f66;
+  --title-b: #2d63b8;
   --accent: #2a5bd7;
   --accent-ink: #1f4fbf;
+  /* Panel tints from the banner (backgrounds only; never carry data). */
+  --tint-sky: #deebfb;
+  --tint-mint: #dcf1e5;
+  --tint-lilac: #ebe4fa;
+  --tint-peach: #fde7dc;
+  --tint-ink-sky: #234f9a;
+  --tint-ink-mint: #1d6b48;
+  --tint-ink-lilac: #5a3aa0;
+  --tint-ink-peach: #9a4426;
   --focus: #2a78d6;
 
   /* Management tiers: categorical (validated all-pairs) + shape cue on chips/marks */
@@ -37,8 +47,9 @@
   --cov-partial: #9ec5f4;
   --cov-none: #e4e2dc;
 
-  --font-ui: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-read: 'Source Serif 4 Variable', ui-serif, Georgia, serif;
+  --font-ui: 'Nunito Variable', ui-rounded, ui-sans-serif, system-ui, sans-serif;
+  --font-read: var(--font-ui);
+  --font-hand: 'Patrick Hand', 'Comic Sans MS', ui-rounded, cursive;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
   --step--1: 0.8125rem;
@@ -50,7 +61,7 @@
   --step-5: clamp(2.75rem, 7vw, 5.25rem);
 
   --radius-s: 6px;
-  --radius-m: 12px;
+  --radius-m: 18px;
   --gutter: clamp(16px, 4vw, 40px);
   --max: 1200px;
   --dur-1: 120ms;
@@ -61,18 +72,17 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --bg: #0e1318;
-    --surface: #151c23;
-    --surface-2: #1d262f;
-    --ink: #e6ebf0;
-    --ink-2: #c3ccd5;
-    --muted: #93a0ad;
-    --rule: #2a343e;
+    --bg: #0d1424;
+    --bg-top: #13203b;
+    --surface: #141d33;
+    --surface-2: #1b2640;
+    --ink: #e8eef8;
+    --ink-2: #c4cfe0;
+    --muted: #95a3bb;
+    --rule: #283655;
     --accent: #6da7ec;
-  --title-a: #d9d5ff;
-  --title-b: #9fe1ee;
-    --title-a: #d9d5ff;
-    --title-b: #9fe1ee;
+    --title-a: #dce5ff;
+    --title-b: #8fbcff;
     --accent-ink: #9ec5f4;
     --focus: #6da7ec;
     --t1: #b48cff;
@@ -85,21 +95,30 @@
     --m-embodied: #ff6fb5;
     --cov-direct: #6da7ec;
     --cov-partial: #1c5cab;
-    --cov-none: #1d262f;
+    --cov-none: #1b2640;
+    --tint-sky: #172a4a;
+    --tint-mint: #14322b;
+    --tint-lilac: #261f45;
+    --tint-peach: #3a2420;
+    --tint-ink-sky: #a9c8ff;
+    --tint-ink-mint: #8fe3bb;
+    --tint-ink-lilac: #cdb8ff;
+    --tint-ink-peach: #ffbfa3;
   }
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0e1318;
-  --surface: #151c23;
-  --surface-2: #1d262f;
-  --ink: #e6ebf0;
-  --ink-2: #c3ccd5;
-  --muted: #93a0ad;
-  --rule: #2a343e;
+  --bg: #0d1424;
+  --bg-top: #13203b;
+  --surface: #141d33;
+  --surface-2: #1b2640;
+  --ink: #e8eef8;
+  --ink-2: #c4cfe0;
+  --muted: #95a3bb;
+  --rule: #283655;
   --accent: #6da7ec;
-  --title-a: #d9d5ff;
-  --title-b: #9fe1ee;
+  --title-a: #dce5ff;
+  --title-b: #8fbcff;
   --accent-ink: #9ec5f4;
   --focus: #6da7ec;
   --t1: #b48cff;
@@ -112,7 +131,15 @@
   --m-embodied: #ff6fb5;
   --cov-direct: #6da7ec;
   --cov-partial: #1c5cab;
-  --cov-none: #1d262f;
+  --cov-none: #1b2640;
+  --tint-sky: #172a4a;
+  --tint-mint: #14322b;
+  --tint-lilac: #261f45;
+  --tint-peach: #3a2420;
+  --tint-ink-sky: #a9c8ff;
+  --tint-ink-mint: #8fe3bb;
+  --tint-ink-lilac: #cdb8ff;
+  --tint-ink-peach: #ffbfa3;
 }
 
 /* ---------- Base ---------- */
@@ -127,7 +154,7 @@ html {
 }
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--bg) linear-gradient(180deg, var(--bg-top) 0, var(--bg) 720px) no-repeat;
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: var(--step-0);
@@ -138,14 +165,15 @@ h1,
 h2,
 h3,
 h4 {
-  line-height: 1.12;
-  letter-spacing: -0.015em;
+  line-height: 1.15;
+  letter-spacing: -0.005em;
   margin: 0 0 0.5em;
-  font-weight: 650;
+  font-weight: 800;
   text-wrap: balance;
 }
 h1 { font-size: var(--step-4); color: var(--title-a); }
-h2 { font-size: var(--step-3); }
+h2 { font-size: var(--step-3); color: var(--title-a); }
+h3 { font-weight: 750; }
 h3 { font-size: var(--step-1); }
 p { margin: 0 0 1em; }
 a { color: var(--accent-ink); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
@@ -174,6 +202,17 @@ section.block + section.block { border-top: 1px solid var(--rule); }
 .section-head p { color: var(--ink-2); }
 
 .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius-m); }
+
+/* Banner-style pill label: tinted, rounded, hand-lettered. Pick a tint with .sky/.mint/.lilac/.peach. */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 14px 2px; border-radius: 999px;
+  font-family: var(--font-hand); font-size: 1.0625rem; font-weight: 400; line-height: 1.35; letter-spacing: 0.01em;
+  background: var(--tint-sky); color: var(--tint-ink-sky);
+}
+.pill.mint { background: var(--tint-mint); color: var(--tint-ink-mint); }
+.pill.lilac { background: var(--tint-lilac); color: var(--tint-ink-lilac); }
+.pill.peach { background: var(--tint-peach); color: var(--tint-ink-peach); }
+.hand { font-family: var(--font-hand); font-weight: 400; letter-spacing: 0.01em; }
 
 /* Chips used for tiers / modalities */
 .chip {

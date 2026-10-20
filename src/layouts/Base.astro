@@ -54,8 +54,8 @@ const NAV: [string, string][] = [
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={abs(og)} />
-    <meta name="theme-color" content="#ecebe6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0e1318" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e9f2fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1424" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <script is:inline>
@@ -107,6 +107,7 @@ const NAV: [string, string][] = [
       <div class="wrap foot-grid">
         <div>
           <p class="foot-title">{FULL_TITLE}</p>
+          <p class="foot-hand hand">Memory for a more open, perceptive, and capable world.</p>
           <p class="muted small">
             Data from the public corpus, built from page-cited reviews of each paper. Counts update when the corpus
             changes.
@@ -175,7 +176,7 @@ const NAV: [string, string][] = [
     border-bottom: 1px solid var(--rule);
   }
   .bar { display: flex; align-items: center; gap: 14px; height: 60px; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 650; white-space: nowrap; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--title-a); text-decoration: none; font-weight: 800; white-space: nowrap; }
   nav { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
   nav::-webkit-scrollbar { display: none; }
   nav ul { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
@@ -204,7 +205,8 @@ const NAV: [string, string][] = [
   }
   .foot { border-top: 1px solid var(--rule); padding-block: 40px 56px; margin-top: 40px; }
   .foot-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; }
-  .foot-title { font-weight: 600; margin-bottom: 6px; }
+  .foot-title { font-weight: 750; margin-bottom: 6px; color: var(--title-a); }
+  .foot-hand { font-size: 1.125rem; color: var(--title-b); margin-bottom: 8px; }
   .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
   @media (max-width: 640px) { .foot-grid { grid-template-columns: 1fr; } }
 </style>
