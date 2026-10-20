@@ -108,7 +108,6 @@ const NAV: [string, string][] = [
       <div class="wrap foot-grid">
         <div>
           <p class="foot-title">{FULL_TITLE}</p>
-          <p class="foot-hand hand">Memory for a more open, perceptive, and capable world.</p>
         </div>
         <ul class="small">
           <li><a href={LINKS.arxiv}>Paper on arXiv</a></li>
@@ -173,7 +172,7 @@ const NAV: [string, string][] = [
     border-bottom: 1px solid var(--rule);
   }
   .bar { display: flex; align-items: center; gap: 14px; height: 60px; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--title-a); text-decoration: none; font-weight: 800; white-space: nowrap; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--title-a); text-decoration: none; font-weight: 650; white-space: nowrap; }
   nav { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
   nav::-webkit-scrollbar { display: none; }
   nav ul { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
@@ -202,8 +201,7 @@ const NAV: [string, string][] = [
   }
   .foot { border-top: 1px solid var(--rule); padding-block: 40px 56px; margin-top: 40px; }
   .foot-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; }
-  .foot-title { font-weight: 750; margin-bottom: 6px; color: var(--title-a); }
-  .foot-hand { font-size: 1.125rem; color: var(--title-b); margin-bottom: 8px; }
+  .foot-title { font-weight: 600; margin-bottom: 6px; color: var(--title-a); }
   .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
   @media (max-width: 640px) { .foot-grid { grid-template-columns: 1fr; } }
 </style>

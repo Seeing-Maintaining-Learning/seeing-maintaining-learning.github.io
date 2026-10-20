@@ -21,7 +21,7 @@ const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: 
 <section class="obs" aria-label="Memory observatory">
   <header class="oh">
     <div>
-      <p class="eyebrow pill">Memory observatory</p>
+      <p class="eyebrow">Memory · Observatory</p>
       <RollingCounter
         client:visible
         items={[
@@ -36,27 +36,27 @@ const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: 
 
   <div class="grid">
     <div class="cell c-scan">
-      <p class="ch"><span class="pill sky">System scan</span></p>
+      <p class="box-title"><span class="ix">01 /</span><strong>System scan</strong></p>
       <SystemScan client:visible items={scanItems(systems)} latest={latest(systems)} all={systems.map(scanItem)} />
     </div>
     <div class="cell c-sphere">
-      <p class="ch"><span class="pill sky">Memory sphere</span> <span class="muted">one arm per modality, time along the arm</span></p>
+      <p class="box-title"><span class="ix">02 /</span><strong>Memory sphere</strong><span>one arm per modality, time along the arm</span></p>
       <MemorySphere client:load points={points as never} modalities={modCounts} compact height={470} callouts={callouts(systems)} />
     </div>
     <div class="cell c-spec">
-      <p class="ch"><span class="pill sky">Representation spectrum</span> <span class="muted">systems per stored form</span></p>
+      <p class="box-title"><span class="ix">03 /</span><strong>Representation spectrum</strong><span>systems per stored form</span></p>
       <RepSpectrum client:visible groups={spectrum(systems)} modalities={mods} />
     </div>
     <div class="cell c-ladder">
-      <p class="ch"><span class="pill mint">Management ladder</span> <span class="muted">what can change</span></p>
+      <p class="box-title"><span class="ix">04 /</span><strong>Management ladder</strong><span>what can change</span></p>
       <TierLadder client:visible rows={ladder(systems)} modalities={mods} />
     </div>
     <div class="cell c-river">
-      <p class="ch"><span class="pill peach">Paper river</span> <span class="muted">every system by publication date</span></p>
+      <p class="box-title"><span class="ix">05 /</span><strong>Paper river</strong><span>every system by publication date</span></p>
       <PaperRiver client:visible papers={riverPapers(systems)} lanes={mods} />
     </div>
     <div class="cell c-spot">
-      <p class="ch"><span class="pill lilac">Frontier spotlight</span> <span class="muted">the newest self-evolving systems</span></p>
+      <p class="box-title"><span class="ix">06 /</span><strong>Frontier spotlight</strong><span>the newest self-evolving systems</span></p>
       <Spotlight client:visible items={spotlight(systems)} dots={ringDots(systems)} />
     </div>
   </div>
@@ -65,7 +65,7 @@ const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: 
 <style>
   .obs { border: 1px solid var(--rule); border-radius: 22px; background: var(--surface); overflow: hidden; box-shadow: 0 10px 30px -22px rgb(31 47 102 / 0.4); }
   .oh { display: flex; justify-content: space-between; align-items: end; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
-  .eyebrow { margin: 0 0 8px; }
+  .eyebrow { margin: 0 0 8px; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
   .grid {
     display: grid;
     grid-template-columns: minmax(250px, 300px) 1fr 1fr;
@@ -78,13 +78,11 @@ const modCounts = MODALITIES.map((m) => ({ key: m, label: MODALITY_LABEL[m], n: 
   .cell { padding: 14px 18px 16px; min-width: 0; }
   .c-scan { grid-area: scan; border-right: 1px solid var(--rule); }
   .c-sphere { grid-area: sphere; padding: 14px 0 0; border-bottom: 1px solid var(--rule); }
-  .c-sphere .ch { padding: 0 18px; }
+  .c-sphere .box-title { padding: 0 18px; }
   .c-spec { grid-area: spec; border-right: 1px solid var(--rule); }
   .c-ladder { grid-area: ladder; }
   .c-river { grid-area: river; border-top: 1px solid var(--rule); }
   .c-spot { grid-area: spot; border-top: 1px solid var(--rule); }
-  .ch { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0 0 12px; font-size: 0.8125rem; }
-  .ch .pill { font-size: 1rem; padding: 1px 12px 0; }
   .obs :global(.wrapc) { border: 0; border-radius: 0; background: transparent; }
   .obs :global(.ms .legend) { padding: 0 18px 12px; }
   @media (max-width: 980px) {

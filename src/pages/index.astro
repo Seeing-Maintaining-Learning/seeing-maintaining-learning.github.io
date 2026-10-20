@@ -90,7 +90,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
         DOORS.map((d) => (
           <li class={`t-${d.tint}`}>
             <a href={d.href}>
-              <span class={`pill ${d.tint}`}>{d.tag}</span>
+              <span class="mono-label tag">{d.tag}</span>
               <span class="q">{d.q}</span>
               <span class="a">{d.a}</span>
             </a>
@@ -133,7 +133,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
   </section>
 
   <section class="wrap cite" aria-labelledby="cite-h">
-    <h2 id="cite-h" class="pill lilac">Cite the survey</h2>
+    <h2 id="cite-h">Cite the survey</h2>
     <p class="ref">
       {firstAuthor} et al. (2026). <cite>{TITLE}: {SUBTITLE}</cite>. arXiv:{ARXIV_ID}.
     </p>
@@ -159,7 +159,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
 
 <style>
   .hero { padding-top: clamp(32px, 5vw, 64px); padding-bottom: clamp(40px, 6vw, 72px); display: grid; gap: 32px; }
-  h1 { margin: 0; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -0.02em; line-height: 1.04; font-weight: 580; }
+  h1 { margin: 0; font-size: clamp(2.4rem, 4.8vw, 3.75rem); letter-spacing: -0.035em; line-height: 1.04; font-weight: 650; }
   h1 .t {
     display: block;
     color: var(--title-a);
@@ -169,7 +169,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
     -webkit-text-fill-color: transparent;
     padding-bottom: 0.06em;
   }
-  h1 .s { display: block; font-size: 0.5em; font-weight: 420; font-style: italic; letter-spacing: -0.01em; color: var(--title-b); margin-top: 12px; line-height: 1.2; }
+  h1 .s { display: block; font-size: 0.48em; font-weight: 500; letter-spacing: -0.02em; color: var(--title-b); margin-top: 12px; line-height: 1.2; }
   .btn { font: inherit; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); text-decoration: none; }
   .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .doors { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
@@ -181,10 +181,9 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
   .t-sky { --tc: var(--tint-sky); --tk: var(--tint-ink-sky); }
   .t-mint { --tc: var(--tint-mint); --tk: var(--tint-ink-mint); }
   .t-peach { --tc: var(--tint-peach); --tk: var(--tint-ink-peach); }
-  .doors .pill { background: var(--surface); }
   .doors a:hover { border-color: var(--tk); transform: translateY(-2px); }
   .doors a:hover .q { text-decoration: underline; text-decoration-thickness: 1px; }
-  .q { font-family: var(--font-display); font-variation-settings: 'SOFT' 100; font-size: var(--step-1); font-weight: 600; line-height: 1.2; color: var(--title-a); }
+  .q { font-size: var(--step-1); font-weight: 600; line-height: 1.2; color: var(--title-a); }
   .a { color: var(--ink-2); font-size: 0.9375rem; }
   .mods { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 20px; }
   .findings { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
@@ -201,7 +200,7 @@ const firstAuthor = AUTHORS[0]?.name.split(' ').at(-1) ?? '';
     display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-block: 8px 24px; padding-block: 16px;
     border-top: 1px solid var(--rule);
   }
-  .cite h2 { margin: 0; font-size: 1.0625rem; }
+  .cite h2 { margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
   .cite .ref { margin: 0; flex: 1 1 320px; min-width: 0; font-size: 0.9375rem; color: var(--ink-2); }
   .cite cite { font-style: italic; color: var(--ink); }
   .acts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
