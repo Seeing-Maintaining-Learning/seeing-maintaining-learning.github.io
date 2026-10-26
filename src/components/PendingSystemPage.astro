@@ -22,7 +22,6 @@ const authorLine = p.authors.length > 6 ? `${p.authors.slice(0, 6).join(', ')}, 
   <article class="wrap sys">
     <nav class="crumbs small" aria-label="Breadcrumb"><a href="/systems/">Systems</a> / <span>{p.name}</span></nav>
     <p class="badges">
-      {p.isNew && <span class="badge new">Added after the survey</span>}
       <span class="badge">Classification pending</span>
     </p>
     <h1>{p.name}</h1>
@@ -53,7 +52,6 @@ const authorLine = p.authors.length > 6 ? `${p.authors.slice(0, 6).join(', ')}, 
   .crumbs { color: var(--muted); margin-bottom: 16px; }
   .badges { display: flex; gap: 6px; margin: 0 0 8px; }
   .badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
-  .badge.new { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--ink); }
   .paper-title { font-family: var(--font-read); font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; }
   .links { display: flex; gap: 16px; }
   .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 28px 0; }

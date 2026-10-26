@@ -39,10 +39,9 @@ const tierExplain: Record<string, string> = {
     <nav class="crumbs small" aria-label="Breadcrumb"><a href="/systems/">Systems</a> / <span>{s.name}</span></nav>
     <header>
       {
-        (s.isNew || s.reviewStatus === 'community_submitted') && (
+        s.reviewStatus === 'community_submitted' && (
           <p class="badges">
-            {s.isNew && <span class="badge new">Added after the survey</span>}
-            {s.reviewStatus === 'community_submitted' && <span class="badge">Community submission</span>}
+            <span class="badge">Community submission</span>
           </p>
         )
       }
@@ -156,7 +155,6 @@ const tierExplain: Record<string, string> = {
   .sys { padding-block: clamp(32px, 5vw, 64px); max-width: 920px; }
   .badges { display: flex; gap: 6px; margin: 0 0 8px; }
   .badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
-  .badge.new { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--ink); }
   .crumbs { margin-bottom: 16px; color: var(--muted); }
   .paper-title { font-family: var(--font-read); font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; margin-bottom: 6px; }
   .links { display: flex; gap: 16px; margin-top: 12px; }
