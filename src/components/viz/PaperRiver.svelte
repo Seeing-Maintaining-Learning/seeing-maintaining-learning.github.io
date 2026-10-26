@@ -8,7 +8,9 @@
   const T0 = 2023;
   const T1 = Math.max(2026.95, ...papers.map((p) => p.t)) + 0.05;
   const YEARS = Array.from({ length: Math.floor(T1 - 0.001) - T0 + 1 }, (_, i) => T0 + i);
-  const M = { l: 132, r: 20, t: 18, b: 34 };
+  // Reserve a dedicated label column so long modality names and counts never
+  // intrude into the timeline plot.
+  const M = { l: 238, r: 20, t: 18, b: 34 };
   const LANE_H = 54;
   const H = M.t + M.b + LANE_H * lanes.length;
 
@@ -221,7 +223,7 @@
     ></canvas>
     {#each lanes as l, i (l.key)}
       <div class="lane mod-{l.key}" class:narrow style="top:{laneY(i) - (narrow ? LANE_H / 2 - 2 : 10)}px">
-        <span class="dot"></span>{l.label} <span class="num c">{counts[i]}</span>
+        <span class="dot"></span><span class="name">{l.label}</span><span class="num c">{counts[i]}</span>
       </div>
     {/each}
     {#each YEARS as y (y)}
@@ -246,9 +248,10 @@
   .now { font-size: var(--step--1); color: var(--ink-2); min-width: 150px; }
   .wrapc { position: relative; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
   canvas { display: block; width: 100%; }
-  .lane { position: absolute; left: 12px; display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--ink-2); pointer-events: none; }
+  .lane { position: absolute; left: 12px; width: 222px; display: grid; grid-template-columns: 9px minmax(0, 1fr) 2.25rem; align-items: center; column-gap: 6px; font-size: 0.8125rem; color: var(--ink-2); pointer-events: none; }
   .lane .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
-  .lane .c { color: var(--ink); font-weight: 650; }
-  .lane.narrow { font-size: 0.75rem; background: color-mix(in srgb, var(--surface) 80%, transparent); padding: 0 4px; border-radius: 4px; }
+  .lane .name { min-width: 0; white-space: nowrap; }
+  .lane .c { color: var(--ink); font-weight: 650; text-align: right; font-variant-numeric: tabular-nums; }
+  .lane.narrow { width: min(222px, calc(100% - 24px)); font-size: 0.75rem; background: color-mix(in srgb, var(--surface) 80%, transparent); padding: 0 4px; border-radius: 4px; }
   .yr { position: absolute; transform: translateX(-50%); color: var(--muted); }
 </style>
